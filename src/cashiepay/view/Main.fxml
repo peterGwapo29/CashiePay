@@ -5,21 +5,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="cashiepay.controller.MainController"
-            prefWidth="1280" prefHeight="720">
+<AnchorPane prefHeight="720" prefWidth="1280" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.MainController">
     
     <stylesheets>
         <URL value="@/cashiepay/style/main.css" />
     </stylesheets>
     
     <children>
-        <HBox prefWidth="1280" prefHeight="720">
+        <HBox prefHeight="720" prefWidth="1280">
             <!-- Sidebar container -->
-            <VBox fx:id="sidebarContainer" prefWidth="220" />
+            <VBox fx:id="sidebarContainer" prefHeight="720.0" prefWidth="220" />
 
             <!-- Main content container -->
-            <AnchorPane fx:id="contentContainer" prefWidth="1060" />
+            <AnchorPane fx:id="contentContainer" prefHeight="720.0" prefWidth="1060" />
         </HBox>
     </children>
 </AnchorPane>

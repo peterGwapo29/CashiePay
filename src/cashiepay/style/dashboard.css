@@ -1,7 +1,97 @@
-/*
- * Empty Stylesheet file.
- */
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-Regular.ttf');
+}
+
+* {
+    -fx-font-family: 'Poppins';
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.SystemName {
+    -fx-font-family: 'Poppins';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.greetings {
+    -fx-font-family: 'Poppins';
+    -fx-font-size: 14px;
+    -fx-text-fill: #9294b7;
+}
+
+.pageName {
+    -fx-font-family: 'Poppins';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c2c2c;
+}
+
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 16px;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.card-top:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 4);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.card Label:first-child {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555555;
+}
+
+.card Label:last-child {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c2c2c;
+}
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f4f4ff;
+}
+
+.table-view .column-header, 
+.table-view .column-header .label {
+    -fx-font-family: 'Poppins';
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.search-field {
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-padding: 0 10px;
+    -fx-font-size: 14px;
+}
 
 .mainFxmlClass {
-
+    -fx-background-color: #f4f4ff;
 }

@@ -1,6 +1,5 @@
 package cashiepay.controller;
 
-
 import java.net.URL;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +34,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conn = DBConnection.getConnection();
-    }    
+    }
 
     @FXML
     private void handleLoginAction(ActionEvent event) throws SQLException, IOException {
@@ -47,9 +46,7 @@ public class LoginController implements Initializable {
                System.out.println("Please fill in all fields!");
                return;
            }
-                    
             try {
-                 
                 if (conn == null || conn.isClosed()) {
                     conn = DBConnection.getConnection();
                 }
@@ -86,5 +83,4 @@ public class LoginController implements Initializable {
             }
         }
     }
-    
 }

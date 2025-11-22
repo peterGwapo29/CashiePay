@@ -1,13 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.DashboardController">
     <stylesheets>
         <URL value="@/cashiepay/style/dashboard.css" />
     </stylesheets>
    <children>
-      <AnchorPane fx:id="sidebarContainer" layoutY="-1.0" prefHeight="720.0" prefWidth="220.0" />
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1281.0" style="-fx-background-color: #4d6bff;">
+         <children>
+            <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
+         </children></HBox>
+      <AnchorPane layoutX="4.0" layoutY="60.0" prefHeight="666.0" prefWidth="1280.0" style="-fx-background-color: #f4f4ff;">
+         <children>
+            <HBox alignment="CENTER" layoutY="6.0" prefHeight="95.0" prefWidth="1280.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="70.0" prefWidth="337.0" spacing="4.0">
+                     <children>
+                        <Label styleClass="greetings" text="Monday, January 1" textFill="#9294b7">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label styleClass="pageName" text="Welcome Back! Admin,">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font></Label>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </HBox>
+            <VBox layoutX="16.0" layoutY="114.0" prefHeight="554.0" prefWidth="1244.0" spacing="24.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="117.0" prefWidth="1123.0" spacing="24.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white; -fx-border-radius: 8px;">
+                           <children>
+                              <Label text="Total Transactions Today">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text="00">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="card-top" />
+                           </styleClass>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white; -fx-border-radius: 8px;">
+                           <children>
+                              <Label text="Today’s Revenue">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text="₱00.00">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="card-top" />
+                           </styleClass>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white;">
+                           <children>
+                              <Label text="Paid Students">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text="00">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="card-top" />
+                           </styleClass>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white;">
+                           <children>
+                              <Label text="Outstanding Students">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text="00">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="card-top" />
+                           </styleClass>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="385.0" prefWidth="1242.0" spacing="8.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <VBox prefHeight="366.0" prefWidth="965.0" spacing="8.0">
+                           <children>
+                              <Label text="Reacent Transactions">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                              <TableView prefHeight="337.0" prefWidth="917.0">
+                                <columns>
+                                  <TableColumn prefWidth="122.93331563472748" text="Date" />
+                                    <TableColumn prefWidth="213.8666763305664" text="OR Number" />
+                                    <TableColumn prefWidth="210.13333129882812" text="Name of Payor" />
+                                    <TableColumn prefWidth="177.60000610351562" text="Particulars" />
+                                    <TableColumn prefWidth="87.7332763671875" text="MFO/PAP" />
+                                    <TableColumn prefWidth="158.40004882812502" text="Amount" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="366.0" prefWidth="248.0" spacing="8.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="88.0" prefWidth="236.0">
+                                 <children>
+                                    <TextField prefHeight="40.0" prefWidth="236.0" promptText="Search student id" styleClass="search-field" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="131.0" prefWidth="236.0" spacing="8.0" styleClass="card">
+                                 <children>
+                                    <Label text="Total Students">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="00">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                              <HBox prefHeight="127.0" prefWidth="236.0" spacing="12.0">
+                                 <children>
+                                    <VBox alignment="CENTER" prefHeight="202.0" prefWidth="126.0" spacing="8.0" styleClass="card">
+                                       <children>
+                                          <Label text="Total Paid">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="00">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" prefHeight="202.0" prefWidth="126.0" spacing="8.0" styleClass="card">
+                                       <children>
+                                          <Label text="Total Unpaid">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="00">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="card" />
+                        <String fx:value="card-container" />
+                     </styleClass>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+         </children></AnchorPane>
    </children>
 </AnchorPane>
