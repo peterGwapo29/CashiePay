@@ -1,20 +1,24 @@
 package cashiepay.controller;
 
-import java.io.IOException;
+
 import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import java.sql.Connection;
 import cashiepay.model.DBConnection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ResourceBundle;
+import java.io.IOException;
+import java.sql.SQLException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 
 public class LoginController implements Initializable {
 
@@ -34,23 +38,50 @@ public class LoginController implements Initializable {
     }    
 
     @FXML
-    private void handleLoginAction(ActionEvent event) throws IOException {
+    private void handleLoginAction(ActionEvent event) throws SQLException, IOException {
         if(event.getSource() == loginBtn) {
-             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/Main.fxml"));
-                AnchorPane root = loader.load();
+            String email = emailField.getText().trim();
+            String password = passwordField.getText().trim();
 
-                stage = (Stage) loginBtn.getScene().getWindow();
+            if (email.isEmpty() || password.isEmpty()) {
+               System.out.println("Please fill in all fields!");
+               return;
+           }
+                    
+            try {
+                 
+                if (conn == null || conn.isClosed()) {
+                    conn = DBConnection.getConnection();
+                }
                 
-                root.setUserData(loader.getController());
+                String sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, email);
+                ps.setString(2, password);
+                ResultSet rs = ps.executeQuery();
+                
+                if (rs.next()) {
+                    System.out.println("Login");
+                    
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/Main.fxml"));
+                    AnchorPane root = loader.load();
 
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("CashiePay");
-                stage.centerOnScreen();
-                stage.show();
+                    stage = (Stage) loginBtn.getScene().getWindow();
 
-            } catch (IOException e) {
+                    root.setUserData(loader.getController());
+
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.setTitle("CashiePay");
+                    stage.centerOnScreen();
+                    stage.show();
+                } else {
+                    System.out.println("Invalid email or password.");
+                }
+                rs.close();
+                ps.close();
+
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
