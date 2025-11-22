@@ -13,6 +13,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import java.sql.Connection;
+import cashiepay.model.DBConnection;
 
 public class LoginController implements Initializable {
 
@@ -24,10 +26,11 @@ public class LoginController implements Initializable {
     private Button loginBtn;
     
     private Stage stage;
+    private Connection conn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        conn = DBConnection.getConnection();
     }    
 
     @FXML

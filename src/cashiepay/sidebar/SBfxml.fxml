@@ -31,7 +31,7 @@
             </VBox>
             <VBox prefHeight="285.0" prefWidth="160.0" spacing="10.0" styleClass="nav-box">
                <children>
-                  <Button fx:id="dashboardBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="156.0" style="-fx-background-color: #3b54d6;" styleClass="nav-item" text="Dashboard" textFill="WHITE">
+                  <Button fx:id="dashboardBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="156.0" styleClass="nav-item" text="Dashboard" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" style="-fx-text-fill: white;" styleClass="nav-icon">
                            <image>

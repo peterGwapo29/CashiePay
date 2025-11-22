@@ -3,12 +3,6 @@
     -fx-padding: 20 10 20 10;
 }
 
-.menu-btn {
-    -fx-background-color: transparent;
-    -fx-font-size: 24px;
-    -fx-text-fill: white;
-}
-
 .search-field {
     -fx-background-color: white;
     -fx-text-fill: white;
@@ -21,16 +15,12 @@
     -fx-padding: 10 10 10 10;
 }
 
-.nav-item, .nav-item-selected {
-    -fx-background-color: transparent;
+.nav-item {
+    -fx-background-color: #4d6bff;
     -fx-background-radius: 12;
     -fx-padding: 10 10 10 10;
     -fx-alignment: CENTER_LEFT;
     -fx-spacing: 15;
-}
-
-.nav-item-selected {
-    -fx-background-color: #2563eb;
 }
 
 .nav-icon {
@@ -43,7 +33,6 @@
     -fx-font-size: 14px;
 }
 
-/* USER BOX */
 .user-box {
     -fx-background-color: #1b1f24;
     -fx-background-radius: 15;

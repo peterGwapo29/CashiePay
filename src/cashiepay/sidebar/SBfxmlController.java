@@ -45,7 +45,9 @@ public class SBfxmlController {
 
     @FXML
     private void handleNavigation(ActionEvent event) {
+        
     }
+    
      private void logout() {
         try {
             Stage stage = (Stage) sidebar.getScene().getWindow();
