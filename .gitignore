@@ -1,0 +1,2 @@
+# Ignore database config / credentials
+src/cashiepay/model/DBConnection.java
