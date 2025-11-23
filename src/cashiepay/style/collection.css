@@ -1,7 +1,51 @@
-/*
- * Empty Stylesheet file.
- */
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Regular.ttf');
+}
 
-.mainFxmlClass {
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-Regular.ttf');
+}
 
+* {
+    -fx-font-family: 'Poppins';
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.SystemName {
+    -fx-font-family: 'Montserrat';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.export-btn{
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+    -fx-cursor: hand;
+}
+
+.btn {
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.btn:hover {
+    -fx-font-size: 14px;
+    -fx-opacity: 0.9;
+}
+
+.btn:active {
+    -fx-font-size: 14px;
+    -fx-opacity: 0.9;
+}
+
+.filter-btn{
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-width: .3px;
+    -fx-border-color: black;
+    -fx-font-size: 14px;
 }

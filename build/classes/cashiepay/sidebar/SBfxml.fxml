@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -42,6 +43,9 @@
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="collectionBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Collection" textFill="WHITE">
                      <graphic>
@@ -54,6 +58,9 @@
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button mnemonicParsing="false" prefWidth="150.0" styleClass="nav-item" text="Manage" textAlignment="CENTER" textFill="WHITE">
                      <font>
@@ -71,6 +78,9 @@
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="mfopapBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="MFO/PAP" textFill="WHITE">
                      <graphic>
@@ -83,6 +93,9 @@
                      <font>
                         <Font name="Arial" size="14.0" />
                      </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                   <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Logout" textFill="WHITE">
                      <graphic>
@@ -98,6 +111,9 @@
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Button>
                </children>
             </VBox>
@@ -114,6 +130,9 @@
          <font>
             <Font name="Arial" size="14.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Button>
    </children>
     

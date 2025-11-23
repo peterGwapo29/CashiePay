@@ -17,7 +17,7 @@
         <URL value="@/cashiepay/style/dashboard.css" />
     </stylesheets>
    <children>
-      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1281.0" style="-fx-background-color: #4d6bff;">
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" style="-fx-background-color: #4d6bff;">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children></HBox>

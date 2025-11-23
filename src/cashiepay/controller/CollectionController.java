@@ -11,8 +11,6 @@ import javafx.stage.Stage;
 
 public class CollectionController implements Initializable {
 
-    @FXML
-    private AnchorPane sidebarContainer;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
