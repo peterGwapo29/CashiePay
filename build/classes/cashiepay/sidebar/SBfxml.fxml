@@ -53,7 +53,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button fx:id="collectionBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Collection" textFill="WHITE">
+                  <Button fx:id="collectionBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Transaction" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
                            <image>

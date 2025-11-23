@@ -20,12 +20,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            sidebarContainer.getScene().getRoot().setUserData(this);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-        }
-
         AnchorPane sidebar = SidebarLoader.getSidebar();
         if (sidebar != null) {
             sidebarContainer.getChildren().setAll(sidebar);
@@ -41,7 +35,7 @@ public class MainController implements Initializable {
             AnchorPane content = FXMLLoader.load(getClass().getResource(fxmlPath));
             contentContainer.getChildren().setAll(content);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error: " + e);
         }
     }
     
