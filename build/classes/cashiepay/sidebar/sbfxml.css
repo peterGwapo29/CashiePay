@@ -1,3 +1,19 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-Regular.ttf');
+}
+
+* {
+    -fx-font-family: 'Poppins', Arial;
+    -fx-font-size: 14px;
+}
+
+
 .sidebar {
     -fx-background-color: #4d6bff;
     -fx-padding: 20 10 20 10;

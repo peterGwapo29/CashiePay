@@ -21,13 +21,11 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            // Set this controller as user data on root so sidebar can access it
             sidebarContainer.getScene().getRoot().setUserData(this);
         } catch (Exception e) {
-            // Scene may not be ready yet; we'll fix this in MainApp
+            System.out.println("Error: " + e);
         }
 
-        // Load sidebar
         AnchorPane sidebar = SidebarLoader.getSidebar();
         if (sidebar != null) {
             sidebarContainer.getChildren().setAll(sidebar);
@@ -35,11 +33,9 @@ public class MainController implements Initializable {
             System.out.println("Sidebar failed to load!");
         }
 
-        // Load default content
         loadContent("/cashiepay/view/Dashboard.fxml");
     }
 
-    /** Load content into the main content container */
     public void loadContent(String fxmlPath) {
         try {
             AnchorPane content = FXMLLoader.load(getClass().getResource(fxmlPath));
