@@ -99,9 +99,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </ComboBox>
-                        <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
-                                style="-fx-background-color: #4d6bff;" styleClass="btn"
-                                text="Add New" textFill="WHITE">
+                        <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #4d6bff;" styleClass="btn" text="Add New" textFill="WHITE">
 
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
@@ -140,20 +138,20 @@
             </HBox>
             <VBox prefHeight="428.0" prefWidth="1284.0">
                <children>
-                  <TableView prefHeight="416.0" prefWidth="1263.0">
+                  <TableView fx:id="tableView" prefHeight="416.0" prefWidth="1263.0">
                     <columns>
-                      <TableColumn prefWidth="46.666667342185974" text="ID" />
-                      <TableColumn prefWidth="96.26668930053711" text="Stuident ID" />
-                        <TableColumn prefWidth="122.93336486816406" text="First Name" />
-                        <TableColumn prefWidth="118.4000244140625" text="Last Name" />
-                        <TableColumn prefWidth="116.00003051757812" text="Middle Name" />
-                        <TableColumn prefWidth="48.266693115234375" text="Suffix" />
-                        <TableColumn prefWidth="171.20001220703125" text="OR Number" />
-                        <TableColumn prefWidth="133.5999755859375" text="Particular" />
-                        <TableColumn prefWidth="86.933349609375" text="MFO/PAP" />
-                        <TableColumn prefWidth="115.73345947265625" text="Amount" />
-                        <TableColumn prefWidth="127.999755859375" text="Date Paid " />
-                        <TableColumn prefWidth="80.8001708984375" text="SMS" />
+                      <TableColumn fx:id="id" prefWidth="46.666667342185974" text="ID" />
+                      <TableColumn fx:id="colStudentId" prefWidth="96.26668930053711" text="Stuident ID" />
+                        <TableColumn fx:id="colFirstName" prefWidth="122.93336486816406" text="First Name" />
+                        <TableColumn fx:id="colLastName" prefWidth="118.4000244140625" text="Last Name" />
+                        <TableColumn fx:id="colMiddleName" prefWidth="116.00003051757812" text="Middle Name" />
+                        <TableColumn fx:id="colSuffix" prefWidth="48.266693115234375" text="Suffix" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="171.20001220703125" text="OR Number" />
+                        <TableColumn fx:id="colParticular" prefWidth="133.5999755859375" text="Particular" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="86.933349609375" text="MFO/PAP" />
+                        <TableColumn fx:id="colAmount" prefWidth="115.73345947265625" text="Amount" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="127.999755859375" text="Date Paid " />
+                        <TableColumn fx:id="colSms" prefWidth="80.8001708984375" text="SMS" />
                     </columns>
                   </TableView>
                </children>
