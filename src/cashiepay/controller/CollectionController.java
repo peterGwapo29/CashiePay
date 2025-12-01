@@ -21,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 public class CollectionController implements Initializable {
@@ -57,15 +59,49 @@ public class CollectionController implements Initializable {
     private TableColumn<PaymentRecord, String> id;
     
     private Connection conn;
+    @FXML
+    private Label lblTotalTransactions;
+    @FXML
+    private Label lblPending;
+    @FXML
+    private ComboBox<String> filterComboBox;
+    @FXML
+    private Label lblTotalCollected;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnAddNew.setOnAction(e -> openStudentPaymentModal());
+
         conn = DBConnection.getConnection();
-        btnAddNew.setOnAction(e -> openStudentPaymentModal());
+
         setupTableColumns();
-        loadPayments();
+        loadPayments("All");
+
+        filterComboBox.getItems().addAll("All", "Today", "Weekly", "Monthly");
+        filterComboBox.setValue("All");
+
+        filterComboBox.setOnAction(e -> applyFilter());
     }
+
+    private void applyFilter() {
+        String selectedFilter = filterComboBox.getValue();
+
+        switch (selectedFilter) {
+            case "All":
+                loadPayments("ALL");
+                break;
+            case "Today":
+                loadPayments("TODAY");
+                break;
+            case "Weekly":
+                loadPayments("WEEKLY");
+                break;
+            case "Monthly":
+                loadPayments("MONTHLY");
+                break;
+        }
+    }
+
     
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -82,16 +118,37 @@ public class CollectionController implements Initializable {
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
     }
 
-    private void loadPayments() {
+    private void loadPayments(String filter) {
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
+
         String sql = "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
                      "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status " +
                      "FROM collection c " +
                      "JOIN particular p ON c.particular = p.id " +
-                     "JOIN mfo_pap m ON c.mfo_pap = m.id " +
-                     "ORDER BY c.id DESC";
+                     "JOIN mfo_pap m ON c.mfo_pap = m.id ";
+
+        switch (filter) {
+            case "TODAY":
+                sql += "WHERE DATE(c.paid_at) = CURDATE() ";
+                break;
+            case "WEEKLY":
+                sql += "WHERE YEARWEEK(c.paid_at, 1) = YEARWEEK(CURDATE(), 1) ";
+                break;
+            case "MONTHLY":
+                sql += "WHERE MONTH(c.paid_at) = MONTH(CURDATE()) AND YEAR(c.paid_at) = YEAR(CURDATE()) ";
+                break;
+            default:
+                break;
+        }
+
+        sql += "ORDER BY c.id DESC";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+            double totalCollected = 0;
+            int totalTransactions = 0;
+            int pending = 0;
+
             while (rs.next()) {
                 payments.add(new PaymentRecord(
                     rs.getString("id"),
@@ -107,8 +164,20 @@ public class CollectionController implements Initializable {
                     rs.getString("paid_at"),
                     rs.getString("sms_status")
                 ));
+
+                totalTransactions++;
+                totalCollected += rs.getDouble("amount");
+                if (rs.getString("sms_status").equalsIgnoreCase("Pending")) {
+                    pending++;
+                }
             }
+
             tableView.setItems(payments);
+
+            lblTotalTransactions.setText(String.valueOf(totalTransactions));
+            lblTotalCollected.setText(String.format("₱%.2f", totalCollected));
+            lblPending.setText(String.valueOf(pending));
+
         } catch (Exception e) {
             e.printStackTrace();
         }

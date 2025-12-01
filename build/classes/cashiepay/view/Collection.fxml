@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
 <AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
     <stylesheets>
         <URL value="@/cashiepay/style/collection.css" />
@@ -161,7 +162,7 @@
             </VBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="47.0" prefWidth="1284.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="642.0" spacing="8.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="642.0" spacing="8.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
                            <children>
@@ -170,21 +171,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="00">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
-                           <children>
-                              <Label text="Total Collected:">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label text="00">
+                              <Label fx:id="lblTotalTransactions" text="00">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -198,7 +185,7 @@
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="00">
+                              <Label fx:id="lblPending" text="00">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -212,12 +199,9 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="47.0" prefWidth="642.0" spacing="8.0">
                      <children>
-                        <ComboBox prefHeight="40.0" prefWidth="140.0" promptText="Today" style="-fx-background-color: white;" styleClass="filter-btn">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+                        <ComboBox fx:id="filterComboBox" prefHeight="40.0" prefWidth="140.0">
                         </ComboBox>
-                        <Label text="₱ 1000.00">
+                        <Label fx:id="lblTotalCollected" text="₱0.00">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -225,6 +209,9 @@
                      </children>
                   </HBox>
                </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </HBox>
          </children>
       </VBox>
