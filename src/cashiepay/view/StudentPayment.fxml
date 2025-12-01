@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="480" prefWidth="550" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.StudentPaymentController">
+
+    <stylesheets>
+        <URL value="@/cashiepay/style/studentpayment.css" />
+    </stylesheets>
+    
+    <children>
+        <!-- Modal Title -->
+        <Label layoutX="150.0" layoutY="6.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Payment Transaction" />
+
+        <!-- Main Container -->
+        <VBox layoutX="20.0" layoutY="51.0" prefWidth="510" spacing="8.0">
+            <HBox spacing="10.0">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Student ID:" />
+                    <TextField fx:id="txtStudentID" promptText="Student ID" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="OR Number:" />
+                    <TextField fx:id="txtOrNumber" promptText="OR Number" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="First Name:" />
+                    <TextField fx:id="txtFirstName" promptText="First Name" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Last Name:" />
+                    <TextField fx:id="txtLastName" promptText="Last Name" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Middle Name:" />
+                    <TextField fx:id="txtMiddleName" promptText="Middle Name" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Suffix:" />
+                    <TextField fx:id="txtSuffix" promptText="Suffix" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Course:" />
+                    <TextField fx:id="txtCourse" promptText="Course" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Particular:" />
+                    <ComboBox fx:id="comboParticular" promptText="Select Particular" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="MFO / PAP:" />
+                    <ComboBox fx:id="comboMfoPap" promptText="Select MFO/PAP" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Amount:" />
+                    <TextField fx:id="txtAmount" promptText="0.00" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Payment Status:" />
+                    <ComboBox fx:id="comboPaymentStatus" promptText="Paid / Not Paid" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="SMS Status:" />
+                    <ComboBox fx:id="comboSmsStatus" promptText="Select SMS Status" />
+                </VBox>
+            </HBox>
+            <VBox spacing="5">
+                <Label text="Paid At:" />
+                <DatePicker fx:id="datePaidAt" />
+            </VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="btnSave" prefWidth="90" style="-fx-background-color: #2E82FF; -fx-text-fill: white; -fx-background-radius: 6;" text="Submit" />
+                <Button fx:id="btnCancel" prefWidth="90" style="-fx-background-color: #D33F49; -fx-text-fill: white; -fx-background-radius: 6;" text="Cancel" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

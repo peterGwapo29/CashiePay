@@ -99,22 +99,10 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </ComboBox>
-                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #4d6bff;" styleClass="btn" text="Add New" textFill="WHITE">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
-                                 <image>
-                                    <Image url="@../../icons/mdi--plus-circle%20(2).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Arial" size="14.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="40.0" style="-fx-background-color: #177334;" styleClass="btn" text="Add Particular" textFill="WHITE">
+                        <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0"
+                                style="-fx-background-color: #4d6bff;" styleClass="btn"
+                                text="Add New" textFill="WHITE">
+
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                                  <image>
