@@ -1,7 +1,10 @@
-/*
- * Empty Stylesheet file.
- */
-
-.mainFxmlClass {
-
+@font-face {
+    font-family: 'Poppins';
+    src: url('fonts/Poppins-Regular.ttf');
 }
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('fonts/Montserrat-Regular.ttf');
+}
+
