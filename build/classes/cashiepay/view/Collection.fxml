@@ -48,7 +48,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #177334;" styleClass="btn" text="Import" textFill="WHITE">
+                        <Button fx:id="btnImport" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #177334;" styleClass="btn" text="Import" textFill="WHITE">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                                  <image>
@@ -63,7 +63,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: white;" styleClass="btn" text="Export">
+                        <Button fx:id="btnExport" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: white;" styleClass="btn" text="Export">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                                  <image>
@@ -127,7 +127,7 @@
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <ComboBox prefHeight="40.0" prefWidth="140.0" promptText="All" style="-fx-background-color: white;" styleClass="filter-btn">
+                        <ComboBox fx:id="filterSMS" prefHeight="40.0" prefWidth="140.0" promptText="All" style="-fx-background-color: white;" styleClass="filter-btn">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
