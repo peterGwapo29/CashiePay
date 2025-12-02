@@ -75,33 +75,18 @@ public class CollectionController implements Initializable {
         conn = DBConnection.getConnection();
 
         setupTableColumns();
-        loadPayments("All");
+        loadPayments("ALL");
 
-        filterComboBox.getItems().addAll("All", "Today", "Weekly", "Monthly");
-        filterComboBox.setValue("All");
+        filterComboBox.getItems().addAll("ALL", "TODAY", "WEEKLY", "MONTHLY");
+        filterComboBox.setValue("ALL");
 
         filterComboBox.setOnAction(e -> applyFilter());
     }
 
     private void applyFilter() {
-        String selectedFilter = filterComboBox.getValue();
-
-        switch (selectedFilter) {
-            case "All":
-                loadPayments("ALL");
-                break;
-            case "Today":
-                loadPayments("TODAY");
-                break;
-            case "Weekly":
-                loadPayments("WEEKLY");
-                break;
-            case "Monthly":
-                loadPayments("MONTHLY");
-                break;
-        }
+        String filter = filterComboBox.getValue();
+        loadPayments(filter);
     }
-
     
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -118,7 +103,7 @@ public class CollectionController implements Initializable {
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
     }
 
-    private void loadPayments(String filter) {
+    public void loadPayments(String filter) {
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
 
         String sql = "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
@@ -141,7 +126,7 @@ public class CollectionController implements Initializable {
                 break;
         }
 
-        sql += "ORDER BY c.id DESC";
+        sql += "ORDER BY c.id ASC";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -187,9 +172,11 @@ public class CollectionController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/StudentPayment.fxml"));
             Parent root = loader.load();
+            
+            StudentPaymentController controller = loader.getController();
+            controller.setParentController(this);
 
             Stage modal = new Stage();
-            modal.setTitle("Student Payment Transaction");
             modal.setScene(new Scene(root));
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setResizable(false);

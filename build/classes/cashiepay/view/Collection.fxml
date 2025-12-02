@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
     <stylesheets>
         <URL value="@/cashiepay/style/collection.css" />
@@ -142,17 +141,18 @@
                   <TableView fx:id="tableView" prefHeight="416.0" prefWidth="1263.0">
                     <columns>
                       <TableColumn fx:id="id" prefWidth="46.666667342185974" text="ID" />
-                      <TableColumn fx:id="colStudentId" prefWidth="96.26668930053711" text="Stuident ID" />
+                      <TableColumn fx:id="colStudentId" prefWidth="96.26668930053711" text="Student ID" />
                         <TableColumn fx:id="colFirstName" prefWidth="122.93336486816406" text="First Name" />
                         <TableColumn fx:id="colLastName" prefWidth="118.4000244140625" text="Last Name" />
                         <TableColumn fx:id="colMiddleName" prefWidth="116.00003051757812" text="Middle Name" />
                         <TableColumn fx:id="colSuffix" prefWidth="48.266693115234375" text="Suffix" />
-                        <TableColumn fx:id="colOrNumber" prefWidth="171.20001220703125" text="OR Number" />
-                        <TableColumn fx:id="colParticular" prefWidth="133.5999755859375" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="86.933349609375" text="MFO/PAP" />
-                        <TableColumn fx:id="colAmount" prefWidth="115.73345947265625" text="Amount" />
-                        <TableColumn fx:id="colDatePaid" prefWidth="127.999755859375" text="Date Paid " />
-                        <TableColumn fx:id="colSms" prefWidth="80.8001708984375" text="SMS" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="138.933349609375" text="OR Number" />
+                        <TableColumn fx:id="colParticular" prefWidth="127.99993896484375" text="Particular" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="97.59991455078125" text="MFO/PAP" />
+                        <TableColumn fx:id="colAmount" prefWidth="110.66668701171875" text="Amount" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="100.2666015625" text="Date Paid " />
+                        <TableColumn fx:id="colSms" prefWidth="37.8665771484375" text="SMS" />
+                        <TableColumn fx:id="colSms1" prefWidth="106.1334228515625" text="Action" />
                     </columns>
                   </TableView>
                </children>

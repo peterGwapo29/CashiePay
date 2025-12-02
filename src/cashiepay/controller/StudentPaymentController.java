@@ -41,8 +41,8 @@ public class StudentPaymentController implements Initializable {
 
     private PaymentModel model;
     private Connection conn;
+    private CollectionController parentController;
 
-    // Inner classes to hold ID and name for ComboBoxes
     public static class ParticularItem {
         private int id;
         private String name;
@@ -194,6 +194,9 @@ public class StudentPaymentController implements Initializable {
                     paidAt.toString()
             )) {
                 showAlert("Success", "Payment recorded successfully.");
+                if (parentController != null) {
+                    parentController.loadPayments("ALL");
+                }
                 clearFields();
             } else {
                 showAlert("Error", "Failed to save payment.");
@@ -240,7 +243,7 @@ public class StudentPaymentController implements Initializable {
         String sql = "SELECT or_number FROM collection ORDER BY or_number DESC LIMIT 1";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            String lastOr = "00000000"; // Default if no records yet
+            String lastOr = "00000000";
             if (rs.next()) {
                 lastOr = rs.getString("or_number");
             }
@@ -302,5 +305,8 @@ public class StudentPaymentController implements Initializable {
 
         return true;
     }
-
+    
+    public void setParentController(CollectionController controller) {
+        this.parentController = controller;
+    }
 }

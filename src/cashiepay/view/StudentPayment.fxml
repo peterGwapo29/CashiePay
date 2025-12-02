@@ -9,8 +9,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="480" prefWidth="550" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.StudentPaymentController">
+<AnchorPane prefHeight="500.0" prefWidth="550" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.StudentPaymentController">
 
     <stylesheets>
         <URL value="@/cashiepay/style/studentpayment.css" />
@@ -18,73 +19,99 @@
     
     <children>
         <!-- Modal Title -->
-        <Label layoutX="150.0" layoutY="6.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Payment Transaction" />
+        <Label layoutX="150.0" layoutY="5.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Payment Transaction" />
 
         <!-- Main Container -->
-        <VBox layoutX="20.0" layoutY="51.0" prefWidth="510" spacing="8.0">
+        <VBox layoutX="20.0" layoutY="48.0" prefWidth="510" spacing="8.0">
             <HBox spacing="10.0">
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Student ID:" />
-                    <TextField fx:id="txtStudentID" promptText="Student ID" />
+                    <Label text="Student ID:" textFill="#848080" />
+                    <TextField fx:id="txtStudentID" promptText="Student ID">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="OR Number:" />
-                    <TextField fx:id="txtOrNumber" promptText="OR Number" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="First Name:" />
-                    <TextField fx:id="txtFirstName" promptText="First Name" />
-                </VBox>
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="Last Name:" />
-                    <TextField fx:id="txtLastName" promptText="Last Name" />
+                    <Label text="OR Number:" textFill="#848080" />
+                    <TextField fx:id="txtOrNumber" promptText="OR Number">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
             </HBox>
             <HBox spacing="10">
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Middle Name:" />
-                    <TextField fx:id="txtMiddleName" promptText="Middle Name" />
+                    <Label text="First Name:" textFill="#848080" />
+                    <TextField fx:id="txtFirstName" promptText="First Name">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Suffix:" />
-                    <TextField fx:id="txtSuffix" promptText="Suffix" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="Course:" />
-                    <TextField fx:id="txtCourse" promptText="Course" />
-                </VBox>
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="Particular:" />
-                    <ComboBox fx:id="comboParticular" promptText="Select Particular" />
+                    <Label text="Last Name:" textFill="#848080" />
+                    <TextField fx:id="txtLastName" promptText="Last Name">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
             </HBox>
             <HBox spacing="10">
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="MFO / PAP:" />
-                    <ComboBox fx:id="comboMfoPap" promptText="Select MFO/PAP" />
+                    <Label text="Middle Name:" textFill="#848080" />
+                    <TextField fx:id="txtMiddleName" promptText="Middle Name">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Amount:" />
-                    <TextField fx:id="txtAmount" promptText="0.00" />
+                    <Label text="Suffix:" textFill="#848080" />
+                    <TextField fx:id="txtSuffix" promptText="Suffix">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
             </HBox>
             <HBox spacing="10">
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Payment Status:" />
-                    <ComboBox fx:id="comboPaymentStatus" promptText="Paid / Not Paid" />
+                    <Label text="Course:" textFill="#848080" />
+                    <TextField fx:id="txtCourse" promptText="Course">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="SMS Status:" />
-                    <ComboBox fx:id="comboSmsStatus" promptText="Select SMS Status" />
+                    <Label text="Particular:" textFill="#848080" />
+                    <ComboBox fx:id="comboParticular" prefHeight="26.0" prefWidth="252.0" promptText="Select Particular" />
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="MFO / PAP:" textFill="#848080" />
+                    <ComboBox fx:id="comboMfoPap" prefHeight="26.0" prefWidth="278.0" promptText="Select MFO/PAP" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Amount:" textFill="#848080" />
+                    <TextField fx:id="txtAmount" prefWidth="137.0" promptText="0.00">
+                  <font>
+                     <Font size="14.0" />
+                  </font></TextField>
+                </VBox>
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <Label text="Payment Status:" textFill="#848080" />
+                    <ComboBox fx:id="comboPaymentStatus" prefHeight="26.0" prefWidth="270.0" promptText="Paid / Not Paid" />
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+                   <Label text="Paid At:" textFill="#848080" />
+                   <DatePicker fx:id="datePaidAt" />
                 </VBox>
             </HBox>
             <VBox spacing="5">
-                <Label text="Paid At:" />
-                <DatePicker fx:id="datePaidAt" />
+            <children>
+                    <Label text="SMS Status:" textFill="#848080" />
+                    <ComboBox fx:id="comboSmsStatus" prefWidth="250.0" promptText="Select SMS Status" />
+            </children>
             </VBox>
             <HBox alignment="CENTER_RIGHT" spacing="10">
                 <Button fx:id="btnSave" prefWidth="90" style="-fx-background-color: #2E82FF; -fx-text-fill: white; -fx-background-radius: 6;" text="Submit" />
