@@ -65,36 +65,40 @@
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
                     <Label text="Suffix:" textFill="#848080" />
-                    <TextField fx:id="txtSuffix" promptText="Suffix">
-                  <font>
-                     <Font size="14.0" />
-                  </font></TextField>
+                    <ComboBox fx:id="comboSuffix" prefHeight="26.0" prefWidth="252.0" promptText="Select Suffix" />
+                </VBox>
+
+            </HBox>
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+               <children>
+                       <Label text="Particular:" textFill="#848080" />
+                       <ComboBox fx:id="comboParticular" prefHeight="26.0" prefWidth="252.0" promptText="Select Particular" />
+               </children>
+                </VBox>
+                <VBox prefWidth="250" spacing="5">
+               <children>
+                       <Label text="MFO / PAP:" textFill="#848080" />
+                       <ComboBox fx:id="comboMfoPap" prefHeight="26.0" prefWidth="278.0" promptText="Select MFO/PAP" />
+               </children>
                 </VBox>
             </HBox>
             <HBox spacing="10">
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Course:" textFill="#848080" />
-                    <TextField fx:id="txtCourse" promptText="Course">
-                  <font>
-                     <Font size="14.0" />
-                  </font></TextField>
+               <children>
+                       <Label text="Amount:" textFill="#848080" />
+                       <TextField fx:id="txtAmount" prefWidth="137.0" promptText="0.00">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+               </children>
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
-                    <Label text="Particular:" textFill="#848080" />
-                    <ComboBox fx:id="comboParticular" prefHeight="26.0" prefWidth="252.0" promptText="Select Particular" />
-                </VBox>
-            </HBox>
-            <HBox spacing="10">
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="MFO / PAP:" textFill="#848080" />
-                    <ComboBox fx:id="comboMfoPap" prefHeight="26.0" prefWidth="278.0" promptText="Select MFO/PAP" />
-                </VBox>
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="Amount:" textFill="#848080" />
-                    <TextField fx:id="txtAmount" prefWidth="137.0" promptText="0.00">
-                  <font>
-                     <Font size="14.0" />
-                  </font></TextField>
+               <children>
+                      <Label text="Paid At:" textFill="#848080" />
+                      <DatePicker fx:id="datePaidAt" prefHeight="26.0" prefWidth="257.0" />
+               </children>
                 </VBox>
             </HBox>
             <HBox spacing="10">
@@ -102,10 +106,7 @@
                     <Label text="Payment Status:" textFill="#848080" />
                     <ComboBox fx:id="comboPaymentStatus" prefHeight="26.0" prefWidth="270.0" promptText="Paid / Not Paid" />
                 </VBox>
-                <VBox prefWidth="250" spacing="5">
-                   <Label text="Paid At:" textFill="#848080" />
-                   <DatePicker fx:id="datePaidAt" />
-                </VBox>
+                <VBox prefWidth="250" spacing="5" />
             </HBox>
             <VBox spacing="5">
             <children>

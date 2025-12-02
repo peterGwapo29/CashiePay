@@ -122,7 +122,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <TextField prefHeight="40.0" prefWidth="288.0" promptText="Search by Student ID" styleClass="btn">
+                        <TextField fx:id="txtSearchStudent" prefHeight="40.0" prefWidth="288.0" promptText="Search by Student ID" styleClass="btn">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -152,7 +152,7 @@
                         <TableColumn fx:id="colAmount" prefWidth="110.66668701171875" text="Amount" />
                         <TableColumn fx:id="colDatePaid" prefWidth="100.2666015625" text="Date Paid " />
                         <TableColumn fx:id="colSms" prefWidth="37.8665771484375" text="SMS" />
-                        <TableColumn fx:id="colSms1" prefWidth="106.1334228515625" text="Action" />
+                        <TableColumn fx:id="action" prefWidth="106.1334228515625" text="Action" />
                     </columns>
                   </TableView>
                </children>

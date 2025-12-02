@@ -39,7 +39,6 @@ public class ExcelImporter {
 
             boolean skipHeader = true;
 
-            // 🔥 List to store duplicates found
             StringBuilder duplicateMessages = new StringBuilder();
 
             for (Row row : sheet) {
@@ -52,26 +51,20 @@ public class ExcelImporter {
                 String suffix = getCellStringValue(row.getCell(4));
                 String orNumber = getCellStringValue(row.getCell(5));
 
-                // PARTICULAR
                 String particularVal = getCellStringValue(row.getCell(6));
                 int particularId = resolveId(conn, "particular", "particular_name", particularVal);
 
-                // MFO-PAP
                 String mfoPapVal = getCellStringValue(row.getCell(7));
                 int mfoPapId = resolveId(conn, "mfo_pap", "mfo_pap_name", mfoPapVal);
 
-                // AMOUNT
                 String amtStr = getCellStringValue(row.getCell(8)).trim();
                 if (amtStr.isEmpty()) amtStr = "0";
                 double amount = Double.parseDouble(amtStr);
 
-                // PAID DATE
                 String paidDate = getCellStringValue(row.getCell(9));
 
-                // SMS STATUS
                 String smsStatus = getCellStringValue(row.getCell(10));
 
-                // 🔥 DUPLICATE CHECK (student + particular)
                 if (isAlreadyPaid(conn, studentId, particularId)) {
 
                     duplicateMessages.append(
@@ -82,11 +75,9 @@ public class ExcelImporter {
                         .append("\"\n"
                     );
 
-                    // ❌ Skip insertion for this row
                     continue;
                 }
 
-                // ✔ Insert valid rows
                 ps.setString(1, studentId);
                 ps.setString(2, firstName);
                 ps.setString(3, lastName);

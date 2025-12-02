@@ -16,13 +16,11 @@ import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentModel;
 import java.time.LocalDate;
 
-/**
- * FXML Controller class
- */
 public class StudentPaymentController implements Initializable {
 
     @FXML
     private TextField txtOrNumber, txtAmount;
+    
     @FXML
     private ComboBox<ParticularItem> comboParticular;
 
@@ -31,14 +29,28 @@ public class StudentPaymentController implements Initializable {
 
     @FXML
     private ComboBox<String> comboPaymentStatus, comboSmsStatus;
+    
     @FXML
     private DatePicker datePaidAt;
+    
     @FXML
     private Button btnSave, btnCancel;
+    
+    @FXML
+    private TextField txtStudentID;
+    
+    @FXML
+    private TextField txtFirstName;
+    
+    @FXML
+    private TextField txtLastName;
 
     @FXML
-    private TextField txtStudentID, txtFirstName, txtLastName, txtMiddleName, txtSuffix, txtCourse;
+    private TextField txtMiddleName;
 
+    @FXML
+    private ComboBox<String> comboSuffix;
+    
     private PaymentModel model;
     private Connection conn;
     private CollectionController parentController;
@@ -80,6 +92,16 @@ public class StudentPaymentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        comboSuffix.setItems(FXCollections.observableArrayList(
+            "",
+            "Jr.",
+            "Sr.",
+            "II",
+            "III",
+            "IV",
+            "V"
+        ));
+
         conn = DBConnection.getConnection();
         model = new PaymentModel(conn);
 
@@ -138,6 +160,12 @@ public class StudentPaymentController implements Initializable {
 
     private void savePayment() {
         try {
+            
+            String orNumber = generateOrNumber();
+            txtOrNumber.setText(orNumber);
+            if (!validateRequiredFields()) {
+                return;
+            }
             if (!validateNames()) {
                 return;
             }
@@ -146,9 +174,7 @@ public class StudentPaymentController implements Initializable {
             String fname = txtFirstName.getText();
             String lname = txtLastName.getText();
             String mname = txtMiddleName.getText();
-            String suffix = txtSuffix.getText();
-            String course = txtCourse.getText();
-            String orNumber = generateOrNumber();
+            String suffix = comboSuffix.getValue();
             txtOrNumber.setText(orNumber);
 
             ParticularItem selectedParticular = comboParticular.getValue();
@@ -184,7 +210,6 @@ public class StudentPaymentController implements Initializable {
                     lname,
                     mname,
                     suffix,
-                    course,
                     orNumber,
                     particularId,
                     mfoPapId,  
@@ -228,8 +253,7 @@ public class StudentPaymentController implements Initializable {
         txtFirstName.clear();
         txtLastName.clear();
         txtMiddleName.clear();
-        txtSuffix.clear();
-        txtCourse.clear();
+        comboSuffix.getSelectionModel().clearSelection();
         txtOrNumber.clear();
         txtAmount.clear();
         comboParticular.getSelectionModel().clearSelection();
@@ -240,18 +264,28 @@ public class StudentPaymentController implements Initializable {
     }
     
     private String generateOrNumber() {
-        String sql = "SELECT or_number FROM collection ORDER BY or_number DESC LIMIT 1";
+        String sql = "SELECT or_number FROM collection ORDER BY CAST(or_number AS UNSIGNED) DESC LIMIT 1";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            String lastOr = "00000000";
+
+            String lastOr = null;
+
             if (rs.next()) {
                 lastOr = rs.getString("or_number");
             }
 
+            // If the DB has no records or the value is invalid
+            if (lastOr == null || !lastOr.matches("\\d+")) {
+                lastOr = "00000000";
+            }
+
             int nextOrInt = Integer.parseInt(lastOr) + 1;
 
+            // pad to 8 digits
             String nextOrNumber = String.format("%08d", nextOrInt);
 
+            // ensure OR number is unique
             while (isOrNumberExist(nextOrNumber)) {
                 nextOrInt++;
                 nextOrNumber = String.format("%08d", nextOrInt);
@@ -259,11 +293,12 @@ public class StudentPaymentController implements Initializable {
 
             return nextOrNumber;
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "00000001";
         }
     }
+
 
     private boolean isOrNumberExist(String orNumber) {
         String sql = "SELECT COUNT(*) FROM collection WHERE or_number = ?";
@@ -298,15 +333,60 @@ public class StudentPaymentController implements Initializable {
             return false;
         }
 
-        if (txtSuffix.getText().matches(regex)) {
+        String suffix = comboSuffix.getValue();
+        if (suffix != null && suffix.matches(".*\\d.*")) {
             showAlert("Invalid Input", "Suffix must not contain numbers.");
             return false;
         }
+
 
         return true;
     }
     
     public void setParentController(CollectionController controller) {
         this.parentController = controller;
+    }
+    
+    private boolean validateRequiredFields() {
+        StringBuilder errors = new StringBuilder();
+
+        if (txtStudentID.getText() == null || txtStudentID.getText().trim().isEmpty())
+            errors.append("• Student ID is required.\n");
+
+        if (txtFirstName.getText() == null || txtFirstName.getText().trim().isEmpty())
+            errors.append("• First Name is required.\n");
+
+        if (txtLastName.getText() == null || txtLastName.getText().trim().isEmpty())
+            errors.append("• Last Name is required.\n");
+
+        if (txtMiddleName.getText() == null || txtMiddleName.getText().trim().isEmpty())
+            errors.append("• Middle Name is required.\n");
+
+        if (comboSuffix.getValue() == null)
+            errors.append("• Suffix must be selected.\n");
+
+        if (comboParticular.getValue() == null)
+            errors.append("• Particular must be selected.\n");
+
+        if (comboMfoPap.getValue() == null)
+            errors.append("• MFO/PAP must be selected.\n");
+
+        if (txtAmount.getText() == null || txtAmount.getText().trim().isEmpty())
+            errors.append("• Amount is required.\n");
+
+        if (comboPaymentStatus.getValue() == null)
+            errors.append("• Payment Status must be selected.\n");
+
+        if (comboSmsStatus.getValue() == null)
+            errors.append("• SMS Status must be selected.\n");
+
+        if (datePaidAt.getValue() == null)
+            errors.append("• Payment Date is required.\n");
+
+        if (errors.length() > 0) {
+            showAlert("Missing Required Fields", errors.toString());
+            return false;
+        }
+        return true;
     }
 }

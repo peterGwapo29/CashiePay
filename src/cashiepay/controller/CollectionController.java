@@ -21,11 +21,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 import org.apache.poi.ss.usermodel.*;
 
@@ -34,10 +36,8 @@ public class CollectionController implements Initializable {
 
     @FXML
     private Button btnAddNew;
-
     @FXML
     private TableView<PaymentRecord> tableView;
-
     @FXML
     private TableColumn<PaymentRecord, String> colStudentId;
     @FXML
@@ -79,10 +79,15 @@ public class CollectionController implements Initializable {
     @FXML
     private ComboBox<String> filterSMS;
     @FXML
-    private TableColumn<?, ?> colSms1;
+    private TextField txtSearchStudent;
+    @FXML
+    private TableColumn<?, ?> action;
+    
+    private ObservableList<PaymentRecord> masterList = FXCollections.observableArrayList();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setupSearchFeature();
         btnAddNew.setOnAction(e -> openStudentPaymentModal());
 
         conn = DBConnection.getConnection();
@@ -98,26 +103,45 @@ public class CollectionController implements Initializable {
         filterSMS.getItems().addAll("All", "iSMS", "eSMS");
         filterSMS.setValue("All");
         filterSMS.setOnAction(e -> applySmsFilter());
-        
-//      OLDDDD
-//        btnImport.setOnAction(e -> importExcel());
-//        btnExport.setOnAction(e -> {
-//            applySmsFilter();
-//            try {
-//                exportExcel();
-//            } catch (ClassNotFoundException ex) {
-//                System.out.println("Error: " + ex);
-//            }
-//        });
-//          NEWWWWW
-//            btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView));
-            btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
 
-            btnExport.setOnAction(e -> {
-                applySmsFilter();
-                ExcelExporter.exportExcel(tableView);
-            });
+        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
+
+        btnExport.setOnAction(e -> {
+            applySmsFilter();
+            ExcelExporter.exportExcel(tableView);
+        });
     }
+    
+    private void setupSearchFeature() {
+        PauseTransition debounce = new PauseTransition(javafx.util.Duration.seconds(2));
+
+        txtSearchStudent.textProperty().addListener((obs, oldText, newText) -> {
+
+            debounce.stop(); // reset timer
+
+            debounce.setOnFinished(event -> {
+                if (newText == null || newText.trim().isEmpty()) {
+                    tableView.setItems(masterList);  // restore full list
+                    return;
+                }
+
+                String keyword = newText.trim().toLowerCase();
+                ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
+
+                for (PaymentRecord pr : masterList) {
+                    if (pr.getStudentId().toLowerCase().contains(keyword)) {
+                        filtered.add(pr);
+                    }
+                }
+
+                tableView.setItems(filtered);
+            });
+
+            debounce.play();  // start 2s timer
+        });
+    }
+
+
 
     private void applyFilter() {
         String filter = filterComboBox.getValue();
@@ -159,6 +183,7 @@ public class CollectionController implements Initializable {
     }
 
     public void loadPayments(String filter) {
+        masterList.clear();
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
 
         String sql = "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
@@ -211,13 +236,15 @@ public class CollectionController implements Initializable {
                     pending++;
                 }
             }
-
+            
+            masterList.addAll(payments);
+            tableView.setItems(masterList);
             tableView.setItems(payments);
 
             lblTotalTransactions.setText(String.valueOf(totalTransactions));
             lblTotalCollected.setText(String.format("₱%.2f", totalCollected));
             lblPending.setText(String.valueOf(pending));
-
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
