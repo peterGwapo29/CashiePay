@@ -1,2 +1,4 @@
 # Exclude the model folder
 /src/cashiepay/model/
+/dist/lib/
+*.jar

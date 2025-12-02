@@ -1,5 +1,7 @@
 package cashiepay.controller;
 
+import cashiepay.io.ExcelExporter;
+import cashiepay.io.ExcelImporter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,10 +28,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import javafx.stage.FileChooser;
 
 
 public class CollectionController implements Initializable {
@@ -100,17 +98,25 @@ public class CollectionController implements Initializable {
         filterSMS.getItems().addAll("All", "iSMS", "eSMS");
         filterSMS.setValue("All");
         filterSMS.setOnAction(e -> applySmsFilter());
+        
+//      OLDDDD
+//        btnImport.setOnAction(e -> importExcel());
+//        btnExport.setOnAction(e -> {
+//            applySmsFilter();
+//            try {
+//                exportExcel();
+//            } catch (ClassNotFoundException ex) {
+//                System.out.println("Error: " + ex);
+//            }
+//        });
+//          NEWWWWW
+//            btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView));
+            btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
 
-        btnImport.setOnAction(e -> importExcel());
-        btnExport.setOnAction(e -> {
-            applySmsFilter();
-            try {
-                exportExcel();
-            } catch (ClassNotFoundException ex) {
-                System.out.println("Error: " + ex);
-            }
-        });
-
+            btnExport.setOnAction(e -> {
+                applySmsFilter();
+                ExcelExporter.exportExcel(tableView);
+            });
     }
 
     private void applyFilter() {
@@ -121,11 +127,8 @@ public class CollectionController implements Initializable {
     private void applySmsFilter() {
         String smsFilter = filterSMS.getValue();
         String timeFilter = filterComboBox.getValue();
-
-        // Reload base dataset first
+        
         loadPayments(timeFilter);
-
-        // If All → done
         if (smsFilter == null || smsFilter.equalsIgnoreCase("All")) {
             return;
         }
@@ -137,11 +140,9 @@ public class CollectionController implements Initializable {
                 filtered.add(record);
             }
         }
-
         tableView.setItems(filtered);
     }
 
-    
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         colStudentId.setCellValueFactory(new PropertyValueFactory<>("studentId"));
@@ -241,138 +242,8 @@ public class CollectionController implements Initializable {
         }
     }
     
-    private void importExcel() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Import Excel File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-
-        java.io.File file = fileChooser.showOpenDialog(null);
-        if (file == null) return;
-
-        try (FileInputStream fis = new FileInputStream(file);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-
-            String sql = "INSERT INTO collection (student_id, first_name, last_name, middle_name," +
-                         "suffix, or_number, particular, mfo_pap, amount, paid_at, sms_status) " +
-                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            boolean skipHeader = true;
-
-            for (Row row : sheet) {
-                if (skipHeader) { skipHeader = false; continue; }
-
-                ps.setString(1, getCellStringValue(row.getCell(1))); // Student ID
-                ps.setString(2, getCellStringValue(row.getCell(2))); // First Name
-                ps.setString(3, getCellStringValue(row.getCell(3))); // Last Name
-                ps.setString(4, getCellStringValue(row.getCell(4))); // Middle Name
-                ps.setString(5, getCellStringValue(row.getCell(5))); // Suffix
-                ps.setString(6, getCellStringValue(row.getCell(6))); // OR Number
-
-                // PARTICULAR (Column H = index 7)
-                String particularVal = getCellStringValue(row.getCell(7));
-                int particularId = resolveId(conn, "particular", "particular_name", particularVal);
-                ps.setInt(7, particularId);
-
-                // MFO/PAP (Column I = index 8)
-                String mfoPapVal = getCellStringValue(row.getCell(8));
-                int mfoPapId = resolveId(conn, "mfo_pap", "mfo_pap_name", mfoPapVal);
-                ps.setInt(8, mfoPapId);
-
-                // AMOUNT (Column J = index 9)
-                ps.setDouble(9, Double.parseDouble(getCellStringValue(row.getCell(9))));
-
-                // DATE PAID (Column K = index 10)
-                ps.setString(10, getCellStringValue(row.getCell(10)));
-
-                // SMS (Column L = index 11)
-                ps.setString(11, getCellStringValue(row.getCell(11)));
-
-                ps.addBatch();
-            }
-
-            ps.executeBatch();
-            loadPayments("ALL");
-
-            System.out.println("IMPORT SUCCESS!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
     private void exportExcel() throws ClassNotFoundException {
-        ObservableList<PaymentRecord> records = tableView.getItems();
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Excel File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-
-        java.io.File file = fileChooser.showSaveDialog(null);
-        if (file == null) return;
-
-        try (Workbook workbook = new XSSFWorkbook()) {
-
-            Sheet sheet = workbook.createSheet("Collection Export");
-
-            Row header = sheet.createRow(0);
-//              String[] headers = {"ID", "Student ID", "First Name", "Last Name", "Middle Name",
-//                                "Suffix", "OR Number", "Particular", "MFO/PAP", "Amount", "Date Paid", "SMS"};
-                String[] headers = {"Student ID", "First Name", "Last Name", "Middle Name",
-                                    "Suffix", "OR Number", "Particular", "MFO/PAP", "Amount", "Date Paid", "SMS"};
-
-
-            for (int i = 0; i < headers.length; i++) {
-                header.createCell(i).setCellValue(headers[i]);
-            }
-
-            int rowIndex = 1;
-
-            for (PaymentRecord r : records) {
-                Row row = sheet.createRow(rowIndex++);
-
-//                row.createCell(0).setCellValue(r.getId());
-//                row.createCell(1).setCellValue(r.getStudentId());
-//                row.createCell(2).setCellValue(r.getFirstName());
-//                row.createCell(3).setCellValue(r.getLastName());
-//                row.createCell(4).setCellValue(r.getMiddleName());
-//                row.createCell(5).setCellValue(r.getSuffix());
-//                row.createCell(6).setCellValue(r.getOrNumber());
-//                row.createCell(7).setCellValue(r.getParticular());
-//                row.createCell(8).setCellValue(r.getMfoPap());
-//                row.createCell(9).setCellValue(r.getAmount());
-//                row.createCell(10).setCellValue(r.getDatePaid());
-//                row.createCell(11).setCellValue(r.getSmsStatus());
-
-                    row.createCell(0).setCellValue(r.getStudentId());
-                    row.createCell(1).setCellValue(r.getFirstName());
-                    row.createCell(2).setCellValue(r.getLastName());
-                    row.createCell(3).setCellValue(r.getMiddleName());
-                    row.createCell(4).setCellValue(r.getSuffix());
-                    row.createCell(5).setCellValue(r.getOrNumber());
-                    row.createCell(6).setCellValue(r.getParticular());
-                    row.createCell(7).setCellValue(r.getMfoPap());
-                    row.createCell(8).setCellValue(r.getAmount());
-                    row.createCell(9).setCellValue(r.getDatePaid());
-                    row.createCell(10).setCellValue(r.getSmsStatus());
-                    
-
-            }
-
-            FileOutputStream fos = new FileOutputStream(file);
-            workbook.write(fos);
-            fos.close();
-
-            System.out.println("EXPORT SUCCESS!");
-
-        } catch (Exception e) {
-            Class.forName("org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream");
-            System.out.println("Commons IO loaded!");
-
-        }
+        ExcelExporter.exportExcel(tableView);
     }
     
     private String getCellStringValue(Cell cell) {
@@ -412,12 +283,10 @@ public class CollectionController implements Initializable {
 
         value = value.trim();
 
-        // If value is numeric → treat as ID directly
         if (value.matches("\\d+")) {
             return Integer.parseInt(value);
         }
 
-        // Else → convert NAME to ID
         String sql = "SELECT id FROM " + table + " WHERE " + nameColumn + " = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, value);
