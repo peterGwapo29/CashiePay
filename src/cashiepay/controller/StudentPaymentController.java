@@ -154,7 +154,6 @@ public class StudentPaymentController implements Initializable {
 
     }
 
-
     private void loadParticulars() {
         ObservableList<ParticularItem> particulars = FXCollections.observableArrayList();
         String sql = "SELECT id, particular_name, amount FROM particular WHERE status = 'Active'";
@@ -234,7 +233,7 @@ public class StudentPaymentController implements Initializable {
                         try (ResultSet rs = psCheck.executeQuery()) {
                             if (rs.next() && rs.getInt(1) > 0) {
                                 showAlert("Duplicate Payment", "This student has already paid for the selected Particular.");
-                                return; // stop saving
+                                return;
                             }
                         }
                     }
@@ -280,7 +279,8 @@ public class StudentPaymentController implements Initializable {
                     mfoPapId,
                     amount,
                     smsStatus,
-                    paidAt.toString()
+                    paidAt.toString(),
+                    "Active"
                 );
             }
 

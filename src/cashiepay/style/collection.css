@@ -14,3 +14,38 @@
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
+
+/* Page number buttons */
+.pagination .number-button {
+    -fx-background-color: #E4E8FF;
+    -fx-text-fill: #4d6bff;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+    -fx-font-size: 14px;
+}
+
+.pagination .number-button:hover {
+    -fx-background-color: #4d6bff;
+    -fx-text-fill: white;
+}
+
+.pagination .number-button:selected {
+    -fx-background-color: #4d6bff;
+    -fx-text-fill: white;
+}
+
+/* Previous and Next arrows */
+.pagination .left-arrow-button,
+.pagination .right-arrow-button {
+    -fx-background-color: #E4E8FF;
+    -fx-text-fill: #4d6bff;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+    -fx-font-size: 14px;
+}
+
+.pagination .left-arrow-button:hover,
+.pagination .right-arrow-button:hover {
+    -fx-background-color: #4d6bff;
+    -fx-text-fill: white;
+}

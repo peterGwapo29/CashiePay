@@ -37,6 +37,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.TableCell;
 
 
 public class CollectionController implements Initializable {
@@ -164,7 +165,6 @@ public class CollectionController implements Initializable {
             "WHERE 1=1 "
         );
 
-
         // Apply date range filter
         if (startDate != null && endDate != null) {
             sql.append(" AND DATE(c.paid_at) BETWEEN '").append(startDate).append("' AND '").append(endDate).append("' ");
@@ -260,60 +260,73 @@ public class CollectionController implements Initializable {
     }
     
     private void setupActionColumn() {
-        action.setCellFactory(col -> new javafx.scene.control.TableCell<PaymentRecord, Void>() {
-            private final Button btnEdit = new Button("Edit");
-            private final Button btnDelete = new Button("Delete");
-            private final Button btnRestore = new Button("Restore");
-            private final HBox container = new HBox(5, btnEdit, btnDelete, btnRestore);
+        action.setCellFactory(column -> new TableCell<PaymentRecord, Void>() {
+
+            private final Button editButton = new Button("Edit");
+            private final Button toggleButton = new Button();
+            private final HBox container = new HBox(10);
 
             {
-                btnEdit.setStyle("-fx-background-color: #4d6bff; -fx-text-fill: white;");
-                btnDelete.setStyle("-fx-background-color: #ff4d4d; -fx-text-fill: white;");
-                btnRestore.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
-
-                btnEdit.setOnAction(e -> {
-                    PaymentRecord record = getTableView().getItems().get(getIndex());
-                    openEditPaymentModal(record);
+                // EDIT BUTTON
+                editButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+                editButton.setOnAction(event -> {
+                    PaymentRecord data = getTableView().getItems().get(getIndex());
+                    openEditPaymentModal(data);
                 });
 
-                btnDelete.setOnAction(e -> {
-                    PaymentRecord record = getTableView().getItems().get(getIndex());
+                // DELETE / RESTORE BUTTON
+                toggleButton.setOnAction(event -> {
+                    PaymentRecord data = getTableView().getItems().get(getIndex());
 
-                    if (confirmDelete()) {
-                        softDeleteRecord(record);
+                    if ("Active".equalsIgnoreCase(data.getStatus())) {
+                        // Soft delete
+                        if (confirmDelete()) {
+                            softDeleteRecord(data);
+                            setButtonToRestore(toggleButton);
+                        }
+                    } else {
+                        // Restore
+                        if (confirmRestore()) {
+                            restoreRecord(data);
+                            setButtonToDelete(toggleButton);
+                        }
                     }
                 });
 
-                btnRestore.setOnAction(e -> {
-                    PaymentRecord record = getTableView().getItems().get(getIndex());
-
-                    if (confirmRestore()) {
-                        restoreRecord(record);
-                    }
-                });
+                container.getChildren().addAll(editButton, toggleButton);
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
+
                 if (empty) {
                     setGraphic(null);
-                } else {
-                    PaymentRecord record = getTableView().getItems().get(getIndex());
-                    // Show restore button only if status is inactive
-                    if ("Inactive".equalsIgnoreCase(record.getStatus())) {
-                        btnEdit.setVisible(false);
-                        btnDelete.setVisible(false);
-                        btnRestore.setVisible(true);
-                    } else {
-                        btnEdit.setVisible(true);
-                        btnDelete.setVisible(true);
-                        btnRestore.setVisible(false);
-                    }
-                    setGraphic(container);
+                    return;
                 }
+
+                PaymentRecord data = getTableView().getItems().get(getIndex());
+
+                // Set initial button state
+                if ("Active".equalsIgnoreCase(data.getStatus())) {
+                    setButtonToDelete(toggleButton);
+                } else {
+                    setButtonToRestore(toggleButton);
+                }
+
+                setGraphic(container);
             }
         });
+    }
+    
+    private void setButtonToDelete(Button button) {
+        button.setText("Delete");
+        button.setStyle("-fx-background-color: #FF5252; -fx-text-fill: white;");
+    }
+
+    private void setButtonToRestore(Button button) {
+        button.setText("Restore");
+        button.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
     }
     
     private void openEditPaymentModal(PaymentRecord record) {

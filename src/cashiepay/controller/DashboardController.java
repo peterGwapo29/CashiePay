@@ -113,23 +113,33 @@ public class DashboardController implements Initializable {
     }
 
     private void setPaidStudents() {
-        String sql = "SELECT COUNT(DISTINCT student_id) AS paid_students FROM collection WHERE status = 'Paid'";
+        String sql = "SELECT COUNT(DISTINCT student_id) AS paid_students " +
+                     "FROM collection " +
+                     "WHERE paid_at IS NOT NULL AND paid_at <> '' AND paid_at <> '0000-00-00 00:00:00'";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 paidStudentsLabel.setText(String.valueOf(rs.getInt("paid_students")));
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+
     private void setOutstandingStudents() {
-        String sql = "SELECT COUNT(*) AS outstanding FROM students WHERE status = 'Outstanding'";
+        String sql = "SELECT COUNT(DISTINCT student_id) AS outstanding " +
+                     "FROM collection WHERE paid_at IS NULL OR paid_at = ''";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 outstandingStudentsLabel.setText(String.valueOf(rs.getInt("outstanding")));
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setTotalStudents() {
@@ -142,22 +152,27 @@ public class DashboardController implements Initializable {
         } catch (Exception e) { e.printStackTrace(); }
     }
     
-//     private void setPendingPayments() {
-//        String sql = "SELECT COUNT(*) AS pending FROM students WHERE status = 'Pending'";
-//        try (PreparedStatement ps = conn.prepareStatement(sql);
-//             ResultSet rs = ps.executeQuery()) {
-//            if (rs.next()) {
-//                pendingPaymentsLabel.setText(String.valueOf(rs.getInt("pending")));
-//            }
-//        } catch (Exception e) { e.printStackTrace(); }
-//    }
-
     private void loadRecentTransactions() {
         ObservableList<PaymentRecord> list = FXCollections.observableArrayList();
 
-        String sql = "SELECT id, student_id, first_name, last_name, middle_name, suffix, " +
-                     "or_number, particular, mfo_pap, amount, paid_at " +
-                     "FROM collection ORDER BY paid_at DESC LIMIT 10";
+        String sql = "SELECT \n" +
+                        "    c.id,\n" +
+                        "    c.student_id,\n" +
+                        "    c.first_name,\n" +
+                        "    c.last_name,\n" +
+                        "    c.middle_name,\n" +
+                        "    c.suffix,\n" +
+                        "    c.or_number,\n" +
+                        "    p.particular_name AS particular_name,\n" +
+                        "    m.mfo_pap_name AS mfo_pap_name,\n" +
+                        "    c.amount,\n" +
+                        "    c.paid_at\n" +
+                        "FROM collection c\n" +
+                        "LEFT JOIN particular p ON c.particular = p.id\n" +
+                        "LEFT JOIN mfo_pap m ON c.mfo_pap = m.id\n" +
+                        "ORDER BY c.paid_at DESC\n" +
+                        "LIMIT 10";
+
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -171,8 +186,8 @@ public class DashboardController implements Initializable {
                         rs.getString("middle_name"),
                         rs.getString("suffix"),
                         rs.getString("or_number"),
-                        rs.getString("particular"),
-                        rs.getString("mfo_pap"),
+                        rs.getString("particular_name"),
+                        rs.getString("mfo_pap_name"),
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         "", // smsStatus placeholder

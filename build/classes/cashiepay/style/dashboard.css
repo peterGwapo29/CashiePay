@@ -33,6 +33,10 @@
     -fx-text-fill: #2c2c2c;
 }
 
+.titleRecent{
+    -fx-text-fill: black !important;
+}
+
 .card {
     -fx-background-color: #ffffff;
     -fx-background-radius: 12px;

@@ -127,7 +127,7 @@
                      <children>
                         <VBox prefHeight="366.0" prefWidth="965.0" spacing="8.0">
                            <children>
-                              <Label text="Recent Transactions">
+                              <Label styleClass="titleRecent" text="Recent Transactions">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
