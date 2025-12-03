@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -94,7 +95,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <ComboBox prefHeight="40.0" prefWidth="80.0" promptText="10" style="-fx-background-color: white;" styleClass="filter-btn">
+                        <ComboBox fx:id="filterShow" onAction="#tableShowAction" prefHeight="40.0" prefWidth="80.0" promptText="10" style="-fx-background-color: white;" styleClass="filter-btn">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -138,7 +139,7 @@
             </HBox>
             <VBox prefHeight="428.0" prefWidth="1284.0">
                <children>
-                  <TableView fx:id="tableView" prefHeight="416.0" prefWidth="1263.0">
+                  <TableView fx:id="tableView" prefHeight="280.0" prefWidth="1263.0">
                     <columns>
                       <TableColumn fx:id="id" prefWidth="46.666667342185974" text="ID" />
                       <TableColumn fx:id="colStudentId" prefWidth="96.26668930053711" text="Student ID" />
@@ -146,13 +147,13 @@
                         <TableColumn fx:id="colLastName" prefWidth="118.4000244140625" text="Last Name" />
                         <TableColumn fx:id="colMiddleName" prefWidth="116.00003051757812" text="Middle Name" />
                         <TableColumn fx:id="colSuffix" prefWidth="48.266693115234375" text="Suffix" />
-                        <TableColumn fx:id="colOrNumber" prefWidth="138.933349609375" text="OR Number" />
-                        <TableColumn fx:id="colParticular" prefWidth="127.99993896484375" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="97.59991455078125" text="MFO/PAP" />
-                        <TableColumn fx:id="colAmount" prefWidth="110.66668701171875" text="Amount" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="100.79998779296875" text="OR Number" />
+                        <TableColumn fx:id="colParticular" prefWidth="100.0" text="Particular" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="100.0" text="MFO/PAP" />
+                        <TableColumn fx:id="colAmount" prefWidth="100.0" text="Amount" />
                         <TableColumn fx:id="colDatePaid" prefWidth="100.2666015625" text="Date Paid " />
-                        <TableColumn fx:id="colSms" prefWidth="37.8665771484375" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="106.1334228515625" text="Action" />
+                        <TableColumn fx:id="colSms" prefWidth="50.0" text="SMS" />
+                        <TableColumn fx:id="action" prefWidth="158.40007324218755" text="Action" />
                     </columns>
                   </TableView>
                </children>
@@ -160,11 +161,20 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </VBox>
+            <HBox alignment="CENTER" prefHeight="63.0" prefWidth="1284.0">
+                <padding>
+                    <Insets bottom="10.0" top="10.0" />
+                </padding>
+                <children>
+                    <Pagination fx:id="pagination" maxWidth="600.0" prefWidth="600.0" style="-fx-page-information-visible: false;" />
+                </children>
+            </HBox>
+
             <HBox alignment="CENTER_RIGHT" prefHeight="47.0" prefWidth="1284.0">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="642.0" spacing="8.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="642.0" spacing="16.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="8.0">
                            <children>
                               <Label text="Total Transactions:">
                                  <font>
@@ -178,7 +188,7 @@
                               </Label>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="8.0">
                            <children>
                               <Label text="Pending: ">
                                  <font>

@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import java.text.DecimalFormat;
 
 import java.sql.Connection;
 import cashiepay.model.DBConnection;
@@ -24,8 +25,10 @@ import java.sql.ResultSet;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
@@ -84,6 +87,12 @@ public class CollectionController implements Initializable {
     private TableColumn<?, ?> action;
     
     private ObservableList<PaymentRecord> masterList = FXCollections.observableArrayList();
+    @FXML
+    private ComboBox<String> filterShow;
+    @FXML
+    private Pagination pagination;
+    
+    private int rowsPerPage = 10;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,6 +102,7 @@ public class CollectionController implements Initializable {
         conn = DBConnection.getConnection();
 
         setupTableColumns();
+        setupShowPerPage();
         loadPayments("ALL");
 
         filterComboBox.getItems().addAll("ALL", "TODAY", "WEEKLY", "MONTHLY");
@@ -112,19 +122,42 @@ public class CollectionController implements Initializable {
         });
     }
     
+    private void updatePagination() {
+        int totalRows = masterList.size();
+
+        int pageCount = (int) Math.ceil((double) totalRows / rowsPerPage);
+        if (pageCount == 0) pageCount = 1;
+
+        pagination.setPageCount(pageCount);
+
+        pagination.setPageFactory(pageIndex -> {
+            showPage(pageIndex);
+            return new Label("");
+        });
+    }
+    
+    private void showPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, masterList.size());
+
+        ObservableList<PaymentRecord> pageData =
+                FXCollections.observableArrayList(masterList.subList(fromIndex, toIndex));
+
+        tableView.setItems(pageData);
+    }
+    
     private void setupSearchFeature() {
         PauseTransition debounce = new PauseTransition(javafx.util.Duration.seconds(2));
 
         txtSearchStudent.textProperty().addListener((obs, oldText, newText) -> {
 
-            debounce.stop(); // reset timer
+            debounce.stop();
 
             debounce.setOnFinished(event -> {
                 if (newText == null || newText.trim().isEmpty()) {
-                    tableView.setItems(masterList);  // restore full list
+                    tableView.setItems(masterList); 
                     return;
                 }
-
                 String keyword = newText.trim().toLowerCase();
                 ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
 
@@ -134,13 +167,23 @@ public class CollectionController implements Initializable {
                     }
                 }
 
-                tableView.setItems(filtered);
+//                  tableView.setItems(filtered);
+                    masterList.setAll(filtered);
+                    updatePagination();
             });
-
-            debounce.play();  // start 2s timer
+            debounce.play();
         });
     }
+    
+    private void setupShowPerPage() {
+        filterShow.getItems().addAll("10", "20", "50", "100");
+        filterShow.setValue("10");
 
+        filterShow.valueProperty().addListener((obs, oldVal, newVal) -> {
+            rowsPerPage = Integer.parseInt(newVal);
+            updatePagination();
+        });
+    }
 
 
     private void applyFilter() {
@@ -148,24 +191,51 @@ public class CollectionController implements Initializable {
         loadPayments(filter);
     }
     
+//    private void applySmsFilter() {
+//        String smsFilter = filterSMS.getValue();
+//        String timeFilter = filterComboBox.getValue();
+//        
+//        loadPayments(timeFilter);
+//        if (smsFilter == null || smsFilter.equalsIgnoreCase("All")) {
+//            return;
+//        }
+//
+//        ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
+//        for (PaymentRecord record : tableView.getItems()) {
+//            String status = record.getSmsStatus();
+//            if (status != null && status.trim().equalsIgnoreCase(smsFilter)) {
+//                filtered.add(record);
+//            }
+//        }
+//        tableView.setItems(filtered);
+//    }
+    
     private void applySmsFilter() {
         String smsFilter = filterSMS.getValue();
         String timeFilter = filterComboBox.getValue();
-        
-        loadPayments(timeFilter);
-        if (smsFilter == null || smsFilter.equalsIgnoreCase("All")) {
-            return;
+
+        // 1. Load all data first (with time filter)
+        ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
+        loadPayments(timeFilter); // this fills masterList
+
+        // 2. Apply SMS filter
+        if (smsFilter != null && !smsFilter.equalsIgnoreCase("All")) {
+            ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
+            for (PaymentRecord record : masterList) {
+                String status = record.getSmsStatus();
+                if (status != null && status.trim().equalsIgnoreCase(smsFilter)) {
+                    filtered.add(record);
+                }
+            }
+            // 3. Replace masterList with filtered data
+            masterList.setAll(filtered);
         }
 
-        ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
-        for (PaymentRecord record : tableView.getItems()) {
-            String status = record.getSmsStatus();
-            if (status != null && status.trim().equalsIgnoreCase(smsFilter)) {
-                filtered.add(record);
-            }
-        }
-        tableView.setItems(filtered);
+        // 4. Update pagination & show first page
+        updatePagination();
+        showPage(0);
     }
+
 
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -237,13 +307,22 @@ public class CollectionController implements Initializable {
                 }
             }
             
-            masterList.addAll(payments);
-            tableView.setItems(masterList);
-            tableView.setItems(payments);
+//            masterList.addAll(payments);
+//            tableView.setItems(masterList);
+//            tableView.setItems(payments);
+//                masterList.setAll(payments);
+//                tableView.setItems(masterList);
+                    masterList.setAll(payments);
+                    updatePagination();
+                    showPage(0);
+
+
 
             lblTotalTransactions.setText(String.valueOf(totalTransactions));
-            lblTotalCollected.setText(String.format("₱%.2f", totalCollected));
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            lblTotalCollected.setText("₱" + formatter.format(totalCollected));
             lblPending.setText(String.valueOf(pending));
+
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,5 +404,9 @@ public class CollectionController implements Initializable {
         }
 
         throw new Exception("No ID found for '" + value + "' in table " + table);
+    }
+
+    @FXML
+    private void tableShowAction(ActionEvent event) {
     }
 }
