@@ -109,7 +109,7 @@ public class ExcelImporter {
             System.out.println("IMPORT SUCCESS WITH DUPLICATES CHECKED!");
 
             // reload table
-            controller.loadPayments("ALL");
+            controller.loadPayments();
 
         } catch (Exception e) {
             e.printStackTrace();

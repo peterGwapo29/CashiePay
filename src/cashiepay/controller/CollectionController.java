@@ -4,238 +4,89 @@ import cashiepay.io.ExcelExporter;
 import cashiepay.io.ExcelImporter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import java.text.DecimalFormat;
-
-import java.sql.Connection;
-import cashiepay.model.DBConnection;
-import cashiepay.model.PaymentRecord;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import javafx.animation.PauseTransition;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-
-import org.apache.poi.ss.usermodel.*;
-
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import cashiepay.model.DBConnection;
+import cashiepay.model.PaymentRecord;
 
 public class CollectionController implements Initializable {
 
-    @FXML
-    private Button btnAddNew;
-    @FXML
-    private TableView<PaymentRecord> tableView;
-    @FXML
-    private TableColumn<PaymentRecord, String> colStudentId;
-    @FXML
-    private TableColumn<PaymentRecord, String> colFirstName;
-    @FXML
-    private TableColumn<PaymentRecord, String> colLastName;
-    @FXML
-    private TableColumn<PaymentRecord, String> colMiddleName;
-    @FXML
-    private TableColumn<PaymentRecord, String> colSuffix;
-    @FXML
-    private TableColumn<PaymentRecord, String> colOrNumber;
-    @FXML
-    private TableColumn<PaymentRecord, String> colParticular;
-    @FXML
-    private TableColumn<PaymentRecord, String> colMfoPap;
-    @FXML
-    private TableColumn<PaymentRecord, Double> colAmount;
-    @FXML
-    private TableColumn<PaymentRecord, String> colDatePaid;
-    @FXML
-    private TableColumn<PaymentRecord, String> colSms;
-    @FXML
-    private TableColumn<PaymentRecord, String> id;
-    
-    private Connection conn;
+    @FXML private Button btnAddNew, btnImport, btnExport;
+    @FXML private TableView<PaymentRecord> tableView;
+    @FXML private TableColumn<PaymentRecord, String> id, colStudentId, colFirstName, colLastName, colMiddleName, colSuffix, colOrNumber, colParticular, colMfoPap, colDatePaid, colSms;
+    @FXML private TableColumn<PaymentRecord, Double> colAmount;
+    @FXML private TableColumn<?, ?> action;
     @FXML
     private Label lblTotalTransactions;
     @FXML
-    private Label lblPending;
-    @FXML
-    private ComboBox<String> filterComboBox;
-    @FXML
     private Label lblTotalCollected;
-    @FXML
-    private Button btnImport;
-    @FXML
-    private Button btnExport;
-    @FXML
-    private ComboBox<String> filterSMS;
-    @FXML
-    private TextField txtSearchStudent;
-    @FXML
-    private TableColumn<?, ?> action;
-    
+    @FXML private ComboBox<String> filterShow, filterSMS;
+    @FXML private TextField txtSearchStudent;
+    @FXML private Pagination pagination;
+    private DatePicker filterDate;
+
     private ObservableList<PaymentRecord> masterList = FXCollections.observableArrayList();
-    @FXML
-    private ComboBox<String> filterShow;
-    @FXML
-    private Pagination pagination;
-    
+    private Connection conn;
     private int rowsPerPage = 10;
-    
+    @FXML
+    private DatePicker filterStartDate;
+    @FXML
+    private DatePicker filterEndDate;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setupSearchFeature();
-        btnAddNew.setOnAction(e -> openStudentPaymentModal());
-
         conn = DBConnection.getConnection();
 
         setupTableColumns();
         setupShowPerPage();
-        loadPayments("ALL");
+        setupSearchFeature();
+        setupFilters();
+        loadPayments();
 
-        filterComboBox.getItems().addAll("ALL", "TODAY", "WEEKLY", "MONTHLY");
-        filterComboBox.setValue("ALL");
+        btnAddNew.setOnAction(e -> openStudentPaymentModal());
+        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
+        btnExport.setOnAction(e -> ExcelExporter.exportFiltered(
+                conn,
+                filterSMS.getValue(),
+                filterStartDate.getValue(),
+                filterEndDate.getValue()
+        ));
 
-        filterComboBox.setOnAction(e -> applyFilter());
-        
+    }
+
+    private void setupFilters() {
         filterSMS.getItems().addAll("All", "iSMS", "eSMS");
         filterSMS.setValue("All");
-        filterSMS.setOnAction(e -> applySmsFilter());
 
-        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
-
-        btnExport.setOnAction(e -> {
-            applySmsFilter();
-            ExcelExporter.exportExcel(tableView);
-        });
+        filterSMS.setOnAction(e -> applyFilters());
+        filterStartDate.setOnAction(e -> applyFilters());
+        filterEndDate.setOnAction(e -> applyFilters());
     }
-    
-    private void updatePagination() {
-        int totalRows = masterList.size();
-
-        int pageCount = (int) Math.ceil((double) totalRows / rowsPerPage);
-        if (pageCount == 0) pageCount = 1;
-
-        pagination.setPageCount(pageCount);
-
-        pagination.setPageFactory(pageIndex -> {
-            showPage(pageIndex);
-            return new Label("");
-        });
-    }
-    
-    private void showPage(int pageIndex) {
-        int fromIndex = pageIndex * rowsPerPage;
-        int toIndex = Math.min(fromIndex + rowsPerPage, masterList.size());
-
-        ObservableList<PaymentRecord> pageData =
-                FXCollections.observableArrayList(masterList.subList(fromIndex, toIndex));
-
-        tableView.setItems(pageData);
-    }
-    
-    private void setupSearchFeature() {
-        PauseTransition debounce = new PauseTransition(javafx.util.Duration.seconds(2));
-
-        txtSearchStudent.textProperty().addListener((obs, oldText, newText) -> {
-
-            debounce.stop();
-
-            debounce.setOnFinished(event -> {
-                if (newText == null || newText.trim().isEmpty()) {
-                    tableView.setItems(masterList); 
-                    return;
-                }
-                String keyword = newText.trim().toLowerCase();
-                ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
-
-                for (PaymentRecord pr : masterList) {
-                    if (pr.getStudentId().toLowerCase().contains(keyword)) {
-                        filtered.add(pr);
-                    }
-                }
-
-//                  tableView.setItems(filtered);
-                    masterList.setAll(filtered);
-                    updatePagination();
-            });
-            debounce.play();
-        });
-    }
-    
-    private void setupShowPerPage() {
-        filterShow.getItems().addAll("10", "20", "50", "100");
-        filterShow.setValue("10");
-
-        filterShow.valueProperty().addListener((obs, oldVal, newVal) -> {
-            rowsPerPage = Integer.parseInt(newVal);
-            updatePagination();
-        });
-    }
-
-
-    private void applyFilter() {
-        String filter = filterComboBox.getValue();
-        loadPayments(filter);
-    }
-    
-//    private void applySmsFilter() {
-//        String smsFilter = filterSMS.getValue();
-//        String timeFilter = filterComboBox.getValue();
-//        
-//        loadPayments(timeFilter);
-//        if (smsFilter == null || smsFilter.equalsIgnoreCase("All")) {
-//            return;
-//        }
-//
-//        ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
-//        for (PaymentRecord record : tableView.getItems()) {
-//            String status = record.getSmsStatus();
-//            if (status != null && status.trim().equalsIgnoreCase(smsFilter)) {
-//                filtered.add(record);
-//            }
-//        }
-//        tableView.setItems(filtered);
-//    }
-    
-    private void applySmsFilter() {
-        String smsFilter = filterSMS.getValue();
-        String timeFilter = filterComboBox.getValue();
-
-        // 1. Load all data first (with time filter)
-        ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
-        loadPayments(timeFilter); // this fills masterList
-
-        // 2. Apply SMS filter
-        if (smsFilter != null && !smsFilter.equalsIgnoreCase("All")) {
-            ObservableList<PaymentRecord> filtered = FXCollections.observableArrayList();
-            for (PaymentRecord record : masterList) {
-                String status = record.getSmsStatus();
-                if (status != null && status.trim().equalsIgnoreCase(smsFilter)) {
-                    filtered.add(record);
-                }
-            }
-            // 3. Replace masterList with filtered data
-            masterList.setAll(filtered);
-        }
-
-        // 4. Update pagination & show first page
-        updatePagination();
-        showPage(0);
-    }
-
 
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -252,158 +103,137 @@ public class CollectionController implements Initializable {
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
     }
 
-    public void loadPayments(String filter) {
+    private void setupShowPerPage() {
+        filterShow.getItems().addAll("10", "20", "50", "100");
+        filterShow.setValue("10");
+        filterShow.valueProperty().addListener((obs, oldVal, newVal) -> {
+            rowsPerPage = Integer.parseInt(newVal);
+            updatePagination();
+        });
+    }
+
+    private void setupSearchFeature() {
+        PauseTransition debounce = new PauseTransition(Duration.seconds(2));
+        txtSearchStudent.textProperty().addListener((obs, oldText, newText) -> {
+            debounce.stop();
+            debounce.setOnFinished(event -> applyFilters());
+            debounce.play();
+        });
+    }
+
+    public void loadPayments() {
         masterList.clear();
+        applyFilters();
+    }
+
+    private void applyFilters() {
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
+        String smsFilter = filterSMS.getValue();
+        String searchKeyword = txtSearchStudent.getText() != null ? txtSearchStudent.getText().trim().toLowerCase() : "";
 
-        String sql = "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
-                     "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status " +
-                     "FROM collection c " +
-                     "JOIN particular p ON c.particular = p.id " +
-                     "JOIN mfo_pap m ON c.mfo_pap = m.id ";
+        LocalDate startDate = filterStartDate.getValue();
+        LocalDate endDate = filterEndDate.getValue();
 
-        switch (filter) {
-            case "TODAY":
-                sql += "WHERE DATE(c.paid_at) = CURDATE() ";
-                break;
-            case "WEEKLY":
-                sql += "WHERE YEARWEEK(c.paid_at, 1) = YEARWEEK(CURDATE(), 1) ";
-                break;
-            case "MONTHLY":
-                sql += "WHERE MONTH(c.paid_at) = MONTH(CURDATE()) AND YEAR(c.paid_at) = YEAR(CURDATE()) ";
-                break;
-            default:
-                break;
+        StringBuilder sql = new StringBuilder(
+            "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
+            "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status " +
+            "FROM collection c " +
+            "JOIN particular p ON c.particular = p.id " +
+            "JOIN mfo_pap m ON c.mfo_pap = m.id " +
+            "WHERE 1=1 "
+        );
+
+        // Apply date range filter
+        if (startDate != null && endDate != null) {
+            sql.append(" AND DATE(c.paid_at) BETWEEN '").append(startDate).append("' AND '").append(endDate).append("' ");
+        } else if (startDate != null) {
+            sql.append(" AND DATE(c.paid_at) >= '").append(startDate).append("' ");
+        } else if (endDate != null) {
+            sql.append(" AND DATE(c.paid_at) <= '").append(endDate).append("' ");
         }
 
-        sql += "ORDER BY c.id ASC";
+        sql.append(" ORDER BY c.id ASC");
 
-        try (PreparedStatement ps = conn.prepareStatement(sql);
+        double totalCollected = 0;
+        int totalTransactions = 0;
+        int pending = 0;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString());
              ResultSet rs = ps.executeQuery()) {
-            double totalCollected = 0;
-            int totalTransactions = 0;
-            int pending = 0;
 
             while (rs.next()) {
-                payments.add(new PaymentRecord(
-                    rs.getString("id"),
-                    rs.getString("student_id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("middle_name"),
-                    rs.getString("suffix"),
-                    rs.getString("or_number"),
-                    rs.getString("particular_name"),
-                    rs.getString("mfo_pap_name"),
-                    rs.getDouble("amount"),
-                    rs.getString("paid_at"),
-                    rs.getString("sms_status")
-                ));
+                PaymentRecord pr = new PaymentRecord(
+                        rs.getString("id"),
+                        rs.getString("student_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("middle_name"),
+                        rs.getString("suffix"),
+                        rs.getString("or_number"),
+                        rs.getString("particular_name"),
+                        rs.getString("mfo_pap_name"),
+                        rs.getDouble("amount"),
+                        rs.getString("paid_at"),
+                        rs.getString("sms_status")
+                );
 
-                totalTransactions++;
-                totalCollected += rs.getDouble("amount");
-                if (rs.getString("sms_status").equalsIgnoreCase("Pending")) {
-                    pending++;
+                if (!smsFilter.equalsIgnoreCase("All") && !smsFilter.equalsIgnoreCase(pr.getSmsStatus())) {
+                    continue;
                 }
+
+                if (!searchKeyword.isEmpty() && !pr.getStudentId().toLowerCase().contains(searchKeyword)) {
+                    continue;
+                }
+
+                payments.add(pr);
+                totalTransactions++;
+                totalCollected += pr.getAmount();
+                if ("Pending".equalsIgnoreCase(pr.getSmsStatus())) pending++;
             }
-            
-//            masterList.addAll(payments);
-//            tableView.setItems(masterList);
-//            tableView.setItems(payments);
-//                masterList.setAll(payments);
-//                tableView.setItems(masterList);
-                    masterList.setAll(payments);
-                    updatePagination();
-                    showPage(0);
 
-
+            masterList.setAll(payments);
+            updatePagination();
+            showPage(0);
 
             lblTotalTransactions.setText(String.valueOf(totalTransactions));
-            DecimalFormat formatter = new DecimalFormat("#,###.00");
-            lblTotalCollected.setText("₱" + formatter.format(totalCollected));
-            lblPending.setText(String.valueOf(pending));
+            lblTotalCollected.setText("₱" + new DecimalFormat("#,###.00").format(totalCollected));
 
-            
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void updatePagination() {
+        int pageCount = (int) Math.ceil((double) masterList.size() / rowsPerPage);
+        if (pageCount == 0) pageCount = 1;
+        pagination.setPageCount(pageCount);
+        pagination.setPageFactory(pageIndex -> {
+            showPage(pageIndex);
+            return new Label("");
+        });
+    }
+
+    private void showPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, masterList.size());
+        tableView.setItems(FXCollections.observableArrayList(masterList.subList(fromIndex, toIndex)));
     }
 
     private void openStudentPaymentModal() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/StudentPayment.fxml"));
             Parent root = loader.load();
-            
             StudentPaymentController controller = loader.getController();
             controller.setParentController(this);
-
             Stage modal = new Stage();
             modal.setScene(new Scene(root));
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setResizable(false);
             modal.showAndWait();
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-    
-    private void exportExcel() throws ClassNotFoundException {
-        ExcelExporter.exportExcel(tableView);
-    }
-    
-    private String getCellStringValue(Cell cell) {
-        if (cell == null) return "";
-
-        switch (cell.getCellType()) {
-            case STRING:
-                return cell.getStringCellValue().trim();
-            case NUMERIC:
-                return String.valueOf((int) cell.getNumericCellValue());
-            case BOOLEAN:
-                return String.valueOf(cell.getBooleanCellValue());
-            case FORMULA:
-                return cell.getCellFormula();
-            default:
-                return "";
-        }
-    }
-    
-    private int getIdByName(Connection conn, String table, String nameColumn, String nameValue) throws Exception {
-        String sql = "SELECT id FROM " + table + " WHERE " + nameColumn + " = ?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, nameValue.trim());
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            return rs.getInt("id");
-        } else {
-            throw new Exception("No ID found for " + nameValue + " in table " + table);
-        }
-    }
-    
-    private int resolveId(Connection conn, String table, String nameColumn, String value) throws Exception {
-        if (value == null || value.trim().isEmpty()) {
-            throw new Exception("Empty value for FK field in table " + table);
-        }
-
-        value = value.trim();
-
-        if (value.matches("\\d+")) {
-            return Integer.parseInt(value);
-        }
-
-        String sql = "SELECT id FROM " + table + " WHERE " + nameColumn + " = ?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, value);
-
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            return rs.getInt("id");
-        }
-
-        throw new Exception("No ID found for '" + value + "' in table " + table);
     }
 
     @FXML

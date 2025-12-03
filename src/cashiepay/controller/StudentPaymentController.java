@@ -220,7 +220,7 @@ public class StudentPaymentController implements Initializable {
             )) {
                 showAlert("Success", "Payment recorded successfully.");
                 if (parentController != null) {
-                    parentController.loadPayments("ALL");
+                    parentController.loadPayments();
                 }
                 clearFields();
             } else {
