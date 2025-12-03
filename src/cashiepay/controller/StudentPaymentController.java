@@ -293,6 +293,7 @@ public class StudentPaymentController implements Initializable {
             if (success) {
                 showAlert("Success", currentRecord != null ? "Payment updated successfully." : "Payment recorded successfully.");
                 if (parentController != null) parentController.loadPayments();
+                closeModal();
                 clearFields();
                 currentRecord = null;
             } else {
@@ -411,7 +412,6 @@ public class StudentPaymentController implements Initializable {
             showAlert("Invalid Input", "Suffix must not contain numbers.");
             return false;
         }
-
 
         return true;
     }

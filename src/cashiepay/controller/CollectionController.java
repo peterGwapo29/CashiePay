@@ -33,6 +33,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentRecord;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 
 
@@ -59,6 +62,10 @@ public class CollectionController implements Initializable {
     private DatePicker filterStartDate;
     @FXML
     private DatePicker filterEndDate;
+    @FXML
+    private Button btnClearStart;
+    @FXML
+    private Button btnClearEnd;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -80,7 +87,16 @@ public class CollectionController implements Initializable {
                 filterStartDate.getValue(),
                 filterEndDate.getValue()
         ));
+        
+        btnClearStart.setOnAction(e -> {
+            filterStartDate.setValue(null);
+            applyFilters();
+        });
 
+        btnClearEnd.setOnAction(e -> {
+            filterEndDate.setValue(null);
+            applyFilters();
+        });
     }
 
     private void setupFilters() {
@@ -262,12 +278,18 @@ public class CollectionController implements Initializable {
 
                 btnDelete.setOnAction(e -> {
                     PaymentRecord record = getTableView().getItems().get(getIndex());
-                    softDeleteRecord(record);
+
+                    if (confirmDelete()) {
+                        softDeleteRecord(record);
+                    }
                 });
 
                 btnRestore.setOnAction(e -> {
                     PaymentRecord record = getTableView().getItems().get(getIndex());
-                    restoreRecord(record);
+
+                    if (confirmRestore()) {
+                        restoreRecord(record);
+                    }
                 });
             }
 
@@ -335,8 +357,62 @@ public class CollectionController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    private boolean confirmDelete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Delete");
+        alert.setHeaderText("Are you sure you want to delete this record?");
+        alert.setContentText("This action cannot be undone.");
 
+        ButtonType yesButton = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+        return alert.showAndWait().orElse(cancelButton) == yesButton;
+    }
+    
+    private boolean confirmSave() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Save");
+        alert.setHeaderText("Save Payment Record");
+        alert.setContentText("Do you want to save this record?");
+
+        ButtonType yes = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(yes, cancel);
+
+        return alert.showAndWait().orElse(cancel) == yes;
+    }
+
+    
+    private boolean confirmRestore() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Restore");
+        alert.setHeaderText("Are you sure you want to restore this record?");
+        alert.setContentText("The record will be moved back to active payments.");
+
+        ButtonType yesButton = new ButtonType("Restore", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(yesButton, cancelButton);
+
+        return alert.showAndWait().orElse(cancelButton) == yesButton;
+    }
+    
+    private void addClearButton(DatePicker datePicker) {
+        Button clearBtn = new Button("X");
+        clearBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: red;");
+        clearBtn.setOnAction(e -> {
+            datePicker.setValue(null);
+            applyFilters();
+        });
+
+        HBox box = new HBox(datePicker, clearBtn);
+        box.setSpacing(5);
+        datePicker.getParent().getChildrenUnmodifiable().clear();
+    }
     @FXML
     private void tableShowAction(ActionEvent event) {
     }
