@@ -150,11 +150,11 @@
                         <TableColumn fx:id="colSuffix" prefWidth="48.266693115234375" text="Suffix" />
                         <TableColumn fx:id="colOrNumber" prefWidth="100.79998779296875" text="OR Number" />
                         <TableColumn fx:id="colParticular" prefWidth="100.0" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="100.0" text="MFO/PAP" />
-                        <TableColumn fx:id="colAmount" prefWidth="100.0" text="Amount" />
-                        <TableColumn fx:id="colDatePaid" prefWidth="100.2666015625" text="Date Paid " />
-                        <TableColumn fx:id="colSms" prefWidth="50.0" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="158.40007324218755" text="Action" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="80.79998779296875" text="MFO/PAP" />
+                        <TableColumn fx:id="colAmount" prefWidth="84.0" text="Amount" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="116.79998779296875" text="Date Paid " />
+                        <TableColumn fx:id="colSms" prefWidth="62.4000244140625" text="SMS" />
+                        <TableColumn fx:id="action" prefWidth="172.7999267578125" text="Action" />
                     </columns>
                   </TableView>
                </children>

@@ -33,6 +33,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentRecord;
+import javafx.scene.layout.HBox;
+
 
 public class CollectionController implements Initializable {
 
@@ -40,7 +42,7 @@ public class CollectionController implements Initializable {
     @FXML private TableView<PaymentRecord> tableView;
     @FXML private TableColumn<PaymentRecord, String> id, colStudentId, colFirstName, colLastName, colMiddleName, colSuffix, colOrNumber, colParticular, colMfoPap, colDatePaid, colSms;
     @FXML private TableColumn<PaymentRecord, Double> colAmount;
-    @FXML private TableColumn<?, ?> action;
+    @FXML private TableColumn<PaymentRecord, Void> action;
     @FXML
     private Label lblTotalTransactions;
     @FXML
@@ -63,6 +65,8 @@ public class CollectionController implements Initializable {
         conn = DBConnection.getConnection();
 
         setupTableColumns();
+        setupActionColumn();
+        
         setupShowPerPage();
         setupSearchFeature();
         setupFilters();
@@ -103,6 +107,7 @@ public class CollectionController implements Initializable {
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
     }
 
+
     private void setupShowPerPage() {
         filterShow.getItems().addAll("10", "20", "50", "100");
         filterShow.setValue("10");
@@ -136,12 +141,13 @@ public class CollectionController implements Initializable {
 
         StringBuilder sql = new StringBuilder(
             "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
-            "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status " +
+            "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status, c.status " + // <-- added space before FROM
             "FROM collection c " +
             "JOIN particular p ON c.particular = p.id " +
             "JOIN mfo_pap m ON c.mfo_pap = m.id " +
             "WHERE 1=1 "
         );
+
 
         // Apply date range filter
         if (startDate != null && endDate != null) {
@@ -174,7 +180,8 @@ public class CollectionController implements Initializable {
                         rs.getString("mfo_pap_name"),
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
-                        rs.getString("sms_status")
+                        rs.getString("sms_status"),
+                        rs.getString("status")
                 );
 
                 if (!smsFilter.equalsIgnoreCase("All") && !smsFilter.equalsIgnoreCase(pr.getSmsStatus())) {
@@ -235,6 +242,100 @@ public class CollectionController implements Initializable {
             ex.printStackTrace();
         }
     }
+    
+    private void setupActionColumn() {
+        action.setCellFactory(col -> new javafx.scene.control.TableCell<PaymentRecord, Void>() {
+            private final Button btnEdit = new Button("Edit");
+            private final Button btnDelete = new Button("Delete");
+            private final Button btnRestore = new Button("Restore");
+            private final HBox container = new HBox(5, btnEdit, btnDelete, btnRestore);
+
+            {
+                btnEdit.setStyle("-fx-background-color: #4d6bff; -fx-text-fill: white;");
+                btnDelete.setStyle("-fx-background-color: #ff4d4d; -fx-text-fill: white;");
+                btnRestore.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+
+                btnEdit.setOnAction(e -> {
+                    PaymentRecord record = getTableView().getItems().get(getIndex());
+                    openEditPaymentModal(record);
+                });
+
+                btnDelete.setOnAction(e -> {
+                    PaymentRecord record = getTableView().getItems().get(getIndex());
+                    softDeleteRecord(record);
+                });
+
+                btnRestore.setOnAction(e -> {
+                    PaymentRecord record = getTableView().getItems().get(getIndex());
+                    restoreRecord(record);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    PaymentRecord record = getTableView().getItems().get(getIndex());
+                    // Show restore button only if status is inactive
+                    if ("Inactive".equalsIgnoreCase(record.getStatus())) {
+                        btnEdit.setVisible(false);
+                        btnDelete.setVisible(false);
+                        btnRestore.setVisible(true);
+                    } else {
+                        btnEdit.setVisible(true);
+                        btnDelete.setVisible(true);
+                        btnRestore.setVisible(false);
+                    }
+                    setGraphic(container);
+                }
+            }
+        });
+    }
+    
+    private void openEditPaymentModal(PaymentRecord record) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/StudentPayment.fxml"));
+            Parent root = loader.load();
+            StudentPaymentController controller = loader.getController();
+            controller.setParentController(this);
+            controller.setPaymentRecord(record);
+            Stage modal = new Stage();
+            modal.setScene(new Scene(root));
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setResizable(false);
+            modal.showAndWait();
+
+            // Reload table after edit
+            loadPayments();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void softDeleteRecord(PaymentRecord record) {
+        String sql = "UPDATE collection SET status = 'Inactive' WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, record.getId());
+            ps.executeUpdate();
+            loadPayments();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void restoreRecord(PaymentRecord record) {
+        String sql = "UPDATE collection SET status = 'Active' WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, record.getId());
+            ps.executeUpdate();
+            loadPayments();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @FXML
     private void tableShowAction(ActionEvent event) {

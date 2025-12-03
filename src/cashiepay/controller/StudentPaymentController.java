@@ -14,7 +14,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentModel;
+import cashiepay.model.PaymentRecord;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class StudentPaymentController implements Initializable {
 
@@ -54,6 +57,8 @@ public class StudentPaymentController implements Initializable {
     private PaymentModel model;
     private Connection conn;
     private CollectionController parentController;
+    private PaymentRecord currentRecord;
+
 
     public static class ParticularItem {
         private int id;
@@ -115,6 +120,43 @@ public class StudentPaymentController implements Initializable {
         btnSave.setOnAction(e -> savePayment());
         btnCancel.setOnAction(e -> closeModal());
     }
+    
+    public void setPaymentRecord(PaymentRecord record) {
+        this.currentRecord = record;
+
+        // Pre-fill form fields with the record data
+        txtStudentID.setText(record.getStudentId());
+        txtFirstName.setText(record.getFirstName());
+        txtLastName.setText(record.getLastName());
+        txtMiddleName.setText(record.getMiddleName());
+        comboSuffix.setValue(record.getSuffix());
+        txtOrNumber.setText(record.getOrNumber());
+        txtAmount.setText(String.valueOf(record.getAmount()));
+        if (record.getDatePaid() != null && !record.getDatePaid().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(record.getDatePaid(), formatter);
+            datePaidAt.setValue(dateTime.toLocalDate());
+        }
+
+
+        comboSmsStatus.setValue(record.getSmsStatus());
+
+        // Select Particular in ComboBox
+        comboParticular.getItems().stream()
+            .filter(p -> p.getName().equals(record.getParticular()))
+            .findFirst()
+            .ifPresent(comboParticular::setValue);
+
+        // Select MFO/PAP in ComboBox
+        comboMfoPap.getItems().stream()
+            .filter(m -> m.getName().equals(record.getMfoPap()))
+            .findFirst()
+            .ifPresent(comboMfoPap::setValue);
+
+        // You might need to set payment status too
+        comboPaymentStatus.setValue("Paid"); // or map based on your logic
+    }
+
 
     private void loadParticulars() {
         ObservableList<ParticularItem> particulars = FXCollections.observableArrayList();
@@ -157,16 +199,10 @@ public class StudentPaymentController implements Initializable {
             txtAmount.setText(String.valueOf(selected.getAmount()));
         }
     }
-
+    
     private void savePayment() {
         try {
-            
-            String orNumber = generateOrNumber();
-            txtOrNumber.setText(orNumber);
-            if (!validateRequiredFields()) {
-                return;
-            }
-            if (!validateNames()) {
+            if (!validateRequiredFields() || !validateNames()) {
                 return;
             }
 
@@ -175,10 +211,12 @@ public class StudentPaymentController implements Initializable {
             String lname = txtLastName.getText();
             String mname = txtMiddleName.getText();
             String suffix = comboSuffix.getValue();
-            txtOrNumber.setText(orNumber);
-
             ParticularItem selectedParticular = comboParticular.getValue();
             MfoPapItem selectedMfoPap = comboMfoPap.getValue();
+            double amount = Double.parseDouble(txtAmount.getText());
+            String paymentStatus = comboPaymentStatus.getValue();
+            String smsStatus = comboSmsStatus.getValue();
+            LocalDate paidAt = datePaidAt.getValue();
 
             if (selectedParticular == null || selectedMfoPap == null) {
                 showAlert("Error", "Please select Particular and MFO/PAP.");
@@ -187,24 +225,56 @@ public class StudentPaymentController implements Initializable {
 
             int particularId = selectedParticular.getId();
             int mfoPapId = selectedMfoPap.getId();
-            double amount = Double.parseDouble(txtAmount.getText());
-            String paymentStatus = comboPaymentStatus.getValue();
-            String smsStatus = comboSmsStatus.getValue();
-            LocalDate paidAt = datePaidAt.getValue();
 
-            String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular = ?";
-            try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
-                psCheck.setString(1, studentId);
-                psCheck.setInt(2, particularId);
-                try (ResultSet rs = psCheck.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) > 0) {
-                        showAlert("Duplicate Payment", "This student has already paid for the selected particular.");
-                        return;
+            boolean success = false;
+
+            if (currentRecord != null) {
+                if (!currentRecord.getParticular().equals(selectedParticular.getName())) {
+                    String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular = ? AND id != ?";
+                    try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                        psCheck.setString(1, studentId);
+                        psCheck.setInt(2, particularId);
+                        psCheck.setString(3, currentRecord.getId());
+                        try (ResultSet rs = psCheck.executeQuery()) {
+                            if (rs.next() && rs.getInt(1) > 0) {
+                                showAlert("Duplicate Payment", "This student has already paid for the selected Particular.");
+                                return; // stop saving
+                            }
+                        }
                     }
                 }
-            }
 
-            if (model.insertPayment(
+                success = model.updatePayment(
+                    currentRecord.getId(),
+                    studentId,
+                    fname,
+                    lname,
+                    mname,
+                    suffix,
+                    particularId,
+                    mfoPapId,
+                    amount,
+                    paymentStatus,
+                    smsStatus,
+                    paidAt.toString()
+                );
+            } else {
+                String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular = ?";
+                try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                    psCheck.setString(1, studentId);
+                    psCheck.setInt(2, particularId);
+                    try (ResultSet rs = psCheck.executeQuery()) {
+                        if (rs.next() && rs.getInt(1) > 0) {
+                            showAlert("Duplicate Payment", "This student has already paid for the selected Particular.");
+                            return;
+                        }
+                    }
+                }
+
+                String orNumber = generateOrNumber();
+                txtOrNumber.setText(orNumber);
+
+                success = model.insertPayment(
                     studentId,
                     fname,
                     lname,
@@ -212,20 +282,23 @@ public class StudentPaymentController implements Initializable {
                     suffix,
                     orNumber,
                     particularId,
-                    mfoPapId,  
+                    mfoPapId,
                     amount,
                     paymentStatus,
                     smsStatus,
                     paidAt.toString()
-            )) {
-                showAlert("Success", "Payment recorded successfully.");
-                if (parentController != null) {
-                    parentController.loadPayments();
-                }
+                );
+            }
+
+            if (success) {
+                showAlert("Success", currentRecord != null ? "Payment updated successfully." : "Payment recorded successfully.");
+                if (parentController != null) parentController.loadPayments();
                 clearFields();
+                currentRecord = null;
             } else {
                 showAlert("Error", "Failed to save payment.");
             }
+
         } catch (NumberFormatException e) {
             showAlert("Error", "Please enter a valid amount.");
         } catch (NullPointerException e) {
