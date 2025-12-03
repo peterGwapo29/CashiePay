@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -47,14 +46,14 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="117.0" prefWidth="1123.0" spacing="24.0">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white; -fx-border-radius: 8px;">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #4d6bff; -fx-border-radius: 8px;">
                            <children>
-                              <Label text="Total Transactions Today">
+                              <Label text="Total Transactions Today" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="00">
+                              <Label fx:id="totalTransactionsLabel" text="00" textFill="WHITE">
                                  <font>
                                     <Font size="34.0" />
                                  </font>
@@ -65,14 +64,14 @@
                               <String fx:value="card-top" />
                            </styleClass>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white; -fx-border-radius: 8px;">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #28a745; -fx-border-radius: 8px;">
                            <children>
-                              <Label text="Today’s Revenue">
+                              <Label text="Today’s Revenue" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="₱00.00">
+                              <Label fx:id="todaysRevenueLabel" text="₱00.00" textFill="WHITE">
                                  <font>
                                     <Font size="34.0" />
                                  </font>
@@ -83,14 +82,14 @@
                               <String fx:value="card-top" />
                            </styleClass>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #ffc107;">
                            <children>
-                              <Label text="Paid Students">
+                              <Label text="Paid Students" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="00">
+                              <Label fx:id="paidStudentsLabel" text="00" textFill="WHITE">
                                  <font>
                                     <Font size="34.0" />
                                  </font>
@@ -101,14 +100,14 @@
                               <String fx:value="card-top" />
                            </styleClass>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: white;">
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #dc3545;">
                            <children>
-                              <Label text="Outstanding Students">
+                              <Label text="Outstanding Students" textFill="WHITE">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Label>
-                              <Label text="00">
+                              <Label fx:id="outstandingStudentsLabel" text="00" textFill="WHITE">
                                  <font>
                                     <Font size="34.0" />
                                  </font>
@@ -128,40 +127,35 @@
                      <children>
                         <VBox prefHeight="366.0" prefWidth="965.0" spacing="8.0">
                            <children>
-                              <Label text="Reacent Transactions">
+                              <Label text="Recent Transactions">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Label>
-                              <TableView prefHeight="337.0" prefWidth="917.0">
-                                <columns>
-                                  <TableColumn prefWidth="122.93331563472748" text="Date" />
-                                    <TableColumn prefWidth="213.8666763305664" text="OR Number" />
-                                    <TableColumn prefWidth="210.13333129882812" text="Name of Payor" />
-                                    <TableColumn prefWidth="177.60000610351562" text="Particulars" />
-                                    <TableColumn prefWidth="87.7332763671875" text="MFO/PAP" />
-                                    <TableColumn prefWidth="158.40004882812502" text="Amount" />
-                                </columns>
-                              </TableView>
+                              <TableView fx:id="recentTransactionsTable" prefHeight="337.0" prefWidth="917.0">
+                                    <columns>
+                                        <TableColumn fx:id="colDate" prefWidth="122.0" text="Date" />
+                                        <TableColumn fx:id="colOrNumber" prefWidth="213.0" text="OR Number" />
+                                        <TableColumn fx:id="colPayor" prefWidth="210.0" text="Name of Payor" />
+                                        <TableColumn fx:id="colParticular" prefWidth="177.0" text="Particulars" />
+                                        <TableColumn fx:id="colMfoPap" prefWidth="87.0" text="MFO/PAP" />
+                                        <TableColumn fx:id="colAmount" prefWidth="158.0" text="Amount" />
+                                    </columns>
+                                </TableView>
                            </children>
                         </VBox>
                         <VBox prefHeight="366.0" prefWidth="248.0" spacing="8.0">
                            <children>
-                              <VBox alignment="CENTER" prefHeight="88.0" prefWidth="236.0">
+                              <VBox alignment="CENTER" prefHeight="112.0" prefWidth="222.0" spacing="8.0" style="-fx-background-color: #17a2b8;" styleClass="card">
                                  <children>
-                                    <TextField prefHeight="40.0" prefWidth="236.0" promptText="Search student id" styleClass="search-field" />
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" prefHeight="112.0" prefWidth="222.0" spacing="8.0" styleClass="card">
-                                 <children>
-                                    <Label text="Total Students">
+                                    <Label text="Total Students" textFill="WHITE">
                                        <font>
                                           <Font size="18.0" />
                                        </font>
                                     </Label>
-                                    <Label text="00">
+                                    <Label fx:id="totalStudentsLabel" text="00" textFill="#fafafa">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font size="34.0" />
                                        </font>
                                     </Label>
                                  </children>

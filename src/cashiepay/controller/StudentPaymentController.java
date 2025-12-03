@@ -31,7 +31,7 @@ public class StudentPaymentController implements Initializable {
     private ComboBox<MfoPapItem> comboMfoPap;
 
     @FXML
-    private ComboBox<String> comboPaymentStatus, comboSmsStatus;
+    private ComboBox<String> comboSmsStatus;
     
     @FXML
     private DatePicker datePaidAt;
@@ -113,7 +113,6 @@ public class StudentPaymentController implements Initializable {
         loadParticulars();
         loadMfoPap();
 
-        comboPaymentStatus.getItems().addAll("Paid", "Not Paid");
         comboSmsStatus.getItems().addAll("iSMS", "eSMS");
 
         comboParticular.setOnAction(e -> updateAmountFromParticular());
@@ -153,14 +152,12 @@ public class StudentPaymentController implements Initializable {
             .findFirst()
             .ifPresent(comboMfoPap::setValue);
 
-        // You might need to set payment status too
-        comboPaymentStatus.setValue("Paid"); // or map based on your logic
     }
 
 
     private void loadParticulars() {
         ObservableList<ParticularItem> particulars = FXCollections.observableArrayList();
-        String sql = "SELECT id, particular_name, amount FROM particular";
+        String sql = "SELECT id, particular_name, amount FROM particular WHERE status = 'Active'";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -214,7 +211,6 @@ public class StudentPaymentController implements Initializable {
             ParticularItem selectedParticular = comboParticular.getValue();
             MfoPapItem selectedMfoPap = comboMfoPap.getValue();
             double amount = Double.parseDouble(txtAmount.getText());
-            String paymentStatus = comboPaymentStatus.getValue();
             String smsStatus = comboSmsStatus.getValue();
             LocalDate paidAt = datePaidAt.getValue();
 
@@ -254,7 +250,6 @@ public class StudentPaymentController implements Initializable {
                     particularId,
                     mfoPapId,
                     amount,
-                    paymentStatus,
                     smsStatus,
                     paidAt.toString()
                 );
@@ -284,7 +279,6 @@ public class StudentPaymentController implements Initializable {
                     particularId,
                     mfoPapId,
                     amount,
-                    paymentStatus,
                     smsStatus,
                     paidAt.toString()
                 );
@@ -332,7 +326,6 @@ public class StudentPaymentController implements Initializable {
         txtAmount.clear();
         comboParticular.getSelectionModel().clearSelection();
         comboMfoPap.getSelectionModel().clearSelection();
-        comboPaymentStatus.getSelectionModel().clearSelection();
         comboSmsStatus.getSelectionModel().clearSelection();
         datePaidAt.setValue(null);
     }
@@ -446,9 +439,6 @@ public class StudentPaymentController implements Initializable {
 
         if (txtAmount.getText() == null || txtAmount.getText().trim().isEmpty())
             errors.append("• Amount is required.\n");
-
-        if (comboPaymentStatus.getValue() == null)
-            errors.append("• Payment Status must be selected.\n");
 
         if (comboSmsStatus.getValue() == null)
             errors.append("• SMS Status must be selected.\n");

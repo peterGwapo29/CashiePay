@@ -1,0 +1,46 @@
+.modal-root {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.modal-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.field-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #444;
+}
+
+.input-field {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 6;
+    -fx-padding: 6;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 6;
+}
+
+.btn-primary {
+    -fx-background-color: #2d8cff;
+    -fx-text-fill: white;
+    -fx-padding: 8 18;
+    -fx-background-radius: 6;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1b6fe0;
+}
+
+.btn-secondary {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-padding: 8 18;
+    -fx-background-radius: 6;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #d5d5d5;
+}

@@ -8,7 +8,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -43,65 +42,52 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="44.0" prefWidth="1284.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1284.0" spacing="8.0">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="642.0" spacing="8.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <children>
-                        <Label text="Show">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <ComboBox prefHeight="40.0" prefWidth="80.0" promptText="10" style="-fx-background-color: white;" styleClass="filter-btn">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </ComboBox>
-                        <Button graphicTextGap="0.0" mnemonicParsing="false" prefHeight="40.0" style="-fx-background-color: #177334;" styleClass="btn" text="Add Particular" textFill="WHITE">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
-                                 <image>
-                                    <Image url="@../../icons/mdi--plus-circle%20(2).png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Arial" size="14.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="TOP_RIGHT" prefHeight="61.0" prefWidth="641.0" spacing="8.0">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <children>
-                        <TextField prefHeight="40.0" prefWidth="288.0" promptText="Search by Particular" styleClass="btn">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </TextField>
-                     </children>
-                  </HBox>
+                  <Label text="Show">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="filterStatus" onAction="#filterStatusChanged" prefHeight="40.0" promptText="All" style="-fx-background-color: white;" styleClass="filter-btn">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ComboBox>
+                  <Button fx:id="newParticularBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newParticularBtnAction" prefHeight="40.0" style="-fx-background-color: #177334;" styleClass="btn" text="Add Particular" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
+                           <image>
+                              <Image url="@../../icons/mdi--plus-circle%20(2).png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </HBox>
             <VBox prefHeight="536.0" prefWidth="1284.0">
                <children>
-                  <TableView prefHeight="536.0" prefWidth="1263.0">
-                    <columns>
-                      <TableColumn prefWidth="88.79997098445892" text="ID" />
-                      <TableColumn prefWidth="534.1333160400391" text="Particular" />
-                        <TableColumn prefWidth="255.46661376953125" text="Amount" />
-                        <TableColumn prefWidth="190.13330078125" text="Created At" />
-                        <TableColumn prefWidth="196.53335571289062" text="Updated At" />
-                    </columns>
-                  </TableView>
+                    <TableView fx:id="particularTable">
+                        <columns>
+                            <TableColumn fx:id="colId" prefWidth="50" text="ID" />
+                            <TableColumn fx:id="colName" prefWidth="200" text="Particular Name" />
+                            <TableColumn fx:id="colAmount" prefWidth="120" text="Amount" />
+                            <TableColumn fx:id="colCreatedAt" prefWidth="150" text="Created At" />
+                            <TableColumn fx:id="colUpdatedAt" prefWidth="150" text="Updated At" />
+                        <TableColumn fx:id="colStatus" prefWidth="75.0" text="Status" />
+                        <TableColumn fx:id="colAction" prefWidth="150" text="Action" />
+                        </columns>
+                    </TableView>
+
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -19,10 +19,10 @@
     
     <children>
         <!-- Modal Title -->
-        <Label layoutX="150.0" layoutY="5.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Payment Transaction" />
+        <Label layoutX="150.0" layoutY="11.0" style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Payment Transaction" />
 
         <!-- Main Container -->
-        <VBox layoutX="20.0" layoutY="48.0" prefWidth="510" spacing="8.0">
+        <VBox layoutX="20.0" layoutY="60.0" prefWidth="510" spacing="8.0">
             <HBox spacing="10.0">
                 <VBox prefWidth="250" spacing="5">
                     <Label text="Student ID:" textFill="#848080" />
@@ -102,10 +102,6 @@
                 </VBox>
             </HBox>
             <HBox spacing="10">
-                <VBox prefWidth="250" spacing="5">
-                    <Label text="Payment Status:" textFill="#848080" />
-                    <ComboBox fx:id="comboPaymentStatus" prefHeight="26.0" prefWidth="270.0" promptText="Paid / Not Paid" />
-                </VBox>
                 <VBox prefWidth="250" spacing="5" />
             </HBox>
             <VBox spacing="5">
@@ -114,7 +110,7 @@
                     <ComboBox fx:id="comboSmsStatus" prefWidth="250.0" promptText="Select SMS Status" />
             </children>
             </VBox>
-            <HBox alignment="CENTER_RIGHT" spacing="10">
+            <HBox alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="510.0" spacing="10">
                 <Button fx:id="btnSave" prefWidth="90" style="-fx-background-color: #2E82FF; -fx-text-fill: white; -fx-background-radius: 6;" text="Submit" />
                 <Button fx:id="btnCancel" prefWidth="90" style="-fx-background-color: #D33F49; -fx-text-fill: white; -fx-background-radius: 6;" text="Cancel" />
             </HBox>

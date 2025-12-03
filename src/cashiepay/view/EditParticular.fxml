@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.DAO.EditParticularController">
+    <stylesheets>
+        <URL value="@/cashiepay/style/editparticular.css"/>
+    </stylesheets>
+    <children>
+        <Label layoutX="30" layoutY="30" text="Particular Name:"/>
+        <TextField fx:id="nameField" layoutX="150" layoutY="25" prefWidth="200"/>
+
+        <Label layoutX="30" layoutY="80" text="Amount:"/>
+        <TextField fx:id="amountField" layoutX="150" layoutY="75" prefWidth="200"/>
+
+        <Button fx:id="saveBtn" layoutX="150" layoutY="150" text="Save" prefWidth="90"/>
+        <Button fx:id="cancelBtn" layoutX="260" layoutY="150" text="Cancel" prefWidth="90"/>
+    </children>
+</AnchorPane>

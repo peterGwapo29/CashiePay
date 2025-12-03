@@ -54,13 +54,13 @@
 
 .card Label:first-child {
     -fx-font-size: 12px;
-    -fx-text-fill: #555555;
+    -fx-text-fill: white;
 }
 
 .card Label:last-child {
     -fx-font-size: 32px;
     -fx-font-weight: bold;
-    -fx-text-fill: #2c2c2c;
+    -fx-text-fill: white;
 }
 
 .table-view {
@@ -73,6 +73,7 @@
 
 .table-view .column-header-background {
     -fx-background-color: #f4f4ff;
+    
 }
 
 .table-view .column-header, 
@@ -80,6 +81,7 @@
     -fx-font-family: 'Poppins';
     -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-text-fill: black;
 }
 
 .search-field {
