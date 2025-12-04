@@ -21,14 +21,13 @@
     </stylesheets>
     
     <children>
-      <AnchorPane fx:id="sidebarContainer" layoutY="-1.0" prefHeight="720.0" prefWidth="220.0" />
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" style="-fx-background-color: #4d6bff;">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
       
-      <VBox layoutY="60.0" prefHeight="660.0" prefWidth="1284.0">
+      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
                <children>

@@ -33,11 +33,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentRecord;
+import cashiepay.util.LoadingDialog;
+import java.time.format.DateTimeFormatter;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TableCell;
+import javafx.scene.input.MouseEvent;
 
 
 public class CollectionController implements Initializable {
@@ -67,6 +72,11 @@ public class CollectionController implements Initializable {
     private Button btnClearStart;
     @FXML
     private Button btnClearEnd;
+    @FXML
+    private Label displayDate;
+    
+    private final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -81,7 +91,8 @@ public class CollectionController implements Initializable {
         loadPayments();
 
         btnAddNew.setOnAction(e -> openStudentPaymentModal());
-        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
+//        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
+        btnImport.setOnAction(e -> importWithLoading());
         btnExport.setOnAction(e -> ExcelExporter.exportFiltered(
                 conn,
                 filterSMS.getValue(),
@@ -108,6 +119,34 @@ public class CollectionController implements Initializable {
         filterStartDate.setOnAction(e -> applyFilters());
         filterEndDate.setOnAction(e -> applyFilters());
     }
+    
+    private void importWithLoading() {
+        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
+
+        Platform.runLater(() -> loading.show());
+
+        Platform.runLater(() -> {
+            try {
+                ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+
+                loading.close();
+                loadPayments();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Import Complete");
+                alert.setContentText("Excel data imported successfully.");
+                alert.showAndWait();
+
+            } catch (Exception ex) {
+                loading.close();
+                ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Import Failed");
+                alert.setContentText("Error: " + ex.getMessage());
+                alert.showAndWait();
+            }
+        });
+    }
 
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -123,7 +162,6 @@ public class CollectionController implements Initializable {
         colDatePaid.setCellValueFactory(new PropertyValueFactory<>("datePaid"));
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
     }
-
 
     private void setupShowPerPage() {
         filterShow.getItems().addAll("10", "20", "50", "100");
@@ -173,6 +211,18 @@ public class CollectionController implements Initializable {
         } else if (endDate != null) {
             sql.append(" AND DATE(c.paid_at) <= '").append(endDate).append("' ");
         }
+        
+        // Update displayDate label
+        if (startDate != null && endDate != null) {
+            displayDate.setText(startDate.format(displayFormatter) + " - " + endDate.format(displayFormatter));
+        } else if (startDate != null) {
+            displayDate.setText(startDate.format(displayFormatter) + " - Present");
+        } else if (endDate != null) {
+            displayDate.setText("Until " + endDate.format(displayFormatter));
+        } else {
+            displayDate.setText("All Dates");
+        }
+
 
         sql.append(" ORDER BY c.id ASC");
 
@@ -428,5 +478,9 @@ public class CollectionController implements Initializable {
     }
     @FXML
     private void tableShowAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void DisplayDateAction(MouseEvent event) {
     }
 }

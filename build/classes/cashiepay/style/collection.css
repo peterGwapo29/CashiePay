@@ -14,8 +14,10 @@
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
+.totalAAmountFilter{
+    -fx-background-radius: 8;
+}
 
-/* Page number buttons */
 .pagination .number-button {
     -fx-background-color: #E4E8FF;
     -fx-text-fill: #4d6bff;
@@ -48,4 +50,28 @@
 .pagination .right-arrow-button:hover {
     -fx-background-color: #4d6bff;
     -fx-text-fill: white;
+}
+
+.table-view .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-width: 0;
+}
+
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+}
+
+#removeScroll .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+}
+
+#removeScroll .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
 }

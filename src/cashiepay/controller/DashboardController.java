@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 
 public class DashboardController implements Initializable {
@@ -40,14 +41,14 @@ public class DashboardController implements Initializable {
     private Label totalTransactionsLabel;
     @FXML
     private Label todaysRevenueLabel;
-    @FXML
     private Label paidStudentsLabel;
-    @FXML
     private Label outstandingStudentsLabel;
     @FXML
     private Label totalStudentsLabel;
     
     private Connection conn;
+    @FXML
+    private Label dateToday;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -67,6 +68,8 @@ public class DashboardController implements Initializable {
         colParticular.setCellValueFactory(cell -> cell.getValue().particularProperty());
         colMfoPap.setCellValueFactory(cell -> cell.getValue().mfoPapProperty());
         colAmount.setCellValueFactory(cell -> cell.getValue().amountProperty().asObject());
+        
+        displayCurrentDate();
 
     }
     
@@ -86,8 +89,8 @@ public class DashboardController implements Initializable {
      private void loadDashboardCards() {
         setTotalTransactions();
         setTodaysRevenue();
-        setPaidStudents();
-        setOutstandingStudents();
+//        setPaidStudents();
+//        setOutstandingStudents();
         setTotalStudents();
 //        setPendingPayments();
     }
@@ -112,35 +115,35 @@ public class DashboardController implements Initializable {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    private void setPaidStudents() {
-        String sql = "SELECT COUNT(DISTINCT student_id) AS paid_students " +
-                     "FROM collection " +
-                     "WHERE paid_at IS NOT NULL AND paid_at <> '' AND paid_at <> '0000-00-00 00:00:00'";
+//    private void setPaidStudents() {
+//        String sql = "SELECT COUNT(DISTINCT student_id) AS paid_students " +
+//                     "FROM collection " +
+//                     "WHERE paid_at IS NOT NULL AND paid_at <> '' AND paid_at <> '0000-00-00 00:00:00'";
+//
+//        try (PreparedStatement ps = conn.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//            if (rs.next()) {
+//                paidStudentsLabel.setText(String.valueOf(rs.getInt("paid_students")));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                paidStudentsLabel.setText(String.valueOf(rs.getInt("paid_students")));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-
-    private void setOutstandingStudents() {
-        String sql = "SELECT COUNT(DISTINCT student_id) AS outstanding " +
-                     "FROM collection WHERE paid_at IS NULL OR paid_at = ''";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                outstandingStudentsLabel.setText(String.valueOf(rs.getInt("outstanding")));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void setOutstandingStudents() {
+//        String sql = "SELECT COUNT(DISTINCT student_id) AS outstanding " +
+//                     "FROM collection WHERE paid_at IS NULL OR paid_at = ''";
+//
+//        try (PreparedStatement ps = conn.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//            if (rs.next()) {
+//                outstandingStudentsLabel.setText(String.valueOf(rs.getInt("outstanding")));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void setTotalStudents() {
         String sql = "SELECT COUNT(*) AS total FROM collection";
@@ -201,5 +204,12 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    private void displayCurrentDate() {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.format.DateTimeFormatter formatter =
+        java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d");
 
+        dateToday.setText(today.format(formatter));
+    }
 }

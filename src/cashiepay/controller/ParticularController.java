@@ -26,14 +26,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ParticularController implements Initializable {
 
-    @FXML private AnchorPane sidebarContainer;
     @FXML private Button newParticularBtn;
 
     @FXML private TableView<Particular> particularTable;
@@ -266,5 +264,4 @@ public class ParticularController implements Initializable {
             }
         }
     }
-
 }
