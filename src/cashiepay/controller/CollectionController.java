@@ -34,6 +34,7 @@ import java.sql.ResultSet;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentRecord;
 import cashiepay.util.LoadingDialog;
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -43,6 +44,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 
 
 public class CollectionController implements Initializable {
@@ -76,6 +78,8 @@ public class CollectionController implements Initializable {
     private Label displayDate;
     
     private final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+    @FXML
+    private ComboBox<String> filterStatus;
 
 
     @Override
@@ -114,39 +118,78 @@ public class CollectionController implements Initializable {
     private void setupFilters() {
         filterSMS.getItems().addAll("All", "iSMS", "eSMS");
         filterSMS.setValue("All");
+        
+        filterStatus.getItems().addAll("All", "Active", "Inactive");
+        filterStatus.setValue("All");
 
         filterSMS.setOnAction(e -> applyFilters());
         filterStartDate.setOnAction(e -> applyFilters());
         filterEndDate.setOnAction(e -> applyFilters());
+        filterStatus.setOnAction(e -> applyFilters()); 
     }
     
+//    private void importWithLoading() {
+//        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
+//
+//        Platform.runLater(() -> loading.show());
+//
+//        Platform.runLater(() -> {
+//            try {
+//                ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+//
+//                loading.close();
+//                loadPayments();
+//                
+//                
+//
+//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                alert.setHeaderText("Import Complete");
+//                alert.setContentText("Excel data imported successfully.");
+//                alert.showAndWait();
+//
+//            } catch (Exception ex) {
+//                loading.close();
+//                ex.printStackTrace();
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setHeaderText("Import Failed");
+//                alert.setContentText("Error: " + ex.getMessage());
+//                alert.showAndWait();
+//            }
+//        });
+//    }
     private void importWithLoading() {
-        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
+    LoadingDialog loading = new LoadingDialog("Importing, please wait...");
 
-        Platform.runLater(() -> loading.show());
+    Platform.runLater(loading::show);
 
-        Platform.runLater(() -> {
-            try {
-                ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+    Platform.runLater(() -> {
+        try {
+            // NOW EXPECTS A BOOLEAN
+            boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
 
-                loading.close();
+            loading.close();
+
+            if (imported) { // ✅ Only show alert if data was really imported
                 loadPayments();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText("Import Complete");
                 alert.setContentText("Excel data imported successfully.");
                 alert.showAndWait();
-
-            } catch (Exception ex) {
-                loading.close();
-                ex.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Import Failed");
-                alert.setContentText("Error: " + ex.getMessage());
-                alert.showAndWait();
             }
-        });
-    }
+
+        } catch (Exception ex) {
+            loading.close();
+            ex.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Import Failed");
+            alert.setContentText("Error: " + ex.getMessage());
+            alert.showAndWait();
+        }
+    });
+}
+
+
 
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -189,6 +232,7 @@ public class CollectionController implements Initializable {
     private void applyFilters() {
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
         String smsFilter = filterSMS.getValue();
+        String statusFilter = filterStatus.getValue();
         String searchKeyword = txtSearchStudent.getText() != null ? txtSearchStudent.getText().trim().toLowerCase() : "";
 
         LocalDate startDate = filterStartDate.getValue();
@@ -249,6 +293,11 @@ public class CollectionController implements Initializable {
                         rs.getString("sms_status"),
                         rs.getString("status")
                 );
+                if (!"All".equalsIgnoreCase(statusFilter) &&
+                    !statusFilter.equalsIgnoreCase(pr.getStatus())) {
+                    continue;
+                }
+                
 
                 if (!smsFilter.equalsIgnoreCase("All") && !smsFilter.equalsIgnoreCase(pr.getSmsStatus())) {
                     continue;
@@ -275,7 +324,6 @@ public class CollectionController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private void updatePagination() {
         int pageCount = (int) Math.ceil((double) masterList.size() / rowsPerPage);
@@ -318,7 +366,7 @@ public class CollectionController implements Initializable {
 
             {
                 // EDIT BUTTON
-                editButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+                editButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-pref-width: 44px;");
                 editButton.setOnAction(event -> {
                     PaymentRecord data = getTableView().getItems().get(getIndex());
                     openEditPaymentModal(data);
@@ -329,7 +377,6 @@ public class CollectionController implements Initializable {
                     PaymentRecord data = getTableView().getItems().get(getIndex());
 
                     if ("Active".equalsIgnoreCase(data.getStatus())) {
-                        // Soft delete
                         if (confirmDelete()) {
                             softDeleteRecord(data);
                             setButtonToRestore(toggleButton);
@@ -357,7 +404,6 @@ public class CollectionController implements Initializable {
 
                 PaymentRecord data = getTableView().getItems().get(getIndex());
 
-                // Set initial button state
                 if ("Active".equalsIgnoreCase(data.getStatus())) {
                     setButtonToDelete(toggleButton);
                 } else {
@@ -371,12 +417,12 @@ public class CollectionController implements Initializable {
     
     private void setButtonToDelete(Button button) {
         button.setText("Delete");
-        button.setStyle("-fx-background-color: #FF5252; -fx-text-fill: white;");
+        button.setStyle("-fx-background-color: #FF5252; -fx-text-fill: white; -fx-pref-width: 64px;");
     }
 
     private void setButtonToRestore(Button button) {
         button.setText("Restore");
-        button.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        button.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-pref-width: 64px;");
     }
     
     private void openEditPaymentModal(PaymentRecord record) {

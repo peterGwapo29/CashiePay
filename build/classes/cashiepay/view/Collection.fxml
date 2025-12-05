@@ -101,6 +101,11 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </ComboBox>
+                        <ComboBox fx:id="filterStatus" prefHeight="40.0" promptText="All" style="-fx-background-color: white;" styleClass="filter-btn">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
                         <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #4d6bff;" styleClass="btn" text="Add New" textFill="WHITE">
 
                            <graphic>
@@ -142,19 +147,19 @@
                <children>
                   <TableView id="removeScroll" fx:id="tableView" prefHeight="280.0" prefWidth="1263.0">
                     <columns>
-                      <TableColumn fx:id="id" prefWidth="46.666667342185974" text="ID" />
-                      <TableColumn fx:id="colStudentId" prefWidth="96.26668930053711" text="Student ID" />
-                        <TableColumn fx:id="colFirstName" prefWidth="122.93336486816406" text="First Name" />
+                      <TableColumn fx:id="id" prefWidth="55.999998450279236" text="ID" />
+                      <TableColumn fx:id="colStudentId" prefWidth="100.00000762939453" text="Student ID" />
+                        <TableColumn fx:id="colFirstName" prefWidth="106.39996337890625" text="First Name" />
                         <TableColumn fx:id="colLastName" prefWidth="118.4000244140625" text="Last Name" />
-                        <TableColumn fx:id="colMiddleName" prefWidth="116.00003051757812" text="Middle Name" />
-                        <TableColumn fx:id="colSuffix" prefWidth="48.266693115234375" text="Suffix" />
-                        <TableColumn fx:id="colOrNumber" prefWidth="100.79998779296875" text="OR Number" />
+                        <TableColumn fx:id="colMiddleName" prefWidth="110.00003051757812" text="Middle Name" />
+                        <TableColumn fx:id="colSuffix" prefWidth="58.600006103515625" text="Suffix" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="95.99993896484375" text="OR Number" />
                         <TableColumn fx:id="colParticular" prefWidth="100.0" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="80.79998779296875" text="MFO/PAP" />
-                        <TableColumn fx:id="colAmount" prefWidth="84.0" text="Amount" />
-                        <TableColumn fx:id="colDatePaid" prefWidth="116.79998779296875" text="Date Paid " />
-                        <TableColumn fx:id="colSms" prefWidth="62.4000244140625" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="172.7999267578125" text="Action" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="84.79998779296875" text="MFO/PAP" />
+                        <TableColumn fx:id="colAmount" prefWidth="75.39996337890625" text="Amount" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="147.79998779296875" text="Date Paid " />
+                        <TableColumn fx:id="colSms" prefWidth="66.800048828125" text="SMS" />
+                        <TableColumn fx:id="action" prefWidth="138.40007324218755" text="Action" />
                     </columns>
                   </TableView>
                </children>

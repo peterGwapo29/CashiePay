@@ -59,7 +59,7 @@ public class ProfileController implements Initializable {
             return;
         }
 
-        int adminId = AdminSession.getId(); // <-- We use session ID (no more ID field in FXML)
+        int adminId = AdminSession.getId(); // <-- use session ID
 
         boolean passwordChanged = !password.isEmpty() || !confirmPassword.isEmpty();
 

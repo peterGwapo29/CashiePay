@@ -21,13 +21,13 @@
     </stylesheets>
     
     <children>
-      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" style="-fx-background-color: #4d6bff;">
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1294.0" style="-fx-background-color: #4d6bff;">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
       
-      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0">
+      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="card">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
                <children>
@@ -75,15 +75,15 @@
             </HBox>
             <VBox prefHeight="536.0" prefWidth="1284.0">
                <children>
-                    <TableView fx:id="particularTable">
+                    <TableView fx:id="particularTable" prefHeight="280.0" prefWidth="1263.0">
                         <columns>
-                            <TableColumn fx:id="colId" prefWidth="50" text="ID" />
-                            <TableColumn fx:id="colName" prefWidth="200" text="Particular Name" />
-                            <TableColumn fx:id="colAmount" prefWidth="120" text="Amount" />
-                            <TableColumn fx:id="colCreatedAt" prefWidth="150" text="Created At" />
-                            <TableColumn fx:id="colUpdatedAt" prefWidth="150" text="Updated At" />
-                        <TableColumn fx:id="colStatus" prefWidth="75.0" text="Status" />
-                        <TableColumn fx:id="colAction" prefWidth="150" text="Action" />
+                            <TableColumn fx:id="colId" prefWidth="50" text="ID" styleClass="center-column" />
+                            <TableColumn fx:id="colName" prefWidth="261.86670684814453" text="Particular Name" styleClass="numeric-column" />
+                            <TableColumn fx:id="colAmount" prefWidth="169.33328247070312" text="Amount" />
+                            <TableColumn fx:id="colCreatedAt" prefWidth="195.46670532226562" text="Created At" />
+                            <TableColumn fx:id="colUpdatedAt" prefWidth="173.066650390625" text="Updated At" />
+                        <TableColumn fx:id="colStatus" prefWidth="210.666748046875" text="Status" styleClass="status-column" />
+                        <TableColumn fx:id="colAction" prefWidth="200.0001220703125" text="Action" styleClass="center-column" />
                         </columns>
                     </TableView>
 

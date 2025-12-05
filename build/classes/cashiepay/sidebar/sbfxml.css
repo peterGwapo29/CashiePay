@@ -19,6 +19,17 @@
     -fx-padding: 20 10 20 10;
 }
 
+.nav-item-active {
+    -fx-background-color: white !important;
+    -fx-text-fill: #4d6bff !important;
+    -fx-background-radius: 12;
+}
+
+.nav-item-active .nav-icon {
+    -fx-effect: innershadow(gaussian, #4d6bff, 20, 0.5, 0, 0) !important;
+}
+
+
 .search-field {
     -fx-background-color: white;
     -fx-text-fill: white;

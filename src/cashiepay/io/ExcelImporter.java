@@ -16,15 +16,20 @@ import java.sql.ResultSet;
 
 public class ExcelImporter {
     
-    public static void importExcel( Connection conn, 
-                                    TableView<PaymentRecord> tableView, 
-                                    CollectionController controller) {
+    public static boolean importExcel(Connection conn,
+                                      TableView<PaymentRecord> tableView,
+                                      CollectionController controller) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Import Excel File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+        fileChooser.getExtensionFilters()
+                   .add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
 
         java.io.File file = fileChooser.showOpenDialog(null);
-        if (file == null) return;
+
+        // ⛔ User clicked CANCEL -> no import
+        if (file == null) {
+            return false;   // ✅ return a boolean, not `return;`
+        }
 
         try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -38,43 +43,44 @@ public class ExcelImporter {
             PreparedStatement ps = conn.prepareStatement(sql);
 
             boolean skipHeader = true;
-
             StringBuilder duplicateMessages = new StringBuilder();
+            int importedCount = 0;   // ✅ count actual inserted rows
 
             for (Row row : sheet) {
-                if (skipHeader) { skipHeader = false; continue; }
+                if (skipHeader) {
+                    skipHeader = false;
+                    continue;
+                }
 
-                String studentId = getCellStringValue(row.getCell(0));
-                String firstName = getCellStringValue(row.getCell(1));
-                String lastName = getCellStringValue(row.getCell(2));
-                String middleName = getCellStringValue(row.getCell(3));
-                String suffix = getCellStringValue(row.getCell(4));
-                String orNumber = getCellStringValue(row.getCell(5));
+                String studentId   = getCellStringValue(row.getCell(0));
+                String firstName   = getCellStringValue(row.getCell(1));
+                String lastName    = getCellStringValue(row.getCell(2));
+                String middleName  = getCellStringValue(row.getCell(3));
+                String suffix      = getCellStringValue(row.getCell(4));
+                String orNumber    = getCellStringValue(row.getCell(5));
 
                 String particularVal = getCellStringValue(row.getCell(6));
-                int particularId = resolveId(conn, "particular", "particular_name", particularVal);
+                int particularId     = resolveId(conn, "particular", "particular_name", particularVal);
 
                 String mfoPapVal = getCellStringValue(row.getCell(7));
-                int mfoPapId = resolveId(conn, "mfo_pap", "mfo_pap_name", mfoPapVal);
+                int mfoPapId     = resolveId(conn, "mfo_pap", "mfo_pap_name", mfoPapVal);
 
                 String amtStr = getCellStringValue(row.getCell(8)).trim();
                 if (amtStr.isEmpty()) amtStr = "0";
                 double amount = Double.parseDouble(amtStr);
 
-                String paidDate = getCellStringValue(row.getCell(9));
-
+                String paidDate  = getCellStringValue(row.getCell(9));
                 String smsStatus = getCellStringValue(row.getCell(10));
 
+                // 🔁 Duplicate check
                 if (isAlreadyPaid(conn, studentId, particularId)) {
-
-                    duplicateMessages.append(
-                        "Row " + (row.getRowNum() + 1) + " → "
-                        + "Student: ").append(studentId)
-                        .append(" has already paid the particular: \"")
-                        .append(particularVal)
-                        .append("\"\n"
-                    );
-
+                    duplicateMessages.append("Row ")
+                            .append(row.getRowNum() + 1)
+                            .append(" → Student: ")
+                            .append(studentId)
+                            .append(" has already paid the particular: \"")
+                            .append(particularVal)
+                            .append("\"\n");
                     continue;
                 }
 
@@ -91,11 +97,14 @@ public class ExcelImporter {
                 ps.setString(11, smsStatus);
 
                 ps.addBatch();
+                importedCount++;      // ✅ count this inserted row
             }
 
-            ps.executeBatch();
+            if (importedCount > 0) {
+                ps.executeBatch();
+            }
 
-            // 🔥 Show alert if duplicates were found
+            // ⚠️ Show alert if there are duplicates
             if (duplicateMessages.length() > 0) {
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                         javafx.scene.control.Alert.AlertType.WARNING
@@ -108,11 +117,16 @@ public class ExcelImporter {
 
             System.out.println("IMPORT SUCCESS WITH DUPLICATES CHECKED!");
 
-            // reload table
-            controller.loadPayments();
+            // ❌ optional: you can remove this and let the controller call loadPayments()
+            // controller.loadPayments();
+
+            // ✅ tell caller if anything was actually imported
+            return importedCount > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
+            // Let the controller's try/catch show "Import Failed"
+            throw new RuntimeException(e);
         }
     }
 

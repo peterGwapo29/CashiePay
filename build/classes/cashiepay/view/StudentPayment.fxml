@@ -33,7 +33,7 @@
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
                     <Label text="OR Number:" textFill="#848080" />
-                    <TextField fx:id="txtOrNumber" promptText="OR Number">
+                    <TextField fx:id="txtOrNumber" promptText="OR Number Auto Generated" editable="false" focusTraversable="false">
                   <font>
                      <Font size="14.0" />
                   </font></TextField>
