@@ -122,7 +122,7 @@ public class SBfxmlController {
         for (Button btn : buttons) {
             btn.getStyleClass().remove("nav-item-active");
             if (!btn.getStyleClass().contains("nav-item")) {
-                btn.getStyleClass().add("nav-item"); // ensure base style exists
+                btn.getStyleClass().add("nav-item");
             }
         }
 

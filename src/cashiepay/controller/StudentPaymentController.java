@@ -123,7 +123,6 @@ public class StudentPaymentController implements Initializable {
     public void setPaymentRecord(PaymentRecord record) {
         this.currentRecord = record;
 
-        // Pre-fill form fields with the record data
         txtStudentID.setText(record.getStudentId());
         txtFirstName.setText(record.getFirstName());
         txtLastName.setText(record.getLastName());
@@ -174,7 +173,7 @@ public class StudentPaymentController implements Initializable {
 
     private void loadMfoPap() {
         ObservableList<MfoPapItem> mfoPaps = FXCollections.observableArrayList();
-        String sql = "SELECT id, mfo_pap_name FROM mfo_pap";
+        String sql = "SELECT id, mfo_pap_name FROM mfo_pap WHERE status = 'Active'";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -207,6 +206,7 @@ public class StudentPaymentController implements Initializable {
             String lname = txtLastName.getText();
             String mname = txtMiddleName.getText();
             String suffix = comboSuffix.getValue();
+            String orNumber  = txtOrNumber.getText().trim();
             ParticularItem selectedParticular = comboParticular.getValue();
             MfoPapItem selectedMfoPap = comboMfoPap.getValue();
             double amount = Double.parseDouble(txtAmount.getText());
@@ -246,6 +246,7 @@ public class StudentPaymentController implements Initializable {
                     lname,
                     mname,
                     suffix,
+                    orNumber,
                     particularId,
                     mfoPapId,
                     amount,
@@ -264,9 +265,6 @@ public class StudentPaymentController implements Initializable {
                         }
                     }
                 }
-
-                String orNumber = generateOrNumber();
-                txtOrNumber.setText(orNumber);
 
                 success = model.insertPayment(
                     studentId,
@@ -329,43 +327,6 @@ public class StudentPaymentController implements Initializable {
         comboSmsStatus.getSelectionModel().clearSelection();
         datePaidAt.setValue(null);
     }
-    
-    private String generateOrNumber() {
-        String sql = "SELECT or_number FROM collection ORDER BY CAST(or_number AS UNSIGNED) DESC LIMIT 1";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            String lastOr = null;
-
-            if (rs.next()) {
-                lastOr = rs.getString("or_number");
-            }
-
-            // If the DB has no records or the value is invalid
-            if (lastOr == null || !lastOr.matches("\\d+")) {
-                lastOr = "00000000";
-            }
-
-            int nextOrInt = Integer.parseInt(lastOr) + 1;
-
-            // pad to 8 digits
-            String nextOrNumber = String.format("%08d", nextOrInt);
-
-            // ensure OR number is unique
-            while (isOrNumberExist(nextOrNumber)) {
-                nextOrInt++;
-                nextOrNumber = String.format("%08d", nextOrInt);
-            }
-
-            return nextOrNumber;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "00000001";
-        }
-    }
-
 
     private boolean isOrNumberExist(String orNumber) {
         String sql = "SELECT COUNT(*) FROM collection WHERE or_number = ?";
@@ -424,9 +385,6 @@ public class StudentPaymentController implements Initializable {
 
         if (txtLastName.getText() == null || txtLastName.getText().trim().isEmpty())
             errors.append("• Last Name is required.\n");
-
-        if (txtMiddleName.getText() == null || txtMiddleName.getText().trim().isEmpty())
-            errors.append("• Middle Name is required.\n");
 
         if (comboSuffix.getValue() == null)
             errors.append("• Suffix must be selected.\n");

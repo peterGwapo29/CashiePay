@@ -67,8 +67,11 @@ public class ExcelExporter {
         }
     }
 
-    public static void exportFiltered(Connection conn, String smsFilter,
-                                    LocalDate startDate, LocalDate endDate) {
+    public static void exportFiltered(  Connection conn,
+                                        String smsFilter,
+                                        String statusFilter,
+                                        LocalDate startDate,
+                                        LocalDate endDate) {
 
       List<PaymentRecord> records = new ArrayList<>();
 
@@ -95,6 +98,10 @@ public class ExcelExporter {
       if (smsFilter != null && !smsFilter.equalsIgnoreCase("All")) {
           sql.append(" AND c.sms_status = '").append(smsFilter).append("' ");
       }
+      
+      if (statusFilter != null && !statusFilter.equalsIgnoreCase("All")) {
+            sql.append(" AND c.status = '").append(statusFilter).append("' ");
+        }
 
       sql.append(" ORDER BY c.id ASC");
 
@@ -246,6 +253,4 @@ public class ExcelExporter {
 
         return result.toString();
     }
-
-
 }

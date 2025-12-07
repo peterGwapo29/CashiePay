@@ -8,3 +8,102 @@
     src: url('fonts/Montserrat-Regular.ttf');
 }
 
+* {
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+}
+
+.mainFxmlClass {
+    -fx-background-color: linear-gradient(to bottom, #f7f8ff, #eef1ff) !important;
+}
+
+.header-bar {
+    -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
+    -fx-padding: 0 24 0 24 !important;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0, 0, 2) !important;
+    -fx-border-color: #fece00 transparent transparent transparent !important;
+    -fx-border-width: 3 0 0 0 !important;
+}
+
+.SystemName {
+    -fx-font-family: 'Montserrat' !important;
+    -fx-font-size: 22px !important;
+    -fx-font-weight: bold !important;
+    -fx-text-fill: white !important;
+    -fx-letter-spacing: 1px !important;
+}
+
+.profile-card {
+    -fx-background-color: #ffffff !important;
+    -fx-background-radius: 18 !important;
+    -fx-border-radius: 18 !important;
+    -fx-border-color: #dde2ff !important;
+    -fx-border-width: 1 !important;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3) !important;
+}
+
+.section-title {
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 22px !important;
+    -fx-font-weight: 600 !important;
+    -fx-text-fill: #22263c !important;
+}
+
+.avatar {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 10, 0, 0, 3) !important;
+    -fx-background-radius: 60 !important;
+}
+
+.field-label {
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 14px !important;
+    -fx-font-weight: 600 !important;
+    -fx-text-fill: #01319d !important;
+}
+
+.input-field,
+.text-field,
+.password-field {
+    -fx-background-color: #ffffff !important;
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-border-color: #d3d7ff !important;
+    -fx-border-width: 1 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 14px !important;
+    -fx-text-fill: #22263c !important;
+}
+
+.input-field:focused,
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #01319d !important;
+    -fx-border-width: 2 !important;
+    -fx-effect: dropshadow(gaussian, rgba(1,49,157,0.25), 10, 0.3, 0, 2) !important;
+}
+
+.btn-primary,
+#updateInfoButton {
+    -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
+    -fx-text-fill: #ffffff !important;
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-padding: 0 20 0 20 !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 14px !important;
+    -fx-font-weight: 600 !important;
+    -fx-border-color: transparent !important;
+    -fx-cursor: hand !important;
+}
+
+.btn-primary:hover,
+#updateInfoButton:hover {
+    -fx-background-color: linear-gradient(to right, #3155d9, #01319d) !important;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0, 0, 3) !important;
+}
+
+.btn-primary:pressed,
+#updateInfoButton:pressed {
+    -fx-translate-y: 1px !important;
+}

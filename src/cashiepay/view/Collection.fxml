@@ -15,21 +15,22 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1284.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1285.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
     <stylesheets>
         <URL value="@/cashiepay/style/collection.css" />
     </stylesheets>
     
     <children>
-      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" style="-fx-background-color: #4d6bff;">
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
-      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0">
+      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="transaction-card">
          <children>
             <HBox alignment="CENTER" prefHeight="44.0" prefWidth="1274.0">
                <children>
@@ -106,7 +107,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </ComboBox>
-                        <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #4d6bff;" styleClass="btn" text="Add New" textFill="WHITE">
+                        <Button fx:id="btnAddNew" mnemonicParsing="false" prefHeight="40.0" style="-fx-background-color: #4d6bff;" styleClass="btn" text="Add Transaction" textFill="WHITE">
 
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
@@ -129,6 +130,15 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
+                        <Button fx:id="clearBtn" mnemonicParsing="false" onAction="#ClearSearchBar" prefHeight="40.0">
+                           <graphic>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../icons/tdesign--user-clear.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                         <TextField fx:id="txtSearchStudent" prefHeight="40.0" prefWidth="288.0" promptText="Search by Student ID" styleClass="btn">
                            <font>
                               <Font size="14.0" />
@@ -143,9 +153,9 @@
                   </HBox>
                </children>
             </HBox>
-            <VBox prefHeight="300.0" prefWidth="1284.0">
+            <VBox prefHeight="430.0" prefWidth="1263.0">
                <children>
-                  <TableView id="removeScroll" fx:id="tableView" prefHeight="280.0" prefWidth="1263.0">
+                  <TableView id="removeScroll" fx:id="tableView" prefHeight="430.0">
                     <columns>
                       <TableColumn fx:id="id" prefWidth="55.999998450279236" text="ID" />
                       <TableColumn fx:id="colStudentId" prefWidth="100.00000762939453" text="Student ID" />
@@ -159,7 +169,7 @@
                         <TableColumn fx:id="colAmount" prefWidth="75.39996337890625" text="Amount" />
                         <TableColumn fx:id="colDatePaid" prefWidth="147.79998779296875" text="Date Paid " />
                         <TableColumn fx:id="colSms" prefWidth="66.800048828125" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="138.40007324218755" text="Action" />
+                        <TableColumn fx:id="action" prefWidth="138.39995117187505" text="Action" />
                     </columns>
                   </TableView>
                </children>
@@ -167,6 +177,9 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </VBox>
+            
+            
+<!--            //here
             <HBox alignment="CENTER" prefHeight="63.0" prefWidth="1284.0">
                 <padding>
                     <Insets bottom="10.0" top="10.0" />
@@ -274,8 +287,89 @@
                     </HBox>
                   <HBox prefHeight="136.0" prefWidth="623.0" />
                </children>
-            </HBox>
+            </HBox>-->
+            
+            
+            <!-- FOOTER: summary + date filter + pagination -->
+            <!-- FOOTER: summary + date range + pagination -->
+<HBox alignment="CENTER" prefHeight="80.0" prefWidth="1284.0">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <children>
+        <!-- Single footer bar -->
+        <HBox alignment="CENTER_LEFT" prefWidth="1240.0" spacing="28.0" styleClass="footer-bar">
+            <children>
+
+                <!-- LEFT: totals -->
+                <HBox alignment="CENTER_LEFT" spacing="24.0">
+                    <children>
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label styleClass="summary-label" text="Total Transactions" />
+                                <Label fx:id="lblTotalTransactions" styleClass="summary-value" text="0" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label styleClass="summary-label" text="Total Amount" />
+                                <Label fx:id="lblTotalCollected" styleClass="summary-value-accent" text="₱0.00" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- flexible space -->
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- CENTER: date range -->
+                <VBox spacing="6.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                            <children>
+                                <Label styleClass="summary-label" text="Date range" />
+                                <Label fx:id="displayDate" styleClass="date-range-text" text="All Dates" />
+                            </children>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="4.0">
+                                    <children>
+                                        <Label styleClass="date-label" text="From" />
+                                        <DatePicker fx:id="filterStartDate" prefWidth="140.0" />
+                                        <Button fx:id="btnClearStart" styleClass="link-button" text="Clear" />
+                                    </children>
+                                </HBox>
+
+                                <HBox alignment="CENTER_LEFT" spacing="4.0">
+                                    <children>
+                                        <Label styleClass="date-label" text="To" />
+                                        <DatePicker fx:id="filterEndDate" prefWidth="140.0" />
+                                        <Button fx:id="btnClearEnd" styleClass="link-button" text="Clear" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- small spacer between date + pagination -->
+                <Region prefWidth="16.0" />
+
+                <!-- RIGHT: pagination -->
+                <Pagination fx:id="pagination" maxWidth="260.0" prefHeight="40.0" prefWidth="260.0" style="-fx-page-information-visible: false;" />
+            </children>
+        </HBox>
+    </children>
+</HBox>
+
+
          </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
       </VBox>
    </children>
 </AnchorPane>

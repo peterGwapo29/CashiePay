@@ -19,7 +19,7 @@
    <children>
       <VBox layoutX="21.0" layoutY="14.0" prefHeight="440.0" prefWidth="178.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="43.0" prefWidth="150.0">
+            <VBox alignment="CENTER" prefHeight="120.0" prefWidth="150.0" spacing="8" styleClass="sidebar-header">
                <children>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
@@ -68,7 +68,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button mnemonicParsing="false" prefWidth="150.0" styleClass="nav-item" text="Manage" textAlignment="CENTER" textFill="WHITE">
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: none;" text="Manage" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="14.0" />
                      </font>

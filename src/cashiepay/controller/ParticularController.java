@@ -47,6 +47,8 @@ public class ParticularController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        particularTable.setColumnResizePolicy(particularTable.CONSTRAINED_RESIZE_POLICY);
         colId.setCellValueFactory(data -> data.getValue().idProperty());
         colName.setCellValueFactory(data -> data.getValue().particularNameProperty());
         colAmount.setCellValueFactory(data -> data.getValue().amountProperty());

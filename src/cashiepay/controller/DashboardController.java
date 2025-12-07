@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -17,7 +16,6 @@ import java.sql.ResultSet;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 
 
 public class DashboardController implements Initializable {
@@ -41,8 +39,6 @@ public class DashboardController implements Initializable {
     private Label totalTransactionsLabel;
     @FXML
     private Label todaysRevenueLabel;
-    private Label paidStudentsLabel;
-    private Label outstandingStudentsLabel;
     @FXML
     private Label totalStudentsLabel;
     
@@ -54,6 +50,7 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         conn = DBConnection.getConnection();
         
+        recentTransactionsTable.setColumnResizePolicy(recentTransactionsTable.CONSTRAINED_RESIZE_POLICY);
         setupTableView();
         loadRecentTransactions();
         loadDashboardCards();
@@ -62,7 +59,11 @@ public class DashboardController implements Initializable {
         colOrNumber.setCellValueFactory(cell -> cell.getValue().orNumberProperty());
         colPayor.setCellValueFactory(cell -> 
             new SimpleStringProperty(
-                cell.getValue().getFirstName() + " " + cell.getValue().getLastName()
+                cell.getValue().getStudentId()  + ", " +
+                cell.getValue().getLastName()   + ", " +
+                cell.getValue().getFirstName()  + ", " +
+                cell.getValue().getMiddleName() + ", " +
+                cell.getValue().getSuffix()
             )
         );
         colParticular.setCellValueFactory(cell -> cell.getValue().particularProperty());
@@ -89,10 +90,7 @@ public class DashboardController implements Initializable {
      private void loadDashboardCards() {
         setTotalTransactions();
         setTodaysRevenue();
-//        setPaidStudents();
-//        setOutstandingStudents();
         setTotalStudents();
-//        setPendingPayments();
     }
      
      private void setTotalTransactions() {
@@ -110,43 +108,18 @@ public class DashboardController implements Initializable {
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                todaysRevenueLabel.setText("₱" + rs.getDouble("revenue"));
+                double revenue = rs.getDouble("revenue");
+                java.text.NumberFormat formatter = java.text.NumberFormat.getNumberInstance();
+                String formatted = formatter.format(revenue);
+
+                todaysRevenueLabel.setText("₱" + formatted);
+
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-//    private void setPaidStudents() {
-//        String sql = "SELECT COUNT(DISTINCT student_id) AS paid_students " +
-//                     "FROM collection " +
-//                     "WHERE paid_at IS NOT NULL AND paid_at <> '' AND paid_at <> '0000-00-00 00:00:00'";
-//
-//        try (PreparedStatement ps = conn.prepareStatement(sql);
-//             ResultSet rs = ps.executeQuery()) {
-//            if (rs.next()) {
-//                paidStudentsLabel.setText(String.valueOf(rs.getInt("paid_students")));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
-//    private void setOutstandingStudents() {
-//        String sql = "SELECT COUNT(DISTINCT student_id) AS outstanding " +
-//                     "FROM collection WHERE paid_at IS NULL OR paid_at = ''";
-//
-//        try (PreparedStatement ps = conn.prepareStatement(sql);
-//             ResultSet rs = ps.executeQuery()) {
-//            if (rs.next()) {
-//                outstandingStudentsLabel.setText(String.valueOf(rs.getInt("outstanding")));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void setTotalStudents() {
-        String sql = "SELECT COUNT(*) AS total FROM collection";
+        String sql = "SELECT COUNT(DISTINCT student_id) AS total FROM collection";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {

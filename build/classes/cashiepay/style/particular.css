@@ -8,116 +8,166 @@
     src: url('fonts/Montserrat-Regular.ttf');
 }
 
-.SystemName {
-    -fx-font-family: 'Montserrat';
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: white;
+* {
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+    -fx-font-family: 'Poppins', Arial !important;
 }
 
-/* ============================
-   PARTICULAR TABLEVIEW STYLES
-   ============================ */
+.mainFxmlClass {
+    -fx-background-color: linear-gradient(to bottom, #f7f8ff, #eef1ff) !important;
+}
 
-/* Target only this view's table (since this CSS is for Particular screen) */
+.header-bar {
+    -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
+    -fx-padding: 0 24 0 24 !important;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0, 0, 2) !important;
+    -fx-border-color: #fece00 transparent transparent transparent !important;
+    -fx-border-width: 3 0 0 0 !important;
+}
+
+.SystemName {
+    -fx-font-family: 'Montserrat' !important;
+    -fx-font-size: 22px !important;
+    -fx-font-weight: bold !important;
+    -fx-text-fill: white !important;
+    -fx-letter-spacing: 1px !important;
+}
+
+.particular-card {
+    -fx-background-color: #ffffff !important;
+    -fx-background-radius: 18 !important;
+    -fx-border-radius: 18 !important;
+    -fx-border-color: #dde2ff !important;
+    -fx-border-width: 1 !important;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3) !important;
+}
+
+.card > HBox Label {
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 22px !important;
+    -fx-font-weight: 600 !important;
+    -fx-text-fill: #22263c !important;
+}
+
+.showFilterText{
+    -fx-font-size: 14px !important;
+}
+
+.filter-btn {
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-background-color: #ffffff !important;
+    -fx-border-color: #d3d7ff !important;
+    -fx-border-width: 1 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-font-size: 13px !important;
+    -fx-cursor: hand !important;
+}
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
+    -fx-text-fill: #ffffff !important;
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-padding: 0 16 0 16 !important;
+    -fx-font-size: 14px !important;
+    -fx-font-weight: 500 !important;
+    -fx-border-color: transparent !important;
+    -fx-cursor: hand !important;
+}
+
+.btn-primary:hover {
+    -fx-opacity: 0.9 !important;
+}
+
 .table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #E4E8FF;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 0;
-    -fx-table-cell-border-color: transparent;
+    -fx-background-color: transparent !important;
+    -fx-border-color: #E4E8FF !important;
+    -fx-border-radius: 10 !important;
+    -fx-background-radius: 10 !important;
+    -fx-padding: 0 !important;
+    -fx-table-cell-border-color: transparent !important;
 }
 
 .table-view:focused {
-    -fx-background-insets: 0;
+    -fx-background-insets: 0 !important;
 }
 
-/* ---------- Header ---------- */
-
 .table-view .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, #4d6bff, #384fdd);
-    -fx-background-radius: 8 8 0 0;
-    -fx-padding: 0;
+    -fx-background-color: linear-gradient(to bottom, #01319d, #3155d9) !important;
+    -fx-background-radius: 10 10 0 0 !important;
+    -fx-padding: 0 !important;
 }
 
 .table-view .column-header,
 .table-view .filler {
-    -fx-size: 40px;
-    -fx-border-width: 0;
-    -fx-background-color: transparent;
+    -fx-size: 40px !important;
+    -fx-border-width: 0 !important;
+    -fx-background-color: transparent !important;
 }
 
 .table-view .column-header .label {
-    -fx-text-fill: white;
-    -fx-font-family: 'Poppins';
-    -fx-font-size: 13px;
-    -fx-font-weight: 600;
-    -fx-padding: 0 10 0 10;
-    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: white !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 13px !important;
+    -fx-font-weight: 600 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-alignment: CENTER_LEFT !important;
 }
 
-/* ---------- Rows ---------- */
-
 .table-row-cell:odd {
-    -fx-background-color: #F7F8FF;
+    -fx-background-color: #F7F8FF !important;
 }
 
 .table-row-cell:even {
-    -fx-background-color: white;
+    -fx-background-color: #ffffff !important;
 }
 
 .table-row-cell:hover {
-    -fx-background-color: #d4ddff;
+    -fx-background-color: #e0e5ff !important;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #E4E8FF;
-    -fx-text-fill: #1c1c1c;
+    -fx-background-color: #d2dcff !important;
+    -fx-text-fill: #1c1c1c !important;
 }
 
 .table-row-cell:filled:selected:focused {
-    -fx-background-color: #d1dbff;
+    -fx-background-color: #c8d3ff !important;
 }
 
-/* ---------- Cells ---------- */
-
 .table-cell {
-    -fx-padding: 6 10;
-    -fx-font-family: 'Poppins';
-    -fx-font-size: 13px;
-    -fx-text-fill: #333333;
-    -fx-alignment: CENTER_LEFT;
-    -fx-border-color: transparent;
+    -fx-padding: 6 10 !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 13px !important;
+    -fx-text-fill: #333333 !important;
+    -fx-alignment: CENTER_LEFT !important;
+    -fx-border-color: transparent !important;
 }
 
 .table-row-cell:selected .table-cell {
-    -fx-text-fill: #1c1c1c;
+    -fx-text-fill: #111827 !important;
 }
 
-/* Center ID & Action columns (from FXML styleClass) */
 .table-cell.center-column {
-    -fx-alignment: CENTER;
+    -fx-alignment: CENTER !important;
 }
 
-/* Right-align numeric columns (Amount) */
 .table-cell.numeric-column {
-    -fx-alignment: CENTER-LEFT;
-    -fx-font-weight: 600;
+    -fx-alignment: CENTER-RIGHT !important;
+    -fx-font-weight: 600 !important;
 }
 
-/* Status column styling */
 .table-cell.status-column {
-    -fx-alignment: CENTER;
-    -fx-font-weight: 600;
-    -fx-text-fill: #177334;   /* nice green for active status */
+    -fx-alignment: CENTER !important;
+    -fx-font-weight: 600 !important;
+    -fx-text-fill: #177334 !important;
 }
 
-/* Hide horizontal scrollbar */
 .table-view .scroll-bar:horizontal {
-    -fx-opacity: 0;
-    -fx-pref-height: 0;
-    -fx-max-height: 0;
-    -fx-min-height: 0;
+    -fx-opacity: 0 !important;
+    -fx-pref-height: 0 !important;
+    -fx-max-height: 0 !important;
+    -fx-min-height: 0 !important;
 }
-

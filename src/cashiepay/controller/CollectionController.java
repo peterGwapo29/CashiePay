@@ -34,17 +34,14 @@ import java.sql.ResultSet;
 import cashiepay.model.DBConnection;
 import cashiepay.model.PaymentRecord;
 import cashiepay.util.LoadingDialog;
-import java.io.File;
 import java.time.format.DateTimeFormatter;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
 
 
 public class CollectionController implements Initializable {
@@ -54,10 +51,8 @@ public class CollectionController implements Initializable {
     @FXML private TableColumn<PaymentRecord, String> id, colStudentId, colFirstName, colLastName, colMiddleName, colSuffix, colOrNumber, colParticular, colMfoPap, colDatePaid, colSms;
     @FXML private TableColumn<PaymentRecord, Double> colAmount;
     @FXML private TableColumn<PaymentRecord, Void> action;
-    @FXML
-    private Label lblTotalTransactions;
-    @FXML
-    private Label lblTotalCollected;
+    @FXML private Label lblTotalTransactions;
+    @FXML private Label lblTotalCollected;
     @FXML private ComboBox<String> filterShow, filterSMS;
     @FXML private TextField txtSearchStudent;
     @FXML private Pagination pagination;
@@ -78,14 +73,15 @@ public class CollectionController implements Initializable {
     private Label displayDate;
     
     private final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-    @FXML
-    private ComboBox<String> filterStatus;
+    @FXML private ComboBox<String> filterStatus;
+    @FXML private Button clearBtn;
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conn = DBConnection.getConnection();
-
+        
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         setupTableColumns();
         setupActionColumn();
         
@@ -95,11 +91,11 @@ public class CollectionController implements Initializable {
         loadPayments();
 
         btnAddNew.setOnAction(e -> openStudentPaymentModal());
-//        btnImport.setOnAction(e -> ExcelImporter.importExcel(conn, tableView, this));
         btnImport.setOnAction(e -> importWithLoading());
         btnExport.setOnAction(e -> ExcelExporter.exportFiltered(
                 conn,
                 filterSMS.getValue(),
+                filterStatus.getValue(), 
                 filterStartDate.getValue(),
                 filterEndDate.getValue()
         ));
@@ -120,7 +116,7 @@ public class CollectionController implements Initializable {
         filterSMS.setValue("All");
         
         filterStatus.getItems().addAll("All", "Active", "Inactive");
-        filterStatus.setValue("All");
+        filterStatus.setValue("Active");
 
         filterSMS.setOnAction(e -> applyFilters());
         filterStartDate.setOnAction(e -> applyFilters());
@@ -128,69 +124,37 @@ public class CollectionController implements Initializable {
         filterStatus.setOnAction(e -> applyFilters()); 
     }
     
-//    private void importWithLoading() {
-//        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
-//
-//        Platform.runLater(() -> loading.show());
-//
-//        Platform.runLater(() -> {
-//            try {
-//                ExcelImporter.importExcel(conn, tableView, CollectionController.this);
-//
-//                loading.close();
-//                loadPayments();
-//                
-//                
-//
-//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                alert.setHeaderText("Import Complete");
-//                alert.setContentText("Excel data imported successfully.");
-//                alert.showAndWait();
-//
-//            } catch (Exception ex) {
-//                loading.close();
-//                ex.printStackTrace();
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setHeaderText("Import Failed");
-//                alert.setContentText("Error: " + ex.getMessage());
-//                alert.showAndWait();
-//            }
-//        });
-//    }
     private void importWithLoading() {
-    LoadingDialog loading = new LoadingDialog("Importing, please wait...");
+        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
 
-    Platform.runLater(loading::show);
+        Platform.runLater(loading::show);
 
-    Platform.runLater(() -> {
-        try {
-            // NOW EXPECTS A BOOLEAN
-            boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+        Platform.runLater(() -> {
+            try {
+                // NOW EXPECTS A BOOLEAN
+                boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
 
-            loading.close();
+                loading.close();
 
-            if (imported) { // ✅ Only show alert if data was really imported
-                loadPayments();
+                if (imported) { // ✅ Only show alert if data was really imported
+                    loadPayments();
 
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Import Complete");
-                alert.setContentText("Excel data imported successfully.");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("Import Complete");
+                    alert.setContentText("Excel data imported successfully.");
+                    alert.showAndWait();
+                }
+
+            } catch (Exception ex) {
+                loading.close();
+                ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Import Failed");
+                alert.setContentText("Error: " + ex.getMessage());
                 alert.showAndWait();
             }
-
-        } catch (Exception ex) {
-            loading.close();
-            ex.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Import Failed");
-            alert.setContentText("Error: " + ex.getMessage());
-            alert.showAndWait();
-        }
-    });
-}
-
-
-
+        });
+    }
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         colStudentId.setCellValueFactory(new PropertyValueFactory<>("studentId"));
@@ -495,7 +459,6 @@ public class CollectionController implements Initializable {
         return alert.showAndWait().orElse(cancel) == yes;
     }
 
-    
     private boolean confirmRestore() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Restore");
@@ -527,6 +490,9 @@ public class CollectionController implements Initializable {
     }
 
     @FXML
-    private void DisplayDateAction(MouseEvent event) {
-    }
+    private void ClearSearchBar(ActionEvent event) {
+        if(event.getSource() == clearBtn){
+            txtSearchStudent.setText("");
+        }
+    } 
 }

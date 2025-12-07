@@ -16,7 +16,7 @@
         <URL value="@/cashiepay/style/dashboard.css" />
     </stylesheets>
    <children>
-      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" style="-fx-background-color: #4d6bff;">
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children></HBox>
@@ -46,56 +46,72 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="183.0" prefWidth="1223.0" spacing="24.0">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #4d6bff; -fx-border-radius: 8px;">
-                           <children>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0">
+
+                          <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="metric-card" />
+                              <String fx:value="metric-card-primary" />
+                          </styleClass>
+
+                          <children>
                               <Label text="Total Transactions Today" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
+                                  <font>
+                                      <Font size="18.0" />
+                                  </font>
                               </Label>
                               <Label fx:id="totalTransactionsLabel" text="00" textFill="WHITE">
-                                 <font>
-                                    <Font size="34.0" />
-                                 </font>
+                                  <font>
+                                      <Font size="34.0" />
+                                  </font>
                               </Label>
-                           </children>
-                           <styleClass>
-                              <String fx:value="card" />
-                              <String fx:value="card-top" />
-                           </styleClass>
+                          </children>
+                      </VBox>
+
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0">
+
+                             <styleClass>
+                                 <String fx:value="card" />
+                                 <String fx:value="metric-card" />
+                                 <String fx:value="metric-card-accent" />
+                            </styleClass>
+
+                            <children>
+                                 <Label text="Today’s Revenue" textFill="WHITE">
+                                     <font>
+                                          <Font size="18.0" />
+                                    </font>
+                                </Label>
+                                 <Label fx:id="todaysRevenueLabel" text="₱00.00" textFill="WHITE">
+                                    <font>
+                                        <Font size="34.0" />
+                                    </font>
+                                </Label>
+                            </children>
                         </VBox>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="280.0" spacing="4.0" style="-fx-background-color: #28a745; -fx-border-radius: 8px;">
-                           <children>
-                              <Label text="Today’s Revenue" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="todaysRevenueLabel" text="₱00.00" textFill="WHITE">
-                                 <font>
-                                    <Font size="34.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <styleClass>
-                              <String fx:value="card" />
-                              <String fx:value="card-top" />
-                           </styleClass>
-                        </VBox>
-                        <VBox alignment="CENTER" prefHeight="112.0" prefWidth="222.0" spacing="8.0" style="-fx-background-color: #17a2b8;" styleClass="card">
-                           <children>
-                              <Label text="Total Students" textFill="WHITE">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="totalStudentsLabel" text="00" textFill="#fafafa">
-                                 <font>
-                                    <Font size="34.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
+
+                        <VBox alignment="CENTER" prefHeight="112.0" prefWidth="222.0" spacing="8.0">
+
+                              <styleClass>
+                                  <String fx:value="card" />
+                                  <String fx:value="metric-card" />
+                                  <String fx:value="metric-card-secondary" />
+                              </styleClass>
+
+                              <children>
+                                  <Label text="Total Students" textFill="WHITE">
+                                      <font>
+                                          <Font size="18.0" />
+                                      </font>
+                                  </Label>
+                                  <Label fx:id="totalStudentsLabel" text="00" textFill="#fafafa">
+                                      <font>
+                                          <Font size="34.0" />
+                                      </font>
+                                  </Label>
+                              </children>
+                          </VBox>
+
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -115,12 +131,12 @@
                               </Label>
                               <TableView fx:id="recentTransactionsTable" prefHeight="337.0" prefWidth="917.0">
                                     <columns>
-                                        <TableColumn fx:id="colDate" prefWidth="122.0" text="Date" />
-                                        <TableColumn fx:id="colOrNumber" prefWidth="213.0" text="OR Number" />
-                                        <TableColumn fx:id="colPayor" prefWidth="227.46661376953125" text="Name of Payor" />
-                                        <TableColumn fx:id="colParticular" prefWidth="160.53338623046875" text="Particulars" />
-                                        <TableColumn fx:id="colMfoPap" prefWidth="120.26666259765625" text="MFO/PAP" />
-                                        <TableColumn fx:id="colAmount" prefWidth="178.93328857421875" text="Amount" />
+                                        <TableColumn fx:id="colDate" prefWidth="166.93336027860641" text="Date" />
+                                        <TableColumn fx:id="colOrNumber" prefWidth="137.6000213623047" text="OR Number" />
+                                        <TableColumn fx:id="colPayor" prefWidth="327.9999694824219" text="Name of Payor" />
+                                        <TableColumn fx:id="colParticular" prefWidth="144.2666015625" text="Particulars" />
+                                        <TableColumn fx:id="colMfoPap" prefWidth="132.00006103515625" text="MFO/PAP" />
+                                        <TableColumn fx:id="colAmount" prefWidth="117.60003662109375" text="Amount" />
                                     </columns>
                                 </TableView>
                            </children>

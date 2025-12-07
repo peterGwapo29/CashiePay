@@ -21,78 +21,85 @@
     </stylesheets>
     
     <children>
-      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1294.0" style="-fx-background-color: #4d6bff;">
+      <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
          <children>
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
       
-      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="card">
-         <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
-               <children>
-                  <Label text="Particular">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1284.0" spacing="8.0">
-               <children>
-                  <Label text="Show">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="filterStatus" onAction="#filterStatusChanged" prefHeight="40.0" promptText="All" style="-fx-background-color: white;" styleClass="filter-btn">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ComboBox>
-                  <Button fx:id="newParticularBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newParticularBtnAction" prefHeight="40.0" style="-fx-background-color: #177334;" styleClass="btn" text="Add Particular" textFill="WHITE">
-                     <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
-                           <image>
-                              <Image url="@../../icons/mdi--plus-circle%20(2).png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <font>
-                        <Font name="Arial" size="14.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-            <VBox prefHeight="536.0" prefWidth="1284.0">
-               <children>
-                    <TableView fx:id="particularTable" prefHeight="280.0" prefWidth="1263.0">
-                        <columns>
-                            <TableColumn fx:id="colId" prefWidth="50" text="ID" styleClass="center-column" />
-                            <TableColumn fx:id="colName" prefWidth="261.86670684814453" text="Particular Name" styleClass="numeric-column" />
-                            <TableColumn fx:id="colAmount" prefWidth="169.33328247070312" text="Amount" />
-                            <TableColumn fx:id="colCreatedAt" prefWidth="195.46670532226562" text="Created At" />
-                            <TableColumn fx:id="colUpdatedAt" prefWidth="173.066650390625" text="Updated At" />
-                        <TableColumn fx:id="colStatus" prefWidth="210.666748046875" text="Status" styleClass="status-column" />
-                        <TableColumn fx:id="colAction" prefWidth="200.0001220703125" text="Action" styleClass="center-column" />
-                        </columns>
-                    </TableView>
+      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="particular-card">
+            <children>
+                <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
+                    <children>
+                        <Label text="Particular">
+                            <font>
+                                <Font size="24.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </HBox>
 
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-         </children>
-      </VBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1284.0" spacing="8.0">
+                    <children>
+                        <Label styleClass="showFilterText" text="Show">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="filterStatus" onAction="#filterStatusChanged" prefHeight="40.0" promptText="All" styleClass="filter-btn">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </ComboBox>
+                        <Button fx:id="newParticularBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newParticularBtnAction" prefHeight="40.0" styleClass="btn-primary" text="Add Particular" textFill="WHITE">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
+                                    <image>
+                                        <Image url="@../../icons/mdi--plus-circle%20(2).png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <font>
+                                <Font name="Arial" size="14.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </HBox>
+
+                <VBox prefHeight="536.0" prefWidth="1284.0">
+                    <children>
+                        <TableView fx:id="particularTable" prefHeight="280.0" prefWidth="1263.0">
+                            <columns>
+                                <TableColumn fx:id="colId" prefWidth="50" styleClass="center-column" text="ID" />
+                                <TableColumn fx:id="colName" prefWidth="261.8667" text="Particular Name" />
+                                <TableColumn fx:id="colAmount" prefWidth="169.3333" styleClass="numeric-column" text="Amount" />
+                                <TableColumn fx:id="colCreatedAt" prefWidth="195.4667" text="Created At" />
+                                <TableColumn fx:id="colUpdatedAt" prefWidth="173.0666" text="Updated At" />
+                                <TableColumn fx:id="colStatus" prefWidth="210.6667" styleClass="status-column" text="Status" />
+                                <TableColumn fx:id="colAction" prefWidth="200.0001" styleClass="center-column" text="Action" />
+                            </columns>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                        </TableView>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </VBox>
+            </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+        </VBox>
    </children>
 </AnchorPane>
