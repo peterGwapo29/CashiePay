@@ -400,9 +400,9 @@ public class CollectionController implements Initializable {
             modal.setScene(new Scene(root));
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.setResizable(false);
+            modal.setTitle("Record Transaction");
             modal.showAndWait();
-
-            // Reload table after edit
+            
             loadPayments();
         } catch (IOException ex) {
             ex.printStackTrace();

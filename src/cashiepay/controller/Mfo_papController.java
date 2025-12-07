@@ -65,7 +65,7 @@ public class Mfo_papController implements Initializable {
         Parent root = loader.load();
 
         Stage modal = new Stage();
-        modal.setTitle("Add New MFO/PAP");
+        modal.setTitle("Register MFO/PAP");
         modal.setScene(new Scene(root));
         modal.initModality(Modality.WINDOW_MODAL);
         modal.initOwner(newMfoPapBtn.getScene().getWindow());

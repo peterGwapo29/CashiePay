@@ -69,7 +69,7 @@ public class ParticularController implements Initializable {
         Parent root = loader.load();
 
         Stage modal = new Stage();
-        modal.setTitle("Add New Particular");
+        modal.setTitle("Register Particular");
         modal.setScene(new Scene(root));
         modal.initModality(Modality.WINDOW_MODAL);
         modal.initOwner(newParticularBtn.getScene().getWindow());

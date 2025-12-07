@@ -32,7 +32,7 @@
 
             <HBox alignment="CENTER_RIGHT" spacing="10">
                 <Button fx:id="cancelButton" styleClass="btn-secondary" text="Cancel" />
-                <Button fx:id="saveButton" styleClass="btn-primary" text="Save" />
+                <Button fx:id="saveButton" styleClass="btn-primary" text="Submit" />
             </HBox>
 
         </VBox>
