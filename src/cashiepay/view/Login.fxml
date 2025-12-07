@@ -6,6 +6,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -19,31 +22,34 @@
     <!-- Background layout using HBox -->
     <HBox prefHeight="450.0" prefWidth="750.0">
 
-        <VBox alignment="CENTER_LEFT" prefWidth="350" spacing="15" style="-fx-background-color: #4d6bff;" styleClass="left-pane">
+        <VBox alignment="CENTER_LEFT" prefWidth="350" spacing="15" style="-fx-background-color: #01319d;" styleClass="left-pane">
             <Label styleClass="welcome-title" text="Hello," textFill="WHITE">
             <font>
                <Font name="System Bold" size="36.0" />
             </font>
             <VBox.margin>
                <Insets left="32.0" />
-            </VBox.margin></Label>
+            </VBox.margin>
+         </Label>
             <Label styleClass="welcome-title" text="Welcome!" textFill="WHITE">
             <font>
                <Font name="System Bold" size="36.0" />
             </font>
             <VBox.margin>
                <Insets left="32.0" />
-            </VBox.margin></Label>
+            </VBox.margin>
+         </Label>
             <Label styleClass="welcome-desc" text="Login your account to continue." textFill="#fcfcfc" wrapText="true">
             <font>
                <Font size="14.0" />
             </font>
             <VBox.margin>
                <Insets left="32.0" />
-            </VBox.margin></Label>
+            </VBox.margin>
+         </Label>
         </VBox>
 
-        <VBox alignment="CENTER" prefWidth="400" spacing="20" styleClass="right-pane">
+        <VBox alignment="CENTER" prefWidth="400.0" spacing="20" styleClass="right-pane">
             <VBox prefWidth="400.0" spacing="10">
 
                 <Label styleClass="input-label" text="Email address" />
@@ -55,6 +61,14 @@
 
             <Button fx:id="loginBtn" onAction="#handleLoginAction" prefWidth="180" styleClass="login-btn" text="Login" />
         </VBox>
-
     </HBox>
+    <ImageView fitHeight="388.0" fitWidth="331.0" layoutX="162.0" layoutY="38.0" opacity="0.12" pickOnBounds="true" preserveRatio="true">
+     <image>
+         <Image url="@../../icons/bitcoin-icons--gear-filled.png" />
+     </image>
+     <effect>
+         <!-- Yellow glow matching your theme color -->
+         <DropShadow color="#fece00" radius="10" spread="0.1" />
+     </effect>
+ </ImageView>
 </AnchorPane>
