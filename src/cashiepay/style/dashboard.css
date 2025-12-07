@@ -34,8 +34,6 @@
     -fx-letter-spacing: 1px !important;
 }
 
-/* ========== TOP GREETING ========== */
-
 .greetings {
     -fx-font-family: 'Poppins' !important;
     -fx-font-size: 14px !important;
@@ -48,8 +46,6 @@
     -fx-font-weight: bold !important;
     -fx-text-fill: #22263c !important;
 }
-
-/* ========== METRIC CARDS ========== */
 
 .card {
     -fx-background-radius: 14px !important;
@@ -66,29 +62,24 @@
     -fx-cursor: hand !important;
 }
 
-/* THEME BLUE */
 .metric-card-primary {
     -fx-background-color: linear-gradient(to bottom, #3358d9, #01319d) !important;
 }
 
-/* GOLD */
 .metric-card-accent {
     -fx-background-color: linear-gradient(to bottom, #fece00, #f0b100) !important;
 }
 
-/* TEAL */
 .metric-card-secondary {
     -fx-background-color: linear-gradient(to bottom, #1fb3c8, #0f8ea4) !important;
 }
 
-/* Hover animation */
 .metric-card:hover {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 16, 0, 0, 5) !important;
     -fx-scale-x: 1.02 !important;
     -fx-scale-y: 1.02 !important;
 }
 
-/* inside metric card */
 .metric-card > Label:first-child {
     -fx-font-family: 'Poppins' !important;
     -fx-font-size: 14px !important;
@@ -102,12 +93,9 @@
     -fx-text-fill: white !important;
 }
 
-/* container card (recent transactions) */
 .card-container {
     -fx-background-color: white !important;
 }
-
-/* ========== RECENT TITLE ========== */
 
 .titleRecent {
     -fx-font-family: 'Poppins' !important;
@@ -115,8 +103,6 @@
     -fx-font-weight: 600 !important;
     -fx-text-fill: #22263c !important;
 }
-
-/* ========== TABLE ========== */
 
 .table-view {
     -fx-background-color: #ffffff !important;
@@ -127,7 +113,6 @@
     -fx-table-cell-border-color: transparent !important;
 }
 
-/* Table header */
 .table-view .column-header-background {
     -fx-background-color: linear-gradient(to bottom, #01319d, #304fd0) !important;
     -fx-background-radius: 10 10 0 0 !important;
@@ -149,7 +134,6 @@
     -fx-alignment: CENTER_LEFT !important;
 }
 
-/* rows */
 .table-row-cell:odd {
     -fx-background-color: #f7f8ff !important;
 }
@@ -177,7 +161,6 @@
     -fx-text-fill: #111827 !important;
 }
 
-/* Hide scrollbars */
 .table-view .scroll-bar:vertical {
     -fx-opacity: 0 !important;
     -fx-pref-width: 0 !important;
@@ -188,7 +171,6 @@
     -fx-pref-height: 0 !important;
 }
 
-/* Row height */
 .table-row-cell {
     -fx-cell-size: 38px !important;
 }

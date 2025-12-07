@@ -42,7 +42,7 @@
                     </padding>
                 </HBox>
 
-                <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1284.0" spacing="8.0">
+                <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1263.0" spacing="8.0">
                     <children>
                         <Label styleClass="showFilterText" text="Show">
                             <font>
@@ -75,7 +75,7 @@
                     </padding>
                 </HBox>
 
-                <VBox prefHeight="536.0" prefWidth="1284.0">
+                <VBox prefHeight="536.0" prefWidth="1263.0">
                     <children>
                         <TableView fx:id="particularTable" prefHeight="280.0" prefWidth="1263.0">
                             <columns>
@@ -87,9 +87,6 @@
                                 <TableColumn fx:id="colStatus" prefWidth="210.6667" styleClass="status-column" text="Status" />
                                 <TableColumn fx:id="colAction" prefWidth="200.0001" styleClass="center-column" text="Action" />
                             </columns>
-                     <padding>
-                        <Insets top="10.0" />
-                     </padding>
                         </TableView>
                     </children>
                     <padding>

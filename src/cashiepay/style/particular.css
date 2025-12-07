@@ -155,12 +155,12 @@
 }
 
 .table-cell.numeric-column {
-    -fx-alignment: CENTER-RIGHT !important;
+    -fx-alignment: CENTER_LEFT !important;
     -fx-font-weight: 600 !important;
 }
 
 .table-cell.status-column {
-    -fx-alignment: CENTER !important;
+    -fx-alignment: CENTER_LEFT !important;
     -fx-font-weight: 600 !important;
     -fx-text-fill: #177334 !important;
 }

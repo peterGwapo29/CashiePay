@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1285.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1284.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.CollectionController">
     <stylesheets>
         <URL value="@/cashiepay/style/collection.css" />
     </stylesheets>
@@ -30,7 +30,7 @@
             <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
-      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="transaction-card">
+      <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1261.0" styleClass="transaction-card">
          <children>
             <HBox alignment="CENTER" prefHeight="44.0" prefWidth="1274.0">
                <children>
@@ -130,14 +130,14 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <Button fx:id="clearBtn" mnemonicParsing="false" onAction="#ClearSearchBar" prefHeight="40.0">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/tdesign--user-clear.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
+                        <Button fx:id="clearBtn" mnemonicParsing="false" onAction="#ClearSearchBar" prefHeight="40.0" styleClass="icon-btn">
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../../icons/tdesign--user-clear.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </Button>
                         <TextField fx:id="txtSearchStudent" prefHeight="40.0" prefWidth="288.0" promptText="Search by Student ID" styleClass="btn">
                            <font>
@@ -177,195 +177,78 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </VBox>
-            
-            
-<!--            //here
-            <HBox alignment="CENTER" prefHeight="63.0" prefWidth="1284.0">
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="1284.0">
                 <padding>
-                    <Insets bottom="10.0" top="10.0" />
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                 </padding>
                 <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="642.0" spacing="16.0">
-                     <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" spacing="8.0">
-                           <children>
-                              <Label text="Total Transactions:">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="lblTotalTransactions" text="00">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </HBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                    <Pagination fx:id="pagination" maxWidth="617.0" prefHeight="48.0" prefWidth="617.0" style="-fx-page-information-visible: false;" />
-                </children>
-            </HBox>
-
-            <HBox alignment="CENTER_RIGHT" prefHeight="47.0" prefWidth="1284.0">
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-               <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="68.0" prefWidth="647.0" spacing="8.0">
+                    <!-- Single footer bar -->
+                    <HBox alignment="CENTER_LEFT" prefWidth="1240.0" spacing="28.0" styleClass="footer-bar">
                         <children>
-                        <VBox alignment="CENTER_LEFT" prefHeight="71.0" spacing="4.0">
-                           <children>
-                              <Label text="Choose date:" textFill="#847f7f">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </VBox>
-                        <VBox prefHeight="136.0" prefWidth="147.0">
-                           <children>
-                              <VBox alignment="CENTER_LEFT" prefHeight="200.0" spacing="4.0">
-                                 <children>
-                                    <Label text="Start Date:" />
-                                    <HBox prefHeight="100.0">
-                                       <children>
-                                          <Button fx:id="btnClearStart" mnemonicParsing="false" style="-fx-background-color: #a61212;" text="X" textFill="WHITE" />
-                                              <DatePicker fx:id="filterStartDate" prefWidth="100.0" />
-                                       </children>
+
+                            <!-- LEFT: totals -->
+                            <HBox alignment="CENTER_LEFT" spacing="24.0">
+                                <children>
+                                    <VBox spacing="4.0">
+                                        <children>
+                                            <Label styleClass="summary-label" text="Total Transactions" />
+                                            <Label fx:id="lblTotalTransactions" styleClass="summary-value" text="0" />
+                                        </children>
+                                    </VBox>
+
+                                    <VBox spacing="4.0">
+                                        <children>
+                                            <Label styleClass="summary-label" text="Total Amount" />
+                                            <Label fx:id="lblTotalCollected" styleClass="summary-value-accent" text="₱0.00" />
+                                        </children>
+                                    </VBox>
+                                </children>
+                            </HBox>
+
+                            <!-- flexible space -->
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <!-- CENTER: date range -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                        <children>
+                                            <Label styleClass="summary-label" text="Date range" />
+                                            <Label fx:id="displayDate" styleClass="date-range-text" text="All Dates" />
+                                        </children>
                                     </HBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                              <VBox alignment="CENTER_LEFT" prefHeight="200.0" spacing="4.0">
-                                 <children>
-                                    <Label text="End Date" />
-                                    <HBox prefHeight="100.0">
-                                       <children>
-                                          <Button fx:id="btnClearEnd" mnemonicParsing="false" style="-fx-background-color: #a61212;" text="X" textFill="WHITE" />
-                                              <DatePicker fx:id="filterEndDate" prefWidth="100.0" />
-                                       </children>
+
+                                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                        <children>
+                                            <HBox alignment="CENTER_LEFT" spacing="4.0">
+                                                <children>
+                                                    <Label styleClass="date-label" text="From" />
+                                                    <DatePicker fx:id="filterStartDate" prefWidth="140.0" />
+                                                    <Button fx:id="btnClearStart" styleClass="link-button" text="Clear" />
+                                                </children>
+                                            </HBox>
+
+                                            <HBox alignment="CENTER_LEFT" spacing="4.0">
+                                                <children>
+                                                    <Label styleClass="date-label" text="To" />
+                                                    <DatePicker fx:id="filterEndDate" prefWidth="140.0" />
+                                                    <Button fx:id="btnClearEnd" styleClass="link-button" text="Clear" />
+                                                </children>
+                                            </HBox>
+                                        </children>
                                     </HBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER" prefHeight="68.0" spacing="4.0" style="-fx-background-color: #4d6bff;" styleClass="totalAAmountFilter">
-                           <children>
-                              <Label fx:id="displayDate" onDragDetected="#DisplayDateAction" text="Date-Date" textFill="#fcfcfc">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label text="Total Amount" textFill="#fcfcfc">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                                <Label fx:id="lblTotalCollected" text="₱0.00" textFill="WHITE">
-                                    <font>
-                                        <Font size="24.0" />
-                                    </font>
-                                </Label>
-                           </children>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </VBox>
+                                </children>
+                            </VBox>
+
+                            <!-- small spacer between date + pagination -->
+                            <Region prefWidth="16.0" />
+
+                            <!-- RIGHT: pagination -->
+                            <Pagination fx:id="pagination" maxWidth="260.0" prefHeight="40.0" prefWidth="260.0" style="-fx-page-information-visible: false;" />
                         </children>
                     </HBox>
-                  <HBox prefHeight="136.0" prefWidth="623.0" />
-               </children>
-            </HBox>-->
-            
-            
-            <!-- FOOTER: summary + date filter + pagination -->
-            <!-- FOOTER: summary + date range + pagination -->
-<HBox alignment="CENTER" prefHeight="80.0" prefWidth="1284.0">
-    <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-    </padding>
-    <children>
-        <!-- Single footer bar -->
-        <HBox alignment="CENTER_LEFT" prefWidth="1240.0" spacing="28.0" styleClass="footer-bar">
-            <children>
-
-                <!-- LEFT: totals -->
-                <HBox alignment="CENTER_LEFT" spacing="24.0">
-                    <children>
-                        <VBox spacing="4.0">
-                            <children>
-                                <Label styleClass="summary-label" text="Total Transactions" />
-                                <Label fx:id="lblTotalTransactions" styleClass="summary-value" text="0" />
-                            </children>
-                        </VBox>
-
-                        <VBox spacing="4.0">
-                            <children>
-                                <Label styleClass="summary-label" text="Total Amount" />
-                                <Label fx:id="lblTotalCollected" styleClass="summary-value-accent" text="₱0.00" />
-                            </children>
-                        </VBox>
-                    </children>
-                </HBox>
-
-                <!-- flexible space -->
-                <Region HBox.hgrow="ALWAYS" />
-
-                <!-- CENTER: date range -->
-                <VBox spacing="6.0">
-                    <children>
-                        <HBox alignment="CENTER_LEFT" spacing="6.0">
-                            <children>
-                                <Label styleClass="summary-label" text="Date range" />
-                                <Label fx:id="displayDate" styleClass="date-range-text" text="All Dates" />
-                            </children>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT" spacing="12.0">
-                            <children>
-                                <HBox alignment="CENTER_LEFT" spacing="4.0">
-                                    <children>
-                                        <Label styleClass="date-label" text="From" />
-                                        <DatePicker fx:id="filterStartDate" prefWidth="140.0" />
-                                        <Button fx:id="btnClearStart" styleClass="link-button" text="Clear" />
-                                    </children>
-                                </HBox>
-
-                                <HBox alignment="CENTER_LEFT" spacing="4.0">
-                                    <children>
-                                        <Label styleClass="date-label" text="To" />
-                                        <DatePicker fx:id="filterEndDate" prefWidth="140.0" />
-                                        <Button fx:id="btnClearEnd" styleClass="link-button" text="Clear" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-
-                <!-- small spacer between date + pagination -->
-                <Region prefWidth="16.0" />
-
-                <!-- RIGHT: pagination -->
-                <Pagination fx:id="pagination" maxWidth="260.0" prefHeight="40.0" prefWidth="260.0" style="-fx-page-information-visible: false;" />
-            </children>
-        </HBox>
-    </children>
-</HBox>
-
-
+                </children>
+            </HBox>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

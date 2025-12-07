@@ -316,3 +316,27 @@ Label {
     -fx-font-size: 11px !important;
     -fx-text-fill: #6b7280 !important;
 }
+
+#clearBtn,
+.icon-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: transparent;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 32;
+    -fx-max-width: 32;
+}
+
+#clearBtn:hover,
+.icon-btn:hover {
+    -fx-background-color: rgba(1, 49, 157, 0.08);
+    -fx-border-color: rgba(1, 49, 157, 0.15);
+}
+
+#clearBtn:pressed,
+.icon-btn:pressed {
+    -fx-background-color: rgba(1, 49, 157, 0.16);
+    -fx-border-color: rgba(1, 49, 157, 0.25);
+}
