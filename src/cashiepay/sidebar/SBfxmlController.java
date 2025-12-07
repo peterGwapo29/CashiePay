@@ -33,7 +33,6 @@ public class SBfxmlController {
         setActiveNav(dashboardBtn);
         loadContent("/cashiepay/view/Dashboard.fxml");
     
-    
         dashboardBtn.setOnAction(e -> {
             setActiveNav(dashboardBtn);
             loadContent("/cashiepay/view/Dashboard.fxml");
@@ -62,6 +61,7 @@ public class SBfxmlController {
         logoutBtn.setOnAction(e -> {
             setActiveNav(logoutBtn);
             logout();
+            setActiveNav(dashboardBtn);
         });
     }
 

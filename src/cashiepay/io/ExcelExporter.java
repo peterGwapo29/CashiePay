@@ -17,13 +17,11 @@ import javafx.scene.control.Alert;
 
 public class ExcelExporter {
 
-    // Export records from a TableView (existing functionality)
     public static void exportExcel(ObservableList<PaymentRecord> records) {
         if (records == null || records.isEmpty()) return;
         exportToFile(records);
     }
 
-    // Export all data from DB based on SMS filter
     public static void exportExcelBySms(Connection conn, String smsFilter) {
         List<PaymentRecord> records = new ArrayList<>();
         String sql = "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
@@ -127,149 +125,127 @@ public class ExcelExporter {
           e.printStackTrace();
       }
   }
-
-//    private static void exportToFile(List<PaymentRecord> records) {
-//        try {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Save Excel File");
-//            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-//            java.io.File file = fileChooser.showSaveDialog(null);
-//            if (file == null) return;
-//
-//            try (Workbook workbook = new XSSFWorkbook()) {
-//                Sheet sheet = workbook.createSheet("Collection Export");
-//
-//                String[] headers = {"Student ID", "First Name", "Last Name", "Middle Name",
-//                        "Suffix", "OR Number", "Particular", "MFO/PAP",
-//                        "Amount", "Date Paid", "SMS"};
-//
-//                // Create header row
-//                Row header = sheet.createRow(0);
-//                for (int i = 0; i < headers.length; i++) {
-//                    header.createCell(i).setCellValue(headers[i]);
-//                }
-//
-//                int rowIndex = 1;
-//                double totalAmount = 0;
-//
-//                for (PaymentRecord r : records) {
-//                    Row row = sheet.createRow(rowIndex++);
-//                    row.createCell(0).setCellValue(r.getStudentId());
-//                    row.createCell(1).setCellValue(r.getFirstName());
-//                    row.createCell(2).setCellValue(r.getLastName());
-//                    row.createCell(3).setCellValue(r.getMiddleName());
-//                    row.createCell(4).setCellValue(r.getSuffix());
-//                    row.createCell(5).setCellValue(r.getOrNumber());
-//                    row.createCell(6).setCellValue(r.getParticular());
-//                    row.createCell(7).setCellValue(r.getMfoPap());
-//                    row.createCell(8).setCellValue(r.getAmount());
-//                    row.createCell(9).setCellValue(r.getDatePaid());
-//                    row.createCell(10).setCellValue(r.getSmsStatus());
-//
-//                    totalAmount += r.getAmount();
-//                }
-//
-//                // Add total row
-//                Row totalRow = sheet.createRow(rowIndex);
-//                totalRow.createCell(7).setCellValue("TOTAL");
-//                totalRow.createCell(8).setCellValue(totalAmount);
-//
-//                try (FileOutputStream fos = new FileOutputStream(file)) {
-//                    workbook.write(fos);
-//                }
-//
-//                System.out.println("EXPORT SUCCESS!");
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
     
     private static void exportToFile(List<PaymentRecord> records) {
-    try {
-        if (records == null || records.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Export");
-            alert.setHeaderText("No Data");
-            alert.setContentText("There are no records to export.");
+        try {
+            if (records == null || records.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export");
+                alert.setHeaderText("No Data");
+                alert.setContentText("There are no records to export.");
+                alert.showAndWait();
+                return;
+            }
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Excel File");
+            fileChooser.getExtensionFilters()
+                       .add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+            java.io.File file = fileChooser.showSaveDialog(null);
+
+            if (file == null) {
+                return;
+            }
+
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Collection Export");
+
+                String[] headers = {
+                    "Date",
+                    "OR#",
+                    "Name of Payor",
+                    "Particulars",
+                    "MFO/PAP",
+                    "Amount",
+                    "SMS"
+                        
+                };
+
+                Row header = sheet.createRow(0);
+                for (int i = 0; i < headers.length; i++) {
+                    header.createCell(i).setCellValue(headers[i]);
+                }
+
+                int rowIndex = 1;
+                double totalAmount = 0;
+
+                for (PaymentRecord r : records) {
+                    Row row = sheet.createRow(rowIndex++);
+
+                    row.createCell(0).setCellValue(r.getDatePaid());
+                    row.createCell(1).setCellValue(r.getOrNumber());
+                    row.createCell(2).setCellValue(buildPayorName(r));
+                    row.createCell(3).setCellValue(r.getParticular());
+                    row.createCell(4).setCellValue(r.getMfoPap());
+                    row.createCell(5).setCellValue(r.getAmount());
+                    row.createCell(6).setCellValue(r.getSmsStatus());
+
+                    totalAmount += r.getAmount();
+                }
+
+                Row totalRow = sheet.createRow(rowIndex);
+                totalRow.createCell(4).setCellValue("TOTAL");
+                totalRow.createCell(5).setCellValue(totalAmount);
+
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    workbook.write(fos);
+                }
+
+                System.out.println("EXPORT SUCCESS!");
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export");
+                alert.setHeaderText("Export Complete");
+                alert.setContentText("Excel file has been exported successfully.");
+                alert.showAndWait();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Export Failed");
+            alert.setHeaderText("An error occurred during export.");
+            alert.setContentText("Details: " + e.getMessage());
             alert.showAndWait();
-            return;
         }
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Excel File");
-        fileChooser.getExtensionFilters()
-                   .add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-        java.io.File file = fileChooser.showSaveDialog(null);
-
-        // user cancelled
-        if (file == null) {
-            return;
-        }
-
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Collection Export");
-
-            String[] headers = {"Student ID", "First Name", "Last Name", "Middle Name",
-                    "Suffix", "OR Number", "Particular", "MFO/PAP",
-                    "Amount", "Date Paid", "SMS"};
-
-            // Create header row
-            Row header = sheet.createRow(0);
-            for (int i = 0; i < headers.length; i++) {
-                header.createCell(i).setCellValue(headers[i]);
-            }
-
-            int rowIndex = 1;
-            double totalAmount = 0;
-
-            for (PaymentRecord r : records) {
-                Row row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(r.getStudentId());
-                row.createCell(1).setCellValue(r.getFirstName());
-                row.createCell(2).setCellValue(r.getLastName());
-                row.createCell(3).setCellValue(r.getMiddleName());
-                row.createCell(4).setCellValue(r.getSuffix());
-                row.createCell(5).setCellValue(r.getOrNumber());
-                row.createCell(6).setCellValue(r.getParticular());
-                row.createCell(7).setCellValue(r.getMfoPap());
-                row.createCell(8).setCellValue(r.getAmount());
-                row.createCell(9).setCellValue(r.getDatePaid());
-                row.createCell(10).setCellValue(r.getSmsStatus());
-
-                totalAmount += r.getAmount();
-            }
-
-            // Add total row
-            Row totalRow = sheet.createRow(rowIndex);
-            totalRow.createCell(7).setCellValue("TOTAL");
-            totalRow.createCell(8).setCellValue(totalAmount);
-
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                workbook.write(fos);
-            }
-
-            System.out.println("EXPORT SUCCESS!");
-
-            // ✅ Success alert
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Export");
-            alert.setHeaderText("Export Complete");
-            alert.setContentText("Excel file has been exported successfully.");
-            alert.showAndWait();
-        }
-
-    } catch (Exception e) {
-        e.printStackTrace();
-
-        // ❌ Error alert
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Export Failed");
-        alert.setHeaderText("An error occurred during export.");
-        alert.setContentText("Details: " + e.getMessage());
-        alert.showAndWait();
     }
-}
+
+    private static String safe(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    private static String buildPayorName(PaymentRecord r) {
+        String studentId = safe(r.getStudentId());
+        String last      = safe(r.getLastName());
+        String first     = safe(r.getFirstName());
+        String middle    = safe(r.getMiddleName());
+        String suffix    = safe(r.getSuffix());
+
+        StringBuilder middlePart = new StringBuilder();
+        if (!middle.isEmpty()) {
+            middlePart.append(middle);
+        }
+        if (!suffix.isEmpty()) {
+            if (middlePart.length() > 0) middlePart.append(" ");
+            middlePart.append(suffix);
+        }
+
+        StringBuilder result = new StringBuilder();
+        result.append(studentId);
+        result.append(", ");
+        result.append(last);
+        result.append(", ");
+        result.append(first);
+        result.append(", ");
+        result.append(middlePart.toString());
+
+        return result.toString();
+    }
+
 
 }

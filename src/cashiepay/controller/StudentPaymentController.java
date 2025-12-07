@@ -113,7 +113,7 @@ public class StudentPaymentController implements Initializable {
         loadParticulars();
         loadMfoPap();
 
-        comboSmsStatus.getItems().addAll("iSMS", "eSMS");
+        comboSmsStatus.getItems().addAll("iSMS", "eSMS", "IGP");
 
         comboParticular.setOnAction(e -> updateAmountFromParticular());
         btnSave.setOnAction(e -> savePayment());

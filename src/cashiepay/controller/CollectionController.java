@@ -116,7 +116,7 @@ public class CollectionController implements Initializable {
     }
 
     private void setupFilters() {
-        filterSMS.getItems().addAll("All", "iSMS", "eSMS");
+        filterSMS.getItems().addAll("All", "iSMS", "eSMS", "IGP");
         filterSMS.setValue("All");
         
         filterStatus.getItems().addAll("All", "Active", "Inactive");
