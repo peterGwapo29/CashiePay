@@ -41,67 +41,66 @@ public class LoginController implements Initializable {
     @FXML
     private void handleLoginAction(ActionEvent event) throws SQLException, IOException {
         if(event.getSource() == loginBtn) {
+            String email = emailField.getText().trim();
+            String password = passwordField.getText().trim();
 
-        String email = emailField.getText().trim();
-        String password = passwordField.getText().trim();
-
-        if (email.isEmpty() || password.isEmpty()) {
-            showAlert("Missing Fields", "Please fill in all fields!");
-            return;
-        }
-
-        try {
-            if (conn == null || conn.isClosed()) {
-                conn = DBConnection.getConnection();
+            if (email.isEmpty() || password.isEmpty()) {
+                showAlert("Missing Fields", "Please fill in all fields!");
+                return;
             }
 
-            String sql = "SELECT * FROM admin WHERE username = ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                String storedHashedPassword = rs.getString("password");
-
-                boolean isPasswordCorrect = PasswordUtil.checkPassword(password, storedHashedPassword);
-
-                if (!isPasswordCorrect) {
-                    showAlert("Login Failed", "Incorrect username or password.");
-                    return;
+            try {
+                if (conn == null || conn.isClosed()) {
+                    conn = DBConnection.getConnection();
                 }
 
-                AdminSession.setSession(
-                    rs.getInt("id"),
-                    rs.getString("admin_name"),
-                    rs.getString("email_address"),
-                    rs.getString("username")
-                );
+                String sql = "SELECT * FROM admin WHERE username = ?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, email);
+                ResultSet rs = ps.executeQuery();
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/Main.fxml"));
-                AnchorPane root = loader.load();
+                if (rs.next()) {
 
-                stage = (Stage) loginBtn.getScene().getWindow();
+                    String storedHashedPassword = rs.getString("password");
 
-                root.setUserData(loader.getController());
+                    boolean isPasswordCorrect = PasswordUtil.checkPassword(password, storedHashedPassword);
 
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("CashiePay");
-                stage.centerOnScreen();
-                stage.show();
+                    if (!isPasswordCorrect) {
+                        showAlert("Login Failed", "Incorrect username or password.");
+                        return;
+                    }
 
-            } else {
-                showAlert("Login Failed", "Incorrect username or password.");
+                    AdminSession.setSession(
+                        rs.getInt("id"),
+                        rs.getString("admin_name"),
+                        rs.getString("email_address"),
+                        rs.getString("username")
+                    );
+
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/Main.fxml"));
+                    AnchorPane root = loader.load();
+
+                    stage = (Stage) loginBtn.getScene().getWindow();
+
+                    root.setUserData(loader.getController());
+
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.setTitle("CashiePay");
+                    stage.centerOnScreen();
+                    stage.show();
+
+                } else {
+                    showAlert("Login Failed", "Incorrect username or password.");
+                }
+
+                rs.close();
+                ps.close();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            rs.close();
-            ps.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-    }
     }
     private void showAlert(String title, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);

@@ -28,5 +28,4 @@ public class Cashiepay extends Application{
         stage.setTitle("CashiePay");
         stage.show();
     }
-    
 }
