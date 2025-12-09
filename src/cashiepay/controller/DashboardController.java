@@ -119,7 +119,7 @@ public class DashboardController implements Initializable {
     }
 
     private void setTotalStudents() {
-        String sql = "SELECT COUNT(DISTINCT student_id) AS total FROM collection";
+        String sql = "SELECT COUNT(DISTINCT student_id) AS total FROM student";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {

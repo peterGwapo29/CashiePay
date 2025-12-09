@@ -13,6 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+import javafx.scene.control.TextFormatter;
+import java.util.function.UnaryOperator;
+import javafx.scene.control.TextFormatter.Change;
 
 public class AddNewStudentController implements Initializable {
 
@@ -37,6 +40,18 @@ public class AddNewStudentController implements Initializable {
                 "V"
         );
         suffixCombo.setValue("");  // default: none
+        
+        UnaryOperator<Change> idFilter = change -> {
+            String newText = change.getControlNewText();
+            // allow up to 4 digits, optional dash, then up to 4 digits
+            if (newText.matches("\\d{0,4}(?:-\\d{0,4})?")) {
+                return change;   // accept
+            }
+            // reject anything else (letters, extra dashes, wrong position, etc.)
+            return null;
+        };
+        
+        studentIdField.setTextFormatter(new TextFormatter<>(idFilter));
 
         saveButton.setOnAction(e -> saveStudent());
         cancelButton.setOnAction(e -> closeModal());
