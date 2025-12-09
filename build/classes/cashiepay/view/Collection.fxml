@@ -158,9 +158,9 @@
                   </HBox>
                </children>
             </HBox>
-            <VBox prefHeight="430.0" prefWidth="1263.0">
+            <VBox prefHeight="562.0" prefWidth="1241.0">
                <children>
-                  <TableView id="removeScroll" fx:id="tableView" prefHeight="430.0">
+                  <TableView id="removeScroll" fx:id="tableView" prefHeight="308.0" prefWidth="1220.0">
                     <columns>
                       <TableColumn fx:id="id" prefWidth="41.06664502620697" text="ID" />
                       <TableColumn fx:id="colStudentId" prefWidth="91.4666519165039" text="Student ID" />
@@ -178,6 +178,13 @@
                         <TableColumn fx:id="action" prefWidth="145.0667724609375" text="Action" />
                     </columns>
                   </TableView>
+                  
+                   <TableView fx:id="summaryTable" prefHeight="147.0" prefWidth="1220.0">
+                    <columns>
+                        <TableColumn fx:id="colSummaryParticular" prefWidth="200.0" text="Particular" />
+                        <TableColumn fx:id="colSummaryAmount" prefWidth="120.0" text="Amount" />
+                    </columns>
+                </TableView>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -42,6 +42,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.input.MouseEvent;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 
 public class CollectionController implements Initializable {
@@ -75,12 +79,13 @@ public class CollectionController implements Initializable {
     private final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
     @FXML private ComboBox<String> filterStatus;
     @FXML private Button clearBtn;
-    @FXML
-    private ComboBox<String> cmbImportSmsType;
-    @FXML
-    private TableColumn<PaymentRecord, String> colAccount;
-
-
+    @FXML private ComboBox<String> cmbImportSmsType;
+    @FXML private TableColumn<PaymentRecord, String> colAccount;
+    @FXML private TableView<ParticularSummary> summaryTable;
+    @FXML private TableColumn<ParticularSummary, String> colSummaryParticular;
+    @FXML private TableColumn<ParticularSummary, Double> colSummaryAmount;
+    private ObservableList<ParticularSummary> summaryList = FXCollections.observableArrayList();
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         conn = DBConnection.getConnection();
@@ -129,6 +134,23 @@ public class CollectionController implements Initializable {
         filterStartDate.setOnAction(e -> applyFilters());
         filterEndDate.setOnAction(e -> applyFilters());
         filterStatus.setOnAction(e -> applyFilters()); 
+    }
+    
+    public class ParticularSummary {
+
+        private final StringProperty particular;
+        private final DoubleProperty totalAmount;
+
+        public ParticularSummary(String particular, double totalAmount) {
+            this.particular = new SimpleStringProperty(particular);
+            this.totalAmount = new SimpleDoubleProperty(totalAmount);
+        }
+
+        public StringProperty particularProperty() { return particular; }
+        public DoubleProperty totalAmountProperty() { return totalAmount; }
+
+        public String getParticular() { return particular.get(); }
+        public double getTotalAmount() { return totalAmount.get(); }
     }
     
 //    private void importWithLoading() {
@@ -222,6 +244,9 @@ public class CollectionController implements Initializable {
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colDatePaid.setCellValueFactory(new PropertyValueFactory<>("datePaid"));
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
+        
+        colSummaryParticular.setCellValueFactory(new PropertyValueFactory<>("particular"));
+        colSummaryAmount.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
     }
 
     private void setupShowPerPage() {
@@ -306,6 +331,8 @@ public class CollectionController implements Initializable {
         double totalCollected = 0;
         int totalTransactions = 0;
         int pending = 0;
+        
+        java.util.Map<String, Double> perParticular = new java.util.LinkedHashMap<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql.toString());
              ResultSet rs = ps.executeQuery()) {
@@ -327,6 +354,7 @@ public class CollectionController implements Initializable {
                         rs.getString("sms_status"),
                         rs.getString("status")
                 );
+                
                 if (!"All".equalsIgnoreCase(statusFilter) &&
                     !statusFilter.equalsIgnoreCase(pr.getStatus())) {
                     continue;
@@ -345,6 +373,9 @@ public class CollectionController implements Initializable {
                 totalTransactions++;
                 totalCollected += pr.getAmount();
                 if ("Pending".equalsIgnoreCase(pr.getSmsStatus())) pending++;
+                
+                String partName = pr.getParticular();
+                perParticular.merge(partName, pr.getAmount(), Double::sum);
             }
 
             masterList.setAll(payments);
@@ -353,6 +384,17 @@ public class CollectionController implements Initializable {
 
             lblTotalTransactions.setText(String.valueOf(totalTransactions));
             lblTotalCollected.setText("₱" + new DecimalFormat("#,###.00").format(totalCollected));
+            
+            summaryList.clear();
+            double grandTotal = 0;
+            
+            for (java.util.Map.Entry<String, Double> e : perParticular.entrySet()) {
+                summaryList.add(new ParticularSummary(e.getKey(), e.getValue()));
+                grandTotal += e.getValue();
+            }
+            
+            summaryList.add(new ParticularSummary("TOTAL", grandTotal));
+            summaryTable.setItems(summaryList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -565,11 +607,4 @@ public class CollectionController implements Initializable {
             txtSearchStudent.setText("");
         }
     } 
-
-//    @FXML
-//    private void handleImport(ActionEvent event) {
-//        String smsType = cmbImportSmsType.getValue();
-//        ExcelImporter.importExcel(conn, tableView, this, smsType);
-//    }
-
 }
