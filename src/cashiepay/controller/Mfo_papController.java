@@ -83,13 +83,13 @@ public class Mfo_papController implements Initializable {
 
         switch (selected) {
             case "Active":
-                sql = "SELECT * FROM mfo_pap WHERE status = 'Active'";
+                sql = "SELECT * FROM fund WHERE status = 'Active'";
                 break;
             case "Inactive":
-                sql = "SELECT * FROM mfo_pap WHERE status = 'Inactive'";
+                sql = "SELECT * FROM fund WHERE status = 'Inactive'";
                 break;
             default:
-                sql = "SELECT * FROM mfo_pap";
+                sql = "SELECT * FROM fund";
                 break;
         }
 
@@ -100,7 +100,7 @@ public class Mfo_papController implements Initializable {
             while (rs.next()) {
                 list.add(new MfoPap(
                         rs.getInt("id"),
-                        rs.getString("mfo_pap_name"),
+                        rs.getString("fund_name"),
                         rs.getString("created_at"),
                         rs.getString("updated_at"),
                         rs.getString("status")
@@ -197,7 +197,7 @@ public class Mfo_papController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            String sql = "UPDATE mfo_pap SET status = 'Inactive', updated_at = NOW() WHERE id = ?";
+            String sql = "UPDATE fund SET status = 'Inactive', updated_at = NOW() WHERE id = ?";
 
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -220,7 +220,7 @@ public class Mfo_papController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            String sql = "UPDATE mfo_pap SET status = 'Active', updated_at = NOW() WHERE id = ?";
+            String sql = "UPDATE fund SET status = 'Active', updated_at = NOW() WHERE id = ?";
 
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {

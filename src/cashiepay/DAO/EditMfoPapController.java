@@ -46,7 +46,7 @@ public class EditMfoPapController {
             return;
         }
 
-        String sql = "UPDATE mfo_pap SET mfo_pap_name = ?, updated_at = NOW() WHERE id = ?";
+        String sql = "UPDATE fund SET fund_name = ?, updated_at = NOW() WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -67,7 +67,7 @@ public class EditMfoPapController {
     }
 
     private boolean isDuplicate(String name, int currentId) {
-        String sql = "SELECT COUNT(*) FROM mfo_pap WHERE mfo_pap_name = ? AND id != ?";
+        String sql = "SELECT COUNT(*) FROM fund WHERE fund_name = ? AND id != ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

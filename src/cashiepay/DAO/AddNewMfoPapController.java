@@ -41,7 +41,7 @@ public class AddNewMfoPapController implements Initializable {
         try (Connection conn = DBConnection.getConnection()) {
 
             // Duplicate check
-            String checkSql = "SELECT COUNT(*) FROM mfo_pap WHERE mfo_pap_name = ?";
+            String checkSql = "SELECT COUNT(*) FROM fund WHERE fund_name = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
             checkStmt.setString(1, name);
             ResultSet rs = checkStmt.executeQuery();
@@ -52,7 +52,7 @@ public class AddNewMfoPapController implements Initializable {
                 return;
             }
 
-            String sql = "INSERT INTO mfo_pap (mfo_pap_name) VALUES (?)";
+            String sql = "INSERT INTO fund (fund_name) VALUES (?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
 

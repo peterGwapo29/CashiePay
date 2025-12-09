@@ -88,7 +88,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button fx:id="mfopapBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="MFO/PAP" textFill="WHITE">
+                  <Button fx:id="mfopapBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Fund" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
                            <image>

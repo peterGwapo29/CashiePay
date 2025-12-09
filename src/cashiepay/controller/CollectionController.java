@@ -97,7 +97,8 @@ public class CollectionController implements Initializable {
                 filterSMS.getValue(),
                 filterStatus.getValue(), 
                 filterStartDate.getValue(),
-                filterEndDate.getValue()
+                filterEndDate.getValue(),
+                "SUMMARY OF COLLECTION AS OF " + displayDate.getText()
         ));
         
         btnClearStart.setOnAction(e -> {
@@ -203,15 +204,28 @@ public class CollectionController implements Initializable {
         LocalDate endDate = filterEndDate.getValue();
 
         StringBuilder sql = new StringBuilder(
-            "SELECT c.id, c.student_id, c.first_name, c.last_name, c.middle_name, c.suffix, " +
-            "c.or_number, p.particular_name, m.mfo_pap_name, c.amount, c.paid_at, c.sms_status, c.status " + // <-- added space before FROM
+            "SELECT " +
+                "c.id, " +
+                "s.student_id AS student_id, " +      // display student number (e.g. 2020-12345)
+                "s.first_name, " +
+                "s.last_name, " +
+                "s.middle_name, " +
+                "s.suffix, " +
+                "c.or_number, " +
+                "p.particular_name, " +
+                "f.fund_name, " +
+                "c.amount, " +
+                "c.paid_at, " +
+                "c.sms_status, " +
+                "c.status " +
             "FROM collection c " +
-            "JOIN particular p ON c.particular = p.id " +
-            "JOIN mfo_pap m ON c.mfo_pap = m.id " +
+            "JOIN student s ON c.student_id = s.id " +
+            "JOIN particular p ON c.particular_id = p.id " +
+            "JOIN fund f ON c.mfo_pap_id = f.id " +   // if you later rename column to fund_id, change this line
             "WHERE 1=1 "
         );
 
-        // Apply date range filter
+
         if (startDate != null && endDate != null) {
             sql.append(" AND DATE(c.paid_at) BETWEEN '").append(startDate).append("' AND '").append(endDate).append("' ");
         } else if (startDate != null) {
@@ -244,14 +258,14 @@ public class CollectionController implements Initializable {
             while (rs.next()) {
                 PaymentRecord pr = new PaymentRecord(
                         rs.getString("id"),
-                        rs.getString("student_id"),
+                        rs.getString("student_id"),      // from s.student_id AS student_id
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("middle_name"),
                         rs.getString("suffix"),
                         rs.getString("or_number"),
                         rs.getString("particular_name"),
-                        rs.getString("mfo_pap_name"),
+                        rs.getString("fund_name"),       // from fund.fund_name
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         rs.getString("sms_status"),

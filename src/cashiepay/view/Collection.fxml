@@ -165,7 +165,7 @@
                         <TableColumn fx:id="colSuffix" prefWidth="58.600006103515625" text="Suffix" />
                         <TableColumn fx:id="colOrNumber" prefWidth="95.99993896484375" text="OR Number" />
                         <TableColumn fx:id="colParticular" prefWidth="100.0" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="84.79998779296875" text="MFO/PAP" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="84.79998779296875" text="Fund" />
                         <TableColumn fx:id="colAmount" prefWidth="75.39996337890625" text="Amount" />
                         <TableColumn fx:id="colDatePaid" prefWidth="147.79998779296875" text="Date Paid " />
                         <TableColumn fx:id="colSms" prefWidth="66.800048828125" text="SMS" />

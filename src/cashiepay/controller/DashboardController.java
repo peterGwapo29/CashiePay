@@ -131,24 +131,27 @@ public class DashboardController implements Initializable {
     private void loadRecentTransactions() {
         ObservableList<PaymentRecord> list = FXCollections.observableArrayList();
 
-        String sql = "SELECT \n" +
-                        "    c.id,\n" +
-                        "    c.student_id,\n" +
-                        "    c.first_name,\n" +
-                        "    c.last_name,\n" +
-                        "    c.middle_name,\n" +
-                        "    c.suffix,\n" +
-                        "    c.or_number,\n" +
-                        "    p.particular_name AS particular_name,\n" +
-                        "    m.mfo_pap_name AS mfo_pap_name,\n" +
-                        "    c.amount,\n" +
-                        "    c.paid_at\n" +
-                        "FROM collection c\n" +
-                        "LEFT JOIN particular p ON c.particular = p.id\n" +
-                        "LEFT JOIN mfo_pap m ON c.mfo_pap = m.id\n" +
-                        "ORDER BY c.paid_at DESC\n" +
-                        "LIMIT 10";
-
+        String sql =
+            "SELECT " +
+            "    c.id, " +
+            "    s.student_id, " +
+            "    s.first_name, " +
+            "    s.last_name, " +
+            "    s.middle_name, " +
+            "    s.suffix, " +
+            "    c.or_number, " +
+            "    p.particular_name AS particular_name, " +
+            "    f.fund_name       AS fund_name, " +
+            "    c.amount, " +
+            "    c.paid_at, " +
+            "    c.sms_status, " +
+            "    c.status " +
+            "FROM collection c " +
+            "JOIN student s      ON c.student_id   = s.id " +
+            "LEFT JOIN particular p ON c.particular_id = p.id " +
+            "LEFT JOIN fund f       ON c.mfo_pap_id    = f.id " +
+            "ORDER BY c.paid_at DESC " +
+            "LIMIT 10";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -163,11 +166,11 @@ public class DashboardController implements Initializable {
                         rs.getString("suffix"),
                         rs.getString("or_number"),
                         rs.getString("particular_name"),
-                        rs.getString("mfo_pap_name"),
+                        rs.getString("fund_name"),      // goes into mfoPapProperty()
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
-                        "", // smsStatus placeholder
-                        ""  // status placeholder
+                        rs.getString("sms_status"),
+                        rs.getString("status")
                 ));
             }
 
@@ -177,6 +180,7 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
+
     
     private void displayCurrentDate() {
         java.time.LocalDate today = java.time.LocalDate.now();

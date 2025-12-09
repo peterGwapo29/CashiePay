@@ -82,8 +82,8 @@
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
                <children>
-                       <Label text="MFO / PAP:" textFill="#848080" />
-                       <ComboBox fx:id="comboMfoPap" prefHeight="26.0" prefWidth="278.0" promptText="Select MFO/PAP" />
+                       <Label text="Fund:" textFill="#848080" />
+                       <ComboBox fx:id="comboMfoPap" prefHeight="26.0" prefWidth="278.0" promptText="Select Fund" />
                </children>
                 </VBox>
             </HBox>

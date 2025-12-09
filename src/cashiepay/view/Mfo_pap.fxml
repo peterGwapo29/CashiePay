@@ -32,7 +32,7 @@
             <children>
                 <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
                     <children>
-                        <Label text="MFO / PAP">
+                        <Label text="Fund">
                             <font>
                                 <Font size="24.0" />
                             </font>
@@ -57,7 +57,7 @@
                             </cursor>
                         </ComboBox>
 
-                        <Button fx:id="newMfoPapBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newMfoPapBtnAction" prefHeight="40.0" styleClass="btn-primary" text="Add MFO/PAP" textFill="WHITE">
+                        <Button fx:id="newMfoPapBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newMfoPapBtnAction" prefHeight="40.0" styleClass="btn-primary" text="Add Fund" textFill="WHITE">
                             <graphic>
                                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                                     <image>
@@ -83,7 +83,7 @@
                         <TableView fx:id="mfoPapTable" prefHeight="280.0" prefWidth="1263.0">
                             <columns>
                                 <TableColumn fx:id="colId" prefWidth="50" styleClass="center-column" text="ID" />
-                                <TableColumn fx:id="colName" prefWidth="350" text="MFO/PAP Name" />
+                                <TableColumn fx:id="colName" prefWidth="350" text="Fund" />
                                 <TableColumn fx:id="colCreatedAt" prefWidth="220" text="Created At" />
                                 <TableColumn fx:id="colUpdatedAt" prefWidth="220" text="Updated At" />
                                 <TableColumn fx:id="colStatus" prefWidth="180" styleClass="status-column" text="Status" />

@@ -18,33 +18,38 @@ import cashiepay.model.PaymentRecord;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.util.Duration;
+
 
 public class StudentPaymentController implements Initializable {
 
     @FXML
     private TextField txtOrNumber, txtAmount;
-    
+
     @FXML
     private ComboBox<ParticularItem> comboParticular;
 
+    // Still named comboMfoPap for FXML compatibility, but now holds FundItem
     @FXML
-    private ComboBox<MfoPapItem> comboMfoPap;
+    private ComboBox<FundItem> comboMfoPap;
 
     @FXML
     private ComboBox<String> comboSmsStatus;
-    
+
     @FXML
     private DatePicker datePaidAt;
-    
+
     @FXML
     private Button btnSave, btnCancel;
-    
+
     @FXML
     private TextField txtStudentID;
-    
+
     @FXML
     private TextField txtFirstName;
-    
+
     @FXML
     private TextField txtLastName;
 
@@ -53,13 +58,15 @@ public class StudentPaymentController implements Initializable {
 
     @FXML
     private ComboBox<String> comboSuffix;
-    
+
     private PaymentModel model;
     private Connection conn;
     private CollectionController parentController;
     private PaymentRecord currentRecord;
 
-
+    // -----------------------------
+    // INNER CLASSES
+    // -----------------------------
     public static class ParticularItem {
         private int id;
         private String name;
@@ -79,11 +86,12 @@ public class StudentPaymentController implements Initializable {
         public String toString() { return name; }
     }
 
-    public static class MfoPapItem {
+    // Renamed from MfoPapItem → FundItem, using fund table
+    public static class FundItem {
         private int id;
         private String name;
 
-        public MfoPapItem(int id, String name) {
+        public FundItem(int id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -111,15 +119,17 @@ public class StudentPaymentController implements Initializable {
         model = new PaymentModel(conn);
 
         loadParticulars();
-        loadMfoPap();
+        loadFund();  // was loadMfoPap()
 
         comboSmsStatus.getItems().addAll("iSMS", "eSMS", "IGP");
 
         comboParticular.setOnAction(e -> updateAmountFromParticular());
         btnSave.setOnAction(e -> savePayment());
         btnCancel.setOnAction(e -> closeModal());
+        
+        setupStudentIdLookup();
     }
-    
+
     public void setPaymentRecord(PaymentRecord record) {
         this.currentRecord = record;
 
@@ -130,12 +140,12 @@ public class StudentPaymentController implements Initializable {
         comboSuffix.setValue(record.getSuffix());
         txtOrNumber.setText(record.getOrNumber());
         txtAmount.setText(String.valueOf(record.getAmount()));
+
         if (record.getDatePaid() != null && !record.getDatePaid().isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime dateTime = LocalDateTime.parse(record.getDatePaid(), formatter);
             datePaidAt.setValue(dateTime.toLocalDate());
         }
-
 
         comboSmsStatus.setValue(record.getSmsStatus());
 
@@ -145,12 +155,11 @@ public class StudentPaymentController implements Initializable {
             .findFirst()
             .ifPresent(comboParticular::setValue);
 
-        // Select MFO/PAP in ComboBox
+        // Select Fund in ComboBox (record still exposes getMfoPap(), which now holds fund_name)
         comboMfoPap.getItems().stream()
-            .filter(m -> m.getName().equals(record.getMfoPap()))
+            .filter(f -> f.getName().equals(record.getMfoPap()))
             .findFirst()
             .ifPresent(comboMfoPap::setValue);
-
     }
 
     private void loadParticulars() {
@@ -171,18 +180,19 @@ public class StudentPaymentController implements Initializable {
         }
     }
 
-    private void loadMfoPap() {
-        ObservableList<MfoPapItem> mfoPaps = FXCollections.observableArrayList();
-        String sql = "SELECT id, mfo_pap_name FROM mfo_pap WHERE status = 'Active'";
+    // UPDATED: load from fund table instead of mfo_pap
+    private void loadFund() {
+        ObservableList<FundItem> funds = FXCollections.observableArrayList();
+        String sql = "SELECT id, fund_name FROM fund WHERE status = 'Active'";
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                mfoPaps.add(new MfoPapItem(
+                funds.add(new FundItem(
                     rs.getInt("id"),
-                    rs.getString("mfo_pap_name")
+                    rs.getString("fund_name")
                 ));
             }
-            comboMfoPap.setItems(mfoPaps);
+            comboMfoPap.setItems(funds);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -194,7 +204,7 @@ public class StudentPaymentController implements Initializable {
             txtAmount.setText(String.valueOf(selected.getAmount()));
         }
     }
-    
+
     private void savePayment() {
         try {
             if (!validateRequiredFields() || !validateNames()) {
@@ -206,28 +216,34 @@ public class StudentPaymentController implements Initializable {
             String lname = txtLastName.getText();
             String mname = txtMiddleName.getText();
             String suffix = comboSuffix.getValue();
+            Integer studentPk = getStudentPkIfExists(studentId);
+            if (studentPk == null) {
+                showAlert("Student Not Found",
+                          "Student ID \"" + studentId + "\" does not exist in the system.");
+                return;
+            }
             String orNumber  = txtOrNumber.getText().trim();
             ParticularItem selectedParticular = comboParticular.getValue();
-            MfoPapItem selectedMfoPap = comboMfoPap.getValue();
+            FundItem selectedFund = comboMfoPap.getValue();
             double amount = Double.parseDouble(txtAmount.getText());
             String smsStatus = comboSmsStatus.getValue();
             LocalDate paidAt = datePaidAt.getValue();
-
-            if (selectedParticular == null || selectedMfoPap == null) {
-                showAlert("Error", "Please select Particular and MFO/PAP.");
+            
+            if (selectedParticular == null || selectedFund == null) {
+                showAlert("Error", "Please select Particular and Fund.");
                 return;
             }
 
             int particularId = selectedParticular.getId();
-            int mfoPapId = selectedMfoPap.getId();
+            int fundId = selectedFund.getId();   // maps to collection.mfo_pap_id in DB
 
             boolean success = false;
 
             if (currentRecord != null) {
                 if (!currentRecord.getParticular().equals(selectedParticular.getName())) {
-                    String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular = ? AND id != ?";
+                    String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular_id = ? AND id != ?";
                     try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
-                        psCheck.setString(1, studentId);
+                        psCheck.setInt(1, studentPk);
                         psCheck.setInt(2, particularId);
                         psCheck.setString(3, currentRecord.getId());
                         try (ResultSet rs = psCheck.executeQuery()) {
@@ -241,22 +257,18 @@ public class StudentPaymentController implements Initializable {
 
                 success = model.updatePayment(
                     currentRecord.getId(),
-                    studentId,
-                    fname,
-                    lname,
-                    mname,
-                    suffix,
+                    studentPk,
                     orNumber,
                     particularId,
-                    mfoPapId,
+                    fundId,
                     amount,
                     smsStatus,
                     paidAt.toString()
                 );
             } else {
-                String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular = ?";
+                String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular_id = ?";
                 try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
-                    psCheck.setString(1, studentId);
+                    psCheck.setInt(1, studentPk);
                     psCheck.setInt(2, particularId);
                     try (ResultSet rs = psCheck.executeQuery()) {
                         if (rs.next() && rs.getInt(1) > 0) {
@@ -267,14 +279,10 @@ public class StudentPaymentController implements Initializable {
                 }
 
                 success = model.insertPayment(
-                    studentId,
-                    fname,
-                    lname,
-                    mname,
-                    suffix,
+                    studentPk,
                     orNumber,
                     particularId,
-                    mfoPapId,
+                    fundId,
                     amount,
                     smsStatus,
                     paidAt.toString(),
@@ -306,14 +314,17 @@ public class StudentPaymentController implements Initializable {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
         stage.close();
     }
-
-    private void showAlert(String title, String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(title);
-        alert.setContentText(msg);
-        alert.showAndWait();
-    }
     
+    private void showAlert(String title, String msg) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(title);
+            alert.setContentText(msg);
+            alert.show();  // ⬅️ non-blocking; no showAndWait()
+        });
+    }
+
+
     private void clearFields(){
         txtStudentID.clear();
         txtFirstName.clear();
@@ -342,7 +353,7 @@ public class StudentPaymentController implements Initializable {
         }
         return false;
     }
-    
+
     private boolean validateNames() {
         String regex = ".*\\d.*";
 
@@ -369,11 +380,11 @@ public class StudentPaymentController implements Initializable {
 
         return true;
     }
-    
+
     public void setParentController(CollectionController controller) {
         this.parentController = controller;
     }
-    
+
     private boolean validateRequiredFields() {
         StringBuilder errors = new StringBuilder();
 
@@ -393,7 +404,7 @@ public class StudentPaymentController implements Initializable {
             errors.append("• Particular must be selected.\n");
 
         if (comboMfoPap.getValue() == null)
-            errors.append("• MFO/PAP must be selected.\n");
+            errors.append("• Fund must be selected.\n");
 
         if (txtAmount.getText() == null || txtAmount.getText().trim().isEmpty())
             errors.append("• Amount is required.\n");
@@ -410,4 +421,104 @@ public class StudentPaymentController implements Initializable {
         }
         return true;
     }
+    
+    private Integer getStudentPkIfExists(String studentNumber) throws SQLException {
+        String findSql = "SELECT id FROM student WHERE student_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(findSql)) {
+            ps.setString(1, studentNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+        return null;
+    }
+
+    
+    // Simple holder for student info from DB
+private static class StudentData {
+    String firstName;
+    String lastName;
+    String middleName;
+    String suffix;
+
+    StudentData(String firstName, String lastName, String middleName, String suffix) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.suffix = suffix;
+    }
+}
+
+// Set up 2s debounce on txtStudentID
+private void setupStudentIdLookup() {
+    PauseTransition debounce = new PauseTransition(Duration.seconds(2));
+
+    txtStudentID.textProperty().addListener((obs, oldVal, newVal) -> {
+        debounce.stop();
+        debounce.setOnFinished(e -> handleStudentIdChanged(newVal));
+        debounce.play();
+    });
+}
+
+private void handleStudentIdChanged(String studentNumber) {
+    String trimmed = (studentNumber == null) ? "" : studentNumber.trim();
+
+    // If field is empty, just clear name fields and do nothing
+    if (trimmed.isEmpty()) {
+        clearStudentNameFields();
+        return;
+    }
+
+    try {
+        StudentData data = findStudentByStudentId(trimmed);
+
+        if (data != null) {
+            // Auto-fill name fields
+            txtFirstName.setText(data.firstName);
+            txtLastName.setText(data.lastName);
+            txtMiddleName.setText(data.middleName);
+            comboSuffix.setValue(data.suffix);
+        } else {
+            // Student not found: clear fields and show alert
+            clearStudentNameFields();
+            showAlert("Student Not Found",
+                      "Student ID \"" + trimmed + "\" does not exist in the database.");
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        showAlert("Error", "Failed to fetch student details from the database.");
+    }
+}
+
+// Query student table by student.student_id (the string you type)
+private StudentData findStudentByStudentId(String studentNumber) throws SQLException {
+    String sql = "SELECT first_name, last_name, middle_name, suffix " +
+                 "FROM student WHERE student_id = ?";
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, studentNumber);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return new StudentData(
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("middle_name"),
+                    rs.getString("suffix")
+                );
+            }
+        }
+    }
+    return null; // not found
+}
+
+// Clear text fields for names + suffix
+private void clearStudentNameFields() {
+    txtFirstName.clear();
+    txtLastName.clear();
+    txtMiddleName.clear();
+    comboSuffix.getSelectionModel().clearSelection();
+}
+
+    
 }
