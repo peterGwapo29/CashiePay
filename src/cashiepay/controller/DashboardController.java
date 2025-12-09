@@ -142,6 +142,8 @@ public class DashboardController implements Initializable {
             "    c.or_number, " +
             "    p.particular_name AS particular_name, " +
             "    f.fund_name       AS fund_name, " +
+//                "a.account_name, " +
+            "COALESCE(a.account_name, 'N/A') AS account_name, " + 
             "    c.amount, " +
             "    c.paid_at, " +
             "    c.sms_status, " +
@@ -150,6 +152,7 @@ public class DashboardController implements Initializable {
             "JOIN student s      ON c.student_id   = s.id " +
             "LEFT JOIN particular p ON c.particular_id = p.id " +
             "LEFT JOIN fund f       ON c.mfo_pap_id    = f.id " +
+            "LEFT JOIN account a ON c.account_id = a.id " +
             "ORDER BY c.paid_at DESC " +
             "LIMIT 10";
 
@@ -166,7 +169,8 @@ public class DashboardController implements Initializable {
                         rs.getString("suffix"),
                         rs.getString("or_number"),
                         rs.getString("particular_name"),
-                        rs.getString("fund_name"),      // goes into mfoPapProperty()
+                        rs.getString("fund_name"),      
+                        rs.getString("account_name"),
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         rs.getString("sms_status"),

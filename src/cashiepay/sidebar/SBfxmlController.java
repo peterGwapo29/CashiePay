@@ -20,6 +20,10 @@ public class SBfxmlController {
 
     @FXML
     private Button dashboardBtn, collectionBtn, particularBtn, mfopapBtn, logoutBtn, profileBtn;
+    @FXML
+    private Button studentBtn;
+    @FXML
+    private Button accountBtn;
     
     public void initController() {
         setActiveNav(dashboardBtn);
@@ -48,6 +52,16 @@ public class SBfxmlController {
         profileBtn.setOnAction(e -> {
             setActiveNav(profileBtn);
             loadContent("/cashiepay/view/Profile.fxml");
+        });
+        
+        studentBtn.setOnAction(e -> {
+            setActiveNav(studentBtn);
+            loadContent("/cashiepay/view/Student.fxml");
+        });
+        
+        accountBtn.setOnAction(e -> {
+            setActiveNav(accountBtn);
+            loadContent("/cashiepay/view/Account.fxml");
         });
 
         logoutBtn.setOnAction(e -> {
@@ -130,7 +144,7 @@ public class SBfxmlController {
     }
      
      private void setActiveNav(Button activeBtn) {
-        Button[] buttons = { dashboardBtn, collectionBtn, particularBtn, mfopapBtn, profileBtn };
+        Button[] buttons = { dashboardBtn, collectionBtn, particularBtn, mfopapBtn, profileBtn, studentBtn, accountBtn}; 
 
         for (Button btn : buttons) {
             btn.getStyleClass().remove("nav-item-active");

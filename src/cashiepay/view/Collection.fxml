@@ -51,6 +51,11 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
+                        <ComboBox fx:id="cmbImportSmsType" prefHeight="40.0" prefWidth="120.0" promptText="SMS Type" style="-fx-background-color: white;" styleClass="filter-btn">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </ComboBox>
                         <Button fx:id="btnImport" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" style="-fx-background-color: #177334;" styleClass="btn" text="Import" textFill="WHITE">
                            <graphic>
                               <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
@@ -157,19 +162,20 @@
                <children>
                   <TableView id="removeScroll" fx:id="tableView" prefHeight="430.0">
                     <columns>
-                      <TableColumn fx:id="id" prefWidth="55.999998450279236" text="ID" />
-                      <TableColumn fx:id="colStudentId" prefWidth="100.00000762939453" text="Student ID" />
-                        <TableColumn fx:id="colFirstName" prefWidth="106.39996337890625" text="First Name" />
-                        <TableColumn fx:id="colLastName" prefWidth="118.4000244140625" text="Last Name" />
-                        <TableColumn fx:id="colMiddleName" prefWidth="110.00003051757812" text="Middle Name" />
-                        <TableColumn fx:id="colSuffix" prefWidth="58.600006103515625" text="Suffix" />
-                        <TableColumn fx:id="colOrNumber" prefWidth="95.99993896484375" text="OR Number" />
-                        <TableColumn fx:id="colParticular" prefWidth="100.0" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="84.79998779296875" text="Fund" />
-                        <TableColumn fx:id="colAmount" prefWidth="75.39996337890625" text="Amount" />
-                        <TableColumn fx:id="colDatePaid" prefWidth="147.79998779296875" text="Date Paid " />
-                        <TableColumn fx:id="colSms" prefWidth="66.800048828125" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="138.39995117187505" text="Action" />
+                      <TableColumn fx:id="id" prefWidth="41.06664502620697" text="ID" />
+                      <TableColumn fx:id="colStudentId" prefWidth="91.4666519165039" text="Student ID" />
+                        <TableColumn fx:id="colFirstName" prefWidth="109.86663818359375" text="First Name" />
+                        <TableColumn fx:id="colLastName" prefWidth="108.79998779296875" text="Last Name" />
+                        <TableColumn fx:id="colMiddleName" prefWidth="107.19998168945312" text="Middle Name" />
+                        <TableColumn fx:id="colSuffix" prefWidth="63.466552734375" text="Suffix" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="99.466552734375" text="OR Number" />
+                        <TableColumn fx:id="colParticular" prefWidth="87.4666748046875" text="Particular" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="71.73333740234375" text="Fund" />
+                        <TableColumn fx:id="colAccount" prefWidth="55.7332763671875" text="Account" />
+                        <TableColumn fx:id="colAmount" prefWidth="78.13336181640625" text="Amount" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="98.39990234375" text="Date Paid " />
+                        <TableColumn fx:id="colSms" minWidth="0.0" prefWidth="67.733154296875" text="SMS" />
+                        <TableColumn fx:id="action" prefWidth="145.0667724609375" text="Action" />
                     </columns>
                   </TableView>
                </children>

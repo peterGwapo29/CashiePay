@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -26,11 +25,11 @@
                         <Font name="Arial Black" size="18.0" />
                      </font>
                   </Text>
-                  <Label styleClass="cashier-name" text="CASHIER" textFill="WHITE">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
+                  <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/Gemini_Generated_Image_ncse15ncse15ncse-removebg-preview_1.png" />
+                     </image>
+                  </ImageView>
                </children>
                <VBox.margin>
                   <Insets bottom="32.0" />
@@ -73,6 +72,21 @@
                         <Font name="Arial Bold" size="14.0" />
                      </font>
                   </Button>
+                  <Button fx:id="studentBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Student" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
+                           <image>
+                              <Image url="@../../icons/bi--person-vcard-fill.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                   <Button fx:id="particularBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Particular" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
@@ -93,6 +107,21 @@
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
                            <image>
                               <Image url="@../../icons/material-symbols-light--ad-group.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="accountBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Account" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
+                           <image>
+                              <Image url="@../../icons/material-symbols--folder-managed-rounded.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -136,7 +165,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <VBox.margin>
-                        <Insets top="150.0" />
+                        <Insets top="64.0" />
                      </VBox.margin>
                   </Button>
                </children>

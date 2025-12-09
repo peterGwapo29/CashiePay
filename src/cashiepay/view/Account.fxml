@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0"
+            styleClass="mainFxmlClass"
+            xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cashiepay.controller.AccountController">
+
+    <stylesheets>
+        <URL value="@/cashiepay/style/account.css"/>
+    </stylesheets>
+
+    <children>
+        <!-- HEADER -->
+        <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
+            <children>
+                <Label styleClass="SystemName"
+                       text="CASHIEPAY MANAGEMENT SYSTEM"
+                       textFill="WHITE"/>
+            </children>
+        </HBox>
+
+        <!-- CARD -->
+        <VBox layoutX="10.0" layoutY="70.0"
+              prefHeight="660.0" prefWidth="1284.0"
+              styleClass="account-card">
+
+            <children>
+                <!-- TITLE -->
+                <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1274.0">
+                    <children>
+                        <Label text="Account">
+                            <font>
+                                <Font size="24.0"/>
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                </HBox>
+
+                <!-- FILTERS + ADD BUTTON -->
+                <HBox alignment="CENTER_LEFT" prefHeight="85.0" prefWidth="1263.0" spacing="8.0">
+                    <children>
+                        <Label styleClass="showFilterText" text="Show">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Label>
+
+                        <ComboBox fx:id="filterStatus"
+                                  onAction="#filterStatusChanged"
+                                  prefHeight="40.0"
+                                  promptText="All"
+                                  styleClass="filter-btn">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ComboBox>
+
+                        <Button fx:id="newAccountBtn"
+                                graphicTextGap="0.0"
+                                mnemonicParsing="false"
+                                onAction="#newAccountBtnAction"
+                                prefHeight="40.0"
+                                styleClass="btn-primary"
+                                text="Add Account"
+                                textFill="WHITE">
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="24.0"
+                                           pickOnBounds="true" preserveRatio="true"
+                                           translateX="-2.0">
+                                    <image>
+                                        <Image url="@../../icons/mdi--plus-circle%20(2).png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <font>
+                                <Font name="Arial" size="14.0"/>
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </Button>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                </HBox>
+
+                <!-- TABLE -->
+                <VBox prefHeight="536.0" prefWidth="1263.0">
+                    <children>
+                        <TableView fx:id="accountTable"
+                                   prefHeight="280.0"
+                                   prefWidth="1263.0">
+                            <columns>
+                                <TableColumn fx:id="colId"
+                                             prefWidth="50"
+                                             styleClass="center-column"
+                                             text="ID"/>
+                                <TableColumn fx:id="colFund"
+                                             prefWidth="220"
+                                             text="Fund"/>
+                                <TableColumn fx:id="colAccountName"
+                                             prefWidth="280"
+                                             text="Account Name"/>
+                                <TableColumn fx:id="colCreatedAt"
+                                             prefWidth="195"
+                                             text="Created At"/>
+                                <TableColumn fx:id="colUpdatedAt"
+                                             prefWidth="173"
+                                             text="Updated At"/>
+                                <TableColumn fx:id="colStatus"
+                                             prefWidth="160"
+                                             styleClass="status-column"
+                                             text="Status"/>
+                                <TableColumn fx:id="colAction"
+                                             prefWidth="200"
+                                             styleClass="center-column"
+                                             text="Action"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                </VBox>
+            </children>
+
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

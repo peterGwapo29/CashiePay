@@ -75,6 +75,10 @@ public class CollectionController implements Initializable {
     private final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
     @FXML private ComboBox<String> filterStatus;
     @FXML private Button clearBtn;
+    @FXML
+    private ComboBox<String> cmbImportSmsType;
+    @FXML
+    private TableColumn<PaymentRecord, String> colAccount;
 
 
     @Override
@@ -110,6 +114,8 @@ public class CollectionController implements Initializable {
             filterEndDate.setValue(null);
             applyFilters();
         });
+        
+        cmbImportSmsType.getItems().setAll("iSMS", "eSMS", "IGP");
     }
 
     private void setupFilters() {
@@ -125,19 +131,63 @@ public class CollectionController implements Initializable {
         filterStatus.setOnAction(e -> applyFilters()); 
     }
     
+//    private void importWithLoading() {
+//        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
+//
+//        Platform.runLater(loading::show);
+//
+//        Platform.runLater(() -> {
+//            try {
+//                // NOW EXPECTS A BOOLEAN
+//                boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+//
+//                loading.close();
+//
+//                if (imported) { // ✅ Only show alert if data was really imported
+//                    loadPayments();
+//
+//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                    alert.setHeaderText("Import Complete");
+//                    alert.setContentText("Excel data imported successfully.");
+//                    alert.showAndWait();
+//                }
+//
+//            } catch (Exception ex) {
+//                loading.close();
+//                ex.printStackTrace();
+//                Alert alert = new Alert(Alert.AlertType.ERROR);
+//                alert.setHeaderText("Import Failed");
+//                alert.setContentText("Error: " + ex.getMessage());
+//                alert.showAndWait();
+//            }
+//        });
+//    }
+    
     private void importWithLoading() {
+        // 1) Get the selection from the combo box
+        String smsType = cmbImportSmsType.getValue();
+
+        // Optional: require the user to choose something
+        if (smsType == null || smsType.trim().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setHeaderText("Missing SMS Type");
+            alert.setContentText("Please select what to import (iSMS, eSMS, or IGP) before importing.");
+            alert.showAndWait();
+            return;
+        }
+
         LoadingDialog loading = new LoadingDialog("Importing, please wait...");
 
         Platform.runLater(loading::show);
 
         Platform.runLater(() -> {
             try {
-                // NOW EXPECTS A BOOLEAN
-                boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
+                // ✅ NOW PASS smsType AS 4th ARGUMENT
+                boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this, smsType);
 
                 loading.close();
 
-                if (imported) { // ✅ Only show alert if data was really imported
+                if (imported) {
                     loadPayments();
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -156,6 +206,8 @@ public class CollectionController implements Initializable {
             }
         });
     }
+
+    
     private void setupTableColumns() {
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         colStudentId.setCellValueFactory(new PropertyValueFactory<>("studentId"));
@@ -166,6 +218,7 @@ public class CollectionController implements Initializable {
         colOrNumber.setCellValueFactory(new PropertyValueFactory<>("orNumber"));
         colParticular.setCellValueFactory(new PropertyValueFactory<>("particular"));
         colMfoPap.setCellValueFactory(new PropertyValueFactory<>("mfoPap"));
+        colAccount.setCellValueFactory(new PropertyValueFactory<>("accountName"));
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colDatePaid.setCellValueFactory(new PropertyValueFactory<>("datePaid"));
         colSms.setCellValueFactory(new PropertyValueFactory<>("smsStatus"));
@@ -214,6 +267,7 @@ public class CollectionController implements Initializable {
                 "c.or_number, " +
                 "p.particular_name, " +
                 "f.fund_name, " +
+                "COALESCE(a.account_name, 'N/A') AS account_name, " + 
                 "c.amount, " +
                 "c.paid_at, " +
                 "c.sms_status, " +
@@ -221,7 +275,8 @@ public class CollectionController implements Initializable {
             "FROM collection c " +
             "JOIN student s ON c.student_id = s.id " +
             "JOIN particular p ON c.particular_id = p.id " +
-            "JOIN fund f ON c.mfo_pap_id = f.id " +   // if you later rename column to fund_id, change this line
+            "JOIN fund f ON c.mfo_pap_id = f.id " +
+            "LEFT JOIN account a ON c.account_id = a.id " +
             "WHERE 1=1 "
         );
 
@@ -258,14 +313,15 @@ public class CollectionController implements Initializable {
             while (rs.next()) {
                 PaymentRecord pr = new PaymentRecord(
                         rs.getString("id"),
-                        rs.getString("student_id"),      // from s.student_id AS student_id
+                        rs.getString("student_id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("middle_name"),
                         rs.getString("suffix"),
                         rs.getString("or_number"),
                         rs.getString("particular_name"),
-                        rs.getString("fund_name"),       // from fund.fund_name
+                        rs.getString("fund_name"),   
+                        rs.getString("account_name"), 
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         rs.getString("sms_status"),
@@ -509,4 +565,11 @@ public class CollectionController implements Initializable {
             txtSearchStudent.setText("");
         }
     } 
+
+//    @FXML
+//    private void handleImport(ActionEvent event) {
+//        String smsType = cmbImportSmsType.getValue();
+//        ExcelImporter.importExcel(conn, tableView, this, smsType);
+//    }
+
 }
