@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="558.0" prefWidth="550.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.StudentPaymentController">
+<AnchorPane prefHeight="599.0" prefWidth="550.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.StudentPaymentController">
 
     <stylesheets>
         <URL value="@/cashiepay/style/studentpayment.css" />
@@ -21,7 +21,7 @@
     <children>
 
         <!-- Main Container -->
-        <VBox layoutX="20.0" layoutY="22.0" prefHeight="431.0" prefWidth="510" spacing="8.0">
+        <VBox layoutX="20.0" layoutY="22.0" prefHeight="574.0" prefWidth="510" spacing="8.0">
            <!-- Modal Title -->
            <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" styleClass="modal-title" text="Payment Transaction">
             <padding>
@@ -89,17 +89,15 @@
                  <VBox prefWidth="250" spacing="5">
                     <children>
                         <Label text="Account:" textFill="#848080" />
-                        <ComboBox fx:id="comboAccount"
-                                  prefHeight="26.0" prefWidth="252.0"
-                                  promptText="Select Account" />
+                        <ComboBox fx:id="comboAccount" prefHeight="26.0" prefWidth="252.0" promptText="Select Account" />
                     </children>
                 </VBox>
             </HBox>
             <HBox spacing="10">
-                <VBox prefWidth="250" spacing="5">
+                <VBox prefHeight="52.0" prefWidth="274.0" spacing="5">
                <children>
                        <Label text="Amount:" textFill="#848080" />
-                       <TextField fx:id="txtAmount" prefWidth="137.0" promptText="0.00">
+                       <TextField fx:id="txtAmount" prefWidth="250.0" promptText="0.00">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -108,7 +106,7 @@
                 </VBox>
                 <VBox prefWidth="250" spacing="5">
                <children>
-                      <Label text="Paid At:" textFill="#848080" />
+                      <Label fx:id="paideAtLabel" text="Paid At:" textFill="#848080" />
                       <DatePicker fx:id="datePaidAt" prefHeight="26.0" prefWidth="257.0" />
                </children>
                 </VBox>
@@ -122,7 +120,16 @@
                     <ComboBox fx:id="comboSmsStatus" prefWidth="250.0" promptText="Select SMS Status" />
             </children>
             </VBox>
-            <HBox alignment="CENTER_RIGHT" prefHeight="64.0" prefWidth="510.0" spacing="10">
+            <HBox spacing="10">
+                <VBox prefWidth="250" spacing="5">
+                    <children>
+                        <Label text="Semester / AY:" textFill="#848080" />
+                        <ComboBox fx:id="comboSemester" prefHeight="26.0" prefWidth="250.0" promptText="Select Semester" />
+                    </children>
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_RIGHT" prefHeight="87.0" prefWidth="490.0" spacing="10">
                 <Button fx:id="btnCancel" prefWidth="90" styleClass="btn-secondary" text="Cancel" />
                 <Button fx:id="btnSave" prefWidth="90" styleClass="btn-primary" text="Submit" />
             </HBox>

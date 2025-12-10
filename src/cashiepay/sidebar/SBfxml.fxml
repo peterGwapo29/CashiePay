@@ -32,10 +32,10 @@
                   </ImageView>
                </children>
                <VBox.margin>
-                  <Insets bottom="32.0" />
+                  <Insets bottom="28.0" />
                </VBox.margin>
             </VBox>
-            <VBox prefHeight="285.0" prefWidth="178.0" spacing="10.0" styleClass="nav-box">
+            <VBox prefHeight="285.0" prefWidth="178.0" spacing="8.0" styleClass="nav-box">
                <children>
                   <Button fx:id="dashboardBtn" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="156.0" styleClass="nav-item" text="Dashboard" textFill="WHITE">
                      <graphic>
@@ -122,6 +122,21 @@
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
                            <image>
                               <Image url="@../../icons/material-symbols--folder-managed-rounded.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="btnSemester" mnemonicParsing="false" onAction="#handleNavigation" prefWidth="150.0" styleClass="nav-item" text="Semester" textFill="WHITE">
+                     <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" styleClass="nav-icon">
+                           <image>
+                              <Image url="@../../icons/iwwa--year.png" />
                            </image>
                         </ImageView>
                      </graphic>

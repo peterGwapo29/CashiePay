@@ -6,6 +6,10 @@ import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -36,7 +40,7 @@ public class ExcelImporter {
 
             // CURRENT INDEX EXPORT FORMAT COLUMNS
             // 0 Date, 1 OR#, 2 Name of Payor (STUDENT_ID, Last, First Middle Suffix),
-            // 3 Particulars, 4 MFO/PAP(Fund), 5 Amount, 6 SMS
+            // 3 Particulars, 4 MFO/PAP(Fund), 5 Amount, [6 SMS - optional/old]
             String sql = "INSERT INTO collection (" +
                     "student_id, or_number, particular_id, mfo_pap_id, amount, paid_at, sms_status, status" +
                     ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -55,7 +59,10 @@ public class ExcelImporter {
                 }
 
                 // read all cells of the row
-                String dateStr       = getCellStringValue(row.getCell(0));
+//                String dateStr       = getCellStringValue(row.getCell(0));
+//                String orNumber      = getCellStringValue(row.getCell(1));
+                
+                String dateStrRaw    = getCellStringValue(row.getCell(0));
                 String orNumber      = getCellStringValue(row.getCell(1));
                 String payorName     = getCellStringValue(row.getCell(2));
                 String particularVal = getCellStringValue(row.getCell(3));
@@ -63,12 +70,11 @@ public class ExcelImporter {
                 String amountStr     = getCellStringValue(row.getCell(5));
                 String smsStatus     = getCellStringValue(row.getCell(6));
 
-                // Skip the total row, usually last row
                 if ("TOTAL".equalsIgnoreCase(mfoPapVal)) {
                     continue;
                 }
 
-                if (isRowEmpty(dateStr, orNumber, payorName,
+                if (isRowEmpty(orNumber, payorName,
                                particularVal, mfoPapVal, amountStr, smsStatus)) {
                     continue;
                 }
@@ -82,7 +88,7 @@ public class ExcelImporter {
                 if (smsStatus == null || smsStatus.trim().isEmpty()) {
                     smsStatus = "N/A";
                 }
-                
+
                 if (smsOverride != null && !smsOverride.trim().isEmpty()) {
                     smsStatus = smsOverride.trim();
                 }
@@ -90,16 +96,18 @@ public class ExcelImporter {
                 NameParts np = parseName(payorName);
                 String studentNumber = np.studentId;
 
-                if (studentNumber == null || studentNumber.trim().isEmpty()) {
-                    missingStudentMessages.append("Row ")
-                            .append(row.getRowNum() + 1)
-                            .append(" → Missing Student ID in Name of Payor: \"")
-                            .append(payorName)
-                            .append("\"\n");
-                    continue;
-                }
+                    if (studentNumber == null || studentNumber.trim().isEmpty()) {
+                        if (payorName == null || payorName.trim().isEmpty()) {
+                            continue;
+                        }
+                        missingStudentMessages.append("Row ")
+                                .append(row.getRowNum() + 1)
+                                .append(" → Missing Student ID in Name of Payor: \"")
+                                .append(payorName)
+                                .append("\"\n");
+                        continue;
+                    }
 
-                // Look up existing student PK in student table
                 Integer studentPk = getStudentPkIfExists(conn, studentNumber);
                 if (studentPk == null) {
                     missingStudentMessages.append("Row ")
@@ -110,11 +118,10 @@ public class ExcelImporter {
                     continue;
                 }
 
-                // Resolve FK ids from names
                 int particularId = resolveId(conn, "particular", "particular_name", particularVal);
-                int fundId       = resolveId(conn, "fund", "fund_name", mfoPapVal); // fund instead of mfo_pap
 
-                // Duplicate check: one record per (student, particular)
+                Integer fundId = resolveNullableId(conn, "fund", "fund_name", mfoPapVal);
+
                 if (isAlreadyPaid(conn, studentPk, particularId)) {
                     duplicateMessages.append("Row ")
                             .append(row.getRowNum() + 1)
@@ -126,15 +133,25 @@ public class ExcelImporter {
                     continue;
                 }
 
-                // Fill INSERT params
                 ps.setInt(1, studentPk);
                 ps.setString(2, orNumber);
                 ps.setInt(3, particularId);
-                ps.setInt(4, fundId);
+
+                if (fundId == null) {
+                    ps.setNull(4, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(4, fundId);
+                }
+
                 ps.setDouble(5, amount);
-                ps.setString(6, dateStr);
+                String dbPaidAt = normalizePaidAt(dateStrRaw);
+                if (dbPaidAt != null) {
+                    ps.setString(6, dbPaidAt);
+                } else {
+                    ps.setNull(6, java.sql.Types.TIMESTAMP);
+                }
                 ps.setString(7, smsStatus);
-                ps.setString(8, "Active"); // status
+                ps.setString(8, "Active");
 
                 ps.addBatch();
                 importedCount++;
@@ -175,9 +192,6 @@ public class ExcelImporter {
         }
     }
 
-    /**
-     * Duplicate check: same student + particular.
-     */
     private static boolean isAlreadyPaid(Connection conn,
                                          int studentPk,
                                          int particularId) throws Exception {
@@ -252,7 +266,6 @@ public class ExcelImporter {
             return rs.getInt("id");
         }
 
-        // If not found and looks numeric, interpret as ID directly
         if (value.matches("\\d+")) {
             return Integer.parseInt(value);
         }
@@ -260,7 +273,32 @@ public class ExcelImporter {
         throw new Exception("No ID found for '" + value + "' in " + table);
     }
 
-    // ================== Name Parsing ==================
+    private static Integer resolveNullableId(Connection conn,
+                                             String table,
+                                             String nameColumn,
+                                             String value) throws Exception {
+        if (value == null) return null;
+
+        value = value.trim();
+        if (value.isEmpty()) return null;
+        if (value.equalsIgnoreCase("N/A")) return null;
+
+        String sql = "SELECT id FROM " + table + " WHERE " + nameColumn + " = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, value);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("id");
+        }
+
+        // numeric direct id
+        if (value.matches("\\d+")) {
+            return Integer.parseInt(value);
+        }
+
+        throw new Exception("No ID found for '" + value + "' in " + table);
+    }
+
     private static class NameParts {
         String studentId  = "";
         String firstName  = "";
@@ -269,10 +307,6 @@ public class ExcelImporter {
         String suffix     = "";
     }
 
-    /**
-     * EXPORT FORMAT:
-     * "StudentID, Lastname, Firstname, Middlename[ Suffix]"
-     */
     private static NameParts parseName(String fullName) {
         NameParts np = new NameParts();
         if (fullName == null) return np;
@@ -286,9 +320,9 @@ public class ExcelImporter {
         }
 
         if (parts.length >= 3) {
-            np.studentId = parts[0]; // Student ID
-            np.lastName  = parts[1]; // Lastname
-            np.firstName = parts[2]; // Firstname
+            np.studentId = parts[0];
+            np.lastName  = parts[1];
+            np.firstName = parts[2];
 
             if (parts.length >= 4) {
                 String midRaw = parts[3];
@@ -318,7 +352,6 @@ public class ExcelImporter {
             return np;
         }
 
-        // Fallback cases (not super important for import, studentId is main thing)
         if (fullName.contains(",")) {
             String[] p = fullName.split(",", 2);
             np.lastName = p[0].trim();
@@ -398,10 +431,8 @@ public class ExcelImporter {
                t.equals("IV") || t.equals("V");
     }
 
-    // ============== student lookup helper ==============
-
     private static Integer getStudentPkIfExists(Connection conn, String studentNumber) throws Exception {
-        String sql = "SELECT id FROM student WHERE student_id = ?";
+        String sql = "SELECT id FROM student WHERE student_id = ? AND status = 'Active' ";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, studentNumber);
             try (ResultSet rs = ps.executeQuery()) {
@@ -410,6 +441,37 @@ public class ExcelImporter {
                 }
             }
         }
+        return null;
+    }
+    
+    private static String normalizePaidAt(String excelDate) {
+        if (excelDate == null) return null;
+        excelDate = excelDate.trim();
+        if (excelDate.isEmpty()) return null;
+
+        // final format to store in DB
+        DateTimeFormatter dbFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // New export format: "December 10, 2025"
+        try {
+            DateTimeFormatter humanFmt = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+            LocalDate d = LocalDate.parse(excelDate, humanFmt);
+            return d.atStartOfDay().format(dbFmt);   // 2025-12-10 00:00:00
+        } catch (Exception ignore) { }
+
+        // Old full datetime: "2025-12-10 00:00:00"
+        try {
+            LocalDateTime dt = LocalDateTime.parse(excelDate, dbFmt);
+            return dt.format(dbFmt);
+        } catch (Exception ignore) { }
+
+        // Old date-only: "2025-12-10"
+        try {
+            DateTimeFormatter dateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate d = LocalDate.parse(excelDate, dateOnly);
+            return d.atStartOfDay().format(dbFmt);
+        } catch (Exception ignore) { }
+
         return null;
     }
 }

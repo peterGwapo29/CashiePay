@@ -18,6 +18,7 @@
     -fx-background-color: linear-gradient(to bottom, #f7f8ff, #eef1ff) !important;
 }
 
+/* HEADER (same as collection) */
 .header-bar {
     -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
     -fx-padding: 0 24 0 24 !important;
@@ -34,6 +35,7 @@
     -fx-letter-spacing: 1px !important;
 }
 
+/* CARD – mirror transaction-card look */
 .student-card {
     -fx-background-color: #ffffff !important;
     -fx-background-radius: 18 !important;
@@ -43,21 +45,28 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3) !important;
 }
 
+/* LABELS */
+Label {
+    -fx-text-fill: #20243a;
+}
+
 .showFilterText {
     -fx-font-size: 14px !important;
 }
 
-.filter-btn { 
+/* GENERIC BUTTON */
+.btn {
     -fx-background-radius: 10 !important;
     -fx-border-radius: 10 !important;
-    -fx-background-color: #ffffff !important;
-    -fx-border-color: #d3d7ff !important;
-    -fx-border-width: 1 !important;
-    -fx-padding: 0 10 0 10 !important;
-    -fx-font-size: 13px !important;
+    -fx-padding: 0 14 0 14 !important;
+    -fx-font-size: 14px !important;
+    -fx-font-weight: 500 !important;
     -fx-cursor: hand !important;
+    -fx-border-color: transparent !important;
 }
-.btn-primary { 
+
+/* PRIMARY BUTTON (Add Student) */
+.btn-primary {
     -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
     -fx-text-fill: #ffffff !important;
     -fx-background-radius: 10 !important;
@@ -68,14 +77,164 @@
     -fx-border-color: transparent !important;
     -fx-cursor: hand !important;
 }
-.btn-primary:hover { 
+.btn-primary:hover {
     -fx-opacity: 0.9 !important;
 }
-.table-view { 
+
+/* FILTER COMBOS (same as collection filter-btn) */
+.filter-btn {
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-background-color: #ffffff !important;
+    -fx-border-color: #d3d7ff !important;
+    -fx-border-width: 1 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-font-size: 13px !important;
+    -fx-cursor: hand !important;
+}
+
+/* IMPORT / EXPORT – mirror collection */
+#btnImportStudent {
+    -fx-background-color: #177334 !important;
+    -fx-text-fill: #ffffff !important;
+}
+#btnImportStudent:hover {
+    -fx-background-color: #0f5422 !important;
+}
+
+/* Export style similar to collection's #btnExport */
+#btnExportStudent {
+    -fx-background-color: #ffffff !important;
+    -fx-text-fill: #01319d !important;
+    -fx-border-color: #d3d7ff !important;
+    -fx-border-width: 1 !important;
+}
+#btnExportStudent:hover {
+    -fx-background-color: #eef1ff !important;
+}
+
+/* SEARCH TEXT FIELD – copy from collection */
+#txtSearchStudent {
+    -fx-background-color: #ffffff !important;
+    -fx-text-fill: #111827 !important;
+    -fx-background-radius: 10 !important;
+    -fx-border-radius: 10 !important;
+    -fx-border-color: #d3d7ff !important;
+    -fx-border-width: 1 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-prompt-text-fill: #9ca3c7 !important;
+    -fx-cursor: text !important;
+}
+
+/* CLEAR / ICON BUTTON – same as collection */
+#clearBtn,
+.icon-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: transparent;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 32;
+    -fx-max-width: 32;
+}
+#clearBtn:hover,
+.icon-btn:hover {
+    -fx-background-color: rgba(1, 49, 157, 0.08);
+    -fx-border-color: rgba(1, 49, 157, 0.15);
+}
+#clearBtn:pressed,
+.icon-btn:pressed {
+    -fx-background-color: rgba(1, 49, 157, 0.16);
+    -fx-border-color: rgba(1, 49, 157, 0.25);
+}
+
+/* TABLE VIEW – aligned with collection */
+.table-view {
     -fx-background-color: transparent !important;
     -fx-border-color: #E4E8FF !important;
     -fx-border-radius: 10 !important;
     -fx-background-radius: 10 !important;
     -fx-padding: 0 !important;
     -fx-table-cell-border-color: transparent !important;
+}
+
+.table-view:focused {
+    -fx-background-insets: 0 !important;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #01319d, #3155d9) !important;
+    -fx-background-radius: 10 10 0 0 !important;
+    -fx-padding: 0 !important;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 40px !important;
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+    -fx-background-color: transparent !important;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 13px !important;
+    -fx-font-weight: 600 !important;
+    -fx-padding: 0 10 0 10 !important;
+    -fx-alignment: CENTER_LEFT !important;
+}
+
+/* rows */
+.table-row-cell:odd {
+    -fx-background-color: #F7F8FF !important;
+}
+.table-row-cell:even {
+    -fx-background-color: #ffffff !important;
+}
+.table-row-cell:hover {
+    -fx-background-color: #d4ddff !important;
+}
+.table-row-cell:selected {
+    -fx-background-color: #E4E8FF !important;
+    -fx-text-fill: #1c1c1c !important;
+}
+.table-row-cell:filled:selected:focused {
+    -fx-background-color: #d1dbff !important;
+}
+
+.table-cell {
+    -fx-padding: 6 10 !important;
+    -fx-font-family: 'Poppins' !important;
+    -fx-font-size: 13px !important;
+    -fx-text-fill: #333333 !important;
+    -fx-alignment: CENTER_LEFT !important;
+    -fx-border-color: transparent !important;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #1c1c1c !important;
+}
+
+/* alignment helpers */
+.table-cell.center-column {
+    -fx-alignment: CENTER !important;
+}
+.table-cell.numeric-column {
+    -fx-alignment: CENTER_LEFT !important;
+    -fx-font-weight: 600 !important;
+}
+.table-cell.status-column {
+    -fx-alignment: CENTER_LEFT !important;
+    -fx-font-weight: 600 !important;
+    -fx-text-fill: #177334 !important;
+}
+
+/* hide horizontal scrollbar, same as collection */
+.table-view .scroll-bar:horizontal {
+    -fx-opacity: 0 !important;
+    -fx-pref-height: 0 !important;
+    -fx-max-height: 0 !important;
+    -fx-min-height: 0 !important;
 }

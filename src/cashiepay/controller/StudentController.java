@@ -1,5 +1,7 @@
 package cashiepay.controller;
 
+import cashiepay.io.StudentExcelImporter;
+import cashiepay.io.StudentExporter;
 import cashiepay.model.DBConnection;
 import cashiepay.model.Student;
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,9 +27,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class StudentController implements Initializable {
 
@@ -45,9 +50,19 @@ public class StudentController implements Initializable {
     @FXML private TableColumn<Student, Void>   colAction;
 
     @FXML private ComboBox<String> filterStatus;
+    @FXML
+    private Button btnImportStudent;
+    @FXML
+    private Button clearBtn;
+    @FXML
+    private TextField txtSearchStudent;
+    @FXML
+    private Button btnExportStudent;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        btnImportStudent.setOnAction(e -> handleImportStudents());
 
         studentTable.setColumnResizePolicy(studentTable.CONSTRAINED_RESIZE_POLICY);
 
@@ -63,9 +78,11 @@ public class StudentController implements Initializable {
 
         filterStatus.getItems().addAll("All", "Active", "Inactive");
         filterStatus.setValue("Active");
-
+        
+        setupSearchFeature();
         loadStudentData();
         addActionButtons();
+        
     }
 
     @FXML
@@ -90,48 +107,99 @@ public class StudentController implements Initializable {
         loadStudentData();
     }
 
+//    private void loadStudentData() {
+//        ObservableList<Student> list = FXCollections.observableArrayList();
+//        String selected = filterStatus.getValue();
+//        String sql;
+//
+//        switch (selected) {
+//            case "Active":
+//                sql = "SELECT * FROM student WHERE status = 'Active'";
+//                break;
+//            case "Inactive":
+//                sql = "SELECT * FROM student WHERE status = 'Inactive'";
+//                break;
+//            default:
+//                sql = "SELECT * FROM student";
+//                break;
+//        }
+//
+//        try (Connection conn = DBConnection.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//
+//            while (rs.next()) {
+//                list.add(new Student(
+//                        rs.getInt("id"),
+//                        rs.getString("student_id"),
+//                        rs.getString("first_name"),
+//                        rs.getString("last_name"),
+//                        rs.getString("middle_name"),
+//                        rs.getString("suffix"),
+//                        rs.getString("status"),
+//                        rs.getString("created_at"),
+//                        rs.getString("updated_at")
+//                ));
+//            }
+//
+//            studentTable.setItems(list);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    
     private void loadStudentData() {
-        ObservableList<Student> list = FXCollections.observableArrayList();
-        String selected = filterStatus.getValue();
-        String sql;
+    ObservableList<Student> list = FXCollections.observableArrayList();
+    String selected = filterStatus.getValue();
 
-        switch (selected) {
-            case "Active":
-                sql = "SELECT * FROM student WHERE status = 'Active'";
-                break;
-            case "Inactive":
-                sql = "SELECT * FROM student WHERE status = 'Inactive'";
-                break;
-            default:
-                sql = "SELECT * FROM student";
-                break;
-        }
+    // read search text
+    String search = (txtSearchStudent != null && txtSearchStudent.getText() != null)
+            ? txtSearchStudent.getText().trim()
+            : "";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+    StringBuilder sql = new StringBuilder("SELECT * FROM student WHERE 1=1 ");
 
-            while (rs.next()) {
-                list.add(new Student(
-                        rs.getInt("id"),
-                        rs.getString("student_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("middle_name"),
-                        rs.getString("suffix"),
-                        rs.getString("status"),
-                        rs.getString("created_at"),
-                        rs.getString("updated_at")
-                ));
-            }
-
-            studentTable.setItems(list);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // status filter
+    if ("Active".equalsIgnoreCase(selected)) {
+        sql.append(" AND status = 'Active'");
+    } else if ("Inactive".equalsIgnoreCase(selected)) {
+        sql.append(" AND status = 'Inactive'");
     }
 
+    // search filter (by student_id, like Collection)
+    if (!search.isEmpty()) {
+        sql.append(" AND student_id LIKE '%").append(search).append("%'");
+    }
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql.toString());
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            list.add(new Student(
+                    rs.getInt("id"),
+                    rs.getString("student_id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("middle_name"),
+                    rs.getString("suffix"),
+                    rs.getString("status"),
+                    rs.getString("created_at"),
+                    rs.getString("updated_at")
+            ));
+        }
+
+        studentTable.setItems(list);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+    
+    
     private void addActionButtons() {
         colAction.setCellFactory(param -> new TableCell<Student, Void>() {
 
@@ -248,4 +316,56 @@ public class StudentController implements Initializable {
             }
         }
     }
+    
+    private void handleImportStudents() {
+        try (Connection conn = DBConnection.getConnection()) {
+            boolean imported = StudentExcelImporter.importStudents(conn);
+
+            if (imported) {
+                loadStudentData();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Import Complete");
+                alert.setHeaderText(null);
+                alert.setContentText("Student data imported successfully.");
+                alert.showAndWait();
+            } else {
+                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                 alert.setHeaderText(null);
+                 alert.setContentText("No students were imported.");
+                 alert.showAndWait();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Import Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Failed to import students: " + ex.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    private void setupSearchFeature() {
+        PauseTransition debounce = new PauseTransition(Duration.seconds(2));
+
+        txtSearchStudent.textProperty().addListener((obs, oldText, newText) -> {
+            debounce.stop();
+            debounce.setOnFinished(event -> loadStudentData()); // 👈 refresh after delay
+            debounce.play();
+        });
+    }
+
+
+    @FXML
+    private void ClearSearchBar(ActionEvent event) {
+        if (event.getSource() == clearBtn) {
+            txtSearchStudent.setText("");
+            loadStudentData();
+        }
+    }
+
+    @FXML
+    private void exportStudentAction(ActionEvent event) {
+        StudentExporter.exportStudents();
+    }
+
 }

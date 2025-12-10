@@ -85,6 +85,8 @@ public class CollectionController implements Initializable {
     @FXML private TableColumn<ParticularSummary, String> colSummaryParticular;
     @FXML private TableColumn<ParticularSummary, Double> colSummaryAmount;
     private ObservableList<ParticularSummary> summaryList = FXCollections.observableArrayList();
+    @FXML
+    private ComboBox<SemesterFilterItem> filterSemester;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -98,6 +100,7 @@ public class CollectionController implements Initializable {
         setupSearchFeature();
         setupFilters();
         loadPayments();
+        loadSemesterFilter();
 
         btnAddNew.setOnAction(e -> openStudentPaymentModal());
         btnImport.setOnAction(e -> importWithLoading());
@@ -153,43 +156,28 @@ public class CollectionController implements Initializable {
         public double getTotalAmount() { return totalAmount.get(); }
     }
     
-//    private void importWithLoading() {
-//        LoadingDialog loading = new LoadingDialog("Importing, please wait...");
-//
-//        Platform.runLater(loading::show);
-//
-//        Platform.runLater(() -> {
-//            try {
-//                // NOW EXPECTS A BOOLEAN
-//                boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this);
-//
-//                loading.close();
-//
-//                if (imported) { // ✅ Only show alert if data was really imported
-//                    loadPayments();
-//
-//                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                    alert.setHeaderText("Import Complete");
-//                    alert.setContentText("Excel data imported successfully.");
-//                    alert.showAndWait();
-//                }
-//
-//            } catch (Exception ex) {
-//                loading.close();
-//                ex.printStackTrace();
-//                Alert alert = new Alert(Alert.AlertType.ERROR);
-//                alert.setHeaderText("Import Failed");
-//                alert.setContentText("Error: " + ex.getMessage());
-//                alert.showAndWait();
-//            }
-//        });
-//    }
+    public static class SemesterFilterItem {
+        private final int id;
+        private final String label;
+
+        public SemesterFilterItem(int id, String label) {
+            this.id = id;
+            this.label = label;
+        }
+
+        public int getId() { return id; }
+        public String getLabel() { return label; }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
     
     private void importWithLoading() {
-        // 1) Get the selection from the combo box
         String smsType = cmbImportSmsType.getValue();
 
-        // Optional: require the user to choose something
         if (smsType == null || smsType.trim().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText("Missing SMS Type");
@@ -204,7 +192,6 @@ public class CollectionController implements Initializable {
 
         Platform.runLater(() -> {
             try {
-                // ✅ NOW PASS smsType AS 4th ARGUMENT
                 boolean imported = ExcelImporter.importExcel(conn, tableView, CollectionController.this, smsType);
 
                 loading.close();
@@ -271,6 +258,42 @@ public class CollectionController implements Initializable {
         masterList.clear();
         applyFilters();
     }
+    
+    private void loadSemesterFilter() {
+        ObservableList<SemesterFilterItem> list = FXCollections.observableArrayList();
+
+        list.add(new SemesterFilterItem(0, "All Semesters"));
+
+        String sql = "SELECT semester_id, academic_year, semester " +
+                     "FROM semester " +
+                     "WHERE status = 'Active' " +
+                     "ORDER BY academic_year DESC, semester";
+
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("semester_id");
+                String ay = rs.getString("academic_year");
+                String sem = rs.getString("semester");
+                String label = ay + " - " + sem;
+
+                list.add(new SemesterFilterItem(id, label));
+            }
+
+            filterSemester.setItems(list);
+            filterSemester.getSelectionModel().selectFirst();
+            filterSemester.setVisibleRowCount(3);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // When user changes semester filter -> re-apply filters
+        filterSemester.setOnAction(e -> applyFilters());
+    }
+
 
     private void applyFilters() {
         ObservableList<PaymentRecord> payments = FXCollections.observableArrayList();
@@ -280,18 +303,25 @@ public class CollectionController implements Initializable {
 
         LocalDate startDate = filterStartDate.getValue();
         LocalDate endDate = filterEndDate.getValue();
+        
+        SemesterFilterItem semItem = filterSemester != null ? filterSemester.getValue() : null;
+
+        Integer semesterId = (semItem != null && semItem.getId() != 0)
+                ? semItem.getId()
+                : null;
 
         StringBuilder sql = new StringBuilder(
             "SELECT " +
                 "c.id, " +
-                "s.student_id AS student_id, " +      // display student number (e.g. 2020-12345)
+                "s.student_id AS student_id, " +
                 "s.first_name, " +
                 "s.last_name, " +
                 "s.middle_name, " +
                 "s.suffix, " +
                 "c.or_number, " +
                 "p.particular_name, " +
-                "f.fund_name, " +
+//                "f.fund_name, " +
+                "COALESCE(f.fund_name, 'N/A') AS fund_name, " +
                 "COALESCE(a.account_name, 'N/A') AS account_name, " + 
                 "c.amount, " +
                 "c.paid_at, " +
@@ -300,7 +330,7 @@ public class CollectionController implements Initializable {
             "FROM collection c " +
             "JOIN student s ON c.student_id = s.id " +
             "JOIN particular p ON c.particular_id = p.id " +
-            "JOIN fund f ON c.mfo_pap_id = f.id " +
+            "LEFT JOIN fund f ON c.mfo_pap_id = f.id " +
             "LEFT JOIN account a ON c.account_id = a.id " +
             "WHERE 1=1 "
         );
@@ -312,6 +342,10 @@ public class CollectionController implements Initializable {
             sql.append(" AND DATE(c.paid_at) >= '").append(startDate).append("' ");
         } else if (endDate != null) {
             sql.append(" AND DATE(c.paid_at) <= '").append(endDate).append("' ");
+        }
+        
+        if (semesterId != null) {
+            sql.append(" AND c.semester_id = ").append(semesterId).append(" ");
         }
         
         // Update displayDate label
@@ -368,6 +402,7 @@ public class CollectionController implements Initializable {
                 if (!searchKeyword.isEmpty() && !pr.getStudentId().toLowerCase().contains(searchKeyword)) {
                     continue;
                 }
+                
 
                 payments.add(pr);
                 totalTransactions++;

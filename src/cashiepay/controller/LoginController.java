@@ -69,6 +69,13 @@ public class LoginController implements Initializable {
                         showAlert("Login Failed", "Incorrect username or password.");
                         return;
                     }
+                    
+//                    String storedPassword = rs.getString("password");
+//                    if (!password.equals(storedPassword)) {
+//                        showAlert("Login Failed", "Incorrect username or password.");
+//                        return;
+//                    }
+
 
                     AdminSession.setSession(
                         rs.getInt("id"),

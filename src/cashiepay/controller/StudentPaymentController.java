@@ -64,10 +64,11 @@ public class StudentPaymentController implements Initializable {
     private PaymentRecord currentRecord;
     @FXML
     private ComboBox<AccountItem> comboAccount;
+    @FXML
+    private Label paideAtLabel;
+    @FXML
+    private ComboBox<SemesterItem> comboSemester;
 
-    // -----------------------------
-    // INNER CLASSES
-    // -----------------------------
     public static class ParticularItem {
         private int id;
         private String name;
@@ -87,7 +88,6 @@ public class StudentPaymentController implements Initializable {
         public String toString() { return name; }
     }
 
-    // Renamed from MfoPapItem → FundItem, using fund table
     public static class FundItem {
         private int id;
         private String name;
@@ -118,7 +118,28 @@ public class StudentPaymentController implements Initializable {
 
         @Override
         public String toString() {
-            return name;    // what appears in the ComboBox
+            return name;
+        }
+    }
+    
+    public static class SemesterItem {
+        private int id;       
+        private String academicYear;
+        private String semester;
+
+        public SemesterItem(int id, String academicYear, String semester) {
+            this.id = id;
+            this.academicYear = academicYear;
+            this.semester = semester;
+        }
+
+        public int getId() { return id; }
+        public String getAcademicYear() { return academicYear; }
+        public String getSemester() { return semester; }
+
+        @Override
+        public String toString() {
+            return academicYear + " - " + semester;
         }
     }
 
@@ -139,10 +160,10 @@ public class StudentPaymentController implements Initializable {
         model = new PaymentModel(conn);
 
         loadParticulars();
-        loadFund();  // was loadMfoPap()
+        loadFund();
+        loadSemesters();
 
         comboSmsStatus.getItems().addAll("iSMS", "eSMS", "IGP");
-
         comboParticular.setOnAction(e -> updateAmountFromParticular());
         btnSave.setOnAction(e -> savePayment());
         btnCancel.setOnAction(e -> closeModal());
@@ -151,48 +172,21 @@ public class StudentPaymentController implements Initializable {
         
         comboMfoPap.setOnAction(e -> {
             FundItem selectedFund = comboMfoPap.getValue();
-            if (selectedFund != null) {
+            if (selectedFund != null && selectedFund.getId() != 0) {
                 loadAccountsForFund(selectedFund.getId());
             } else {
                 comboAccount.getItems().clear();
                 comboAccount.getSelectionModel().clearSelection();
             }
         });
+        setStudentFieldsEditable(false);
+        
+        datePaidAt.setVisible(false);
+        datePaidAt.setManaged(false);
+        paideAtLabel.setVisible(false);
+        paideAtLabel.setManaged(false);
     }
 
-//    public void setPaymentRecord(PaymentRecord record) {
-//        this.currentRecord = record;
-//
-//        txtStudentID.setText(record.getStudentId());
-//        txtFirstName.setText(record.getFirstName());
-//        txtLastName.setText(record.getLastName());
-//        txtMiddleName.setText(record.getMiddleName());
-//        comboSuffix.setValue(record.getSuffix());
-//        txtOrNumber.setText(record.getOrNumber());
-//        txtAmount.setText(String.valueOf(record.getAmount()));
-//
-//        if (record.getDatePaid() != null && !record.getDatePaid().isEmpty()) {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//            LocalDateTime dateTime = LocalDateTime.parse(record.getDatePaid(), formatter);
-//            datePaidAt.setValue(dateTime.toLocalDate());
-//        }
-//
-//        comboSmsStatus.setValue(record.getSmsStatus());
-//
-//        // Select Particular in ComboBox
-//        comboParticular.getItems().stream()
-//            .filter(p -> p.getName().equals(record.getParticular()))
-//            .findFirst()
-//            .ifPresent(comboParticular::setValue);
-//
-//        // Select Fund in ComboBox (record still exposes getMfoPap(), which now holds fund_name)
-//        comboMfoPap.getItems().stream()
-//            .filter(f -> f.getName().equals(record.getMfoPap()))
-//            .findFirst()
-//            .ifPresent(comboMfoPap::setValue);
-//
-//    }
-    
     public void setPaymentRecord(PaymentRecord record) {
         this.currentRecord = record;
 
@@ -237,7 +231,43 @@ public class StudentPaymentController implements Initializable {
             comboAccount.getItems().clear();
             comboAccount.getSelectionModel().clearSelection();
         }
+        setStudentFieldsEditable(true);
+        datePaidAt.setVisible(true);
+        datePaidAt.setManaged(true);
+        paideAtLabel.setVisible(true);
+        paideAtLabel.setManaged(true);
     }
+    
+    private void loadSemesters() {
+        ObservableList<SemesterItem> list = FXCollections.observableArrayList();
+        String sql = "SELECT semester_id, academic_year, semester " +
+                     "FROM semester " +
+                     "WHERE status = 'Active' " +
+                     "ORDER BY academic_year DESC, semester";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new SemesterItem(
+                        rs.getInt("semester_id"),
+                        rs.getString("academic_year"),
+                        rs.getString("semester")
+                ));
+            }
+
+            // Optional empty item at the top (like Fund)
+            list.add(0, new SemesterItem(0, "", ""));
+
+            comboSemester.setItems(list);
+            comboSemester.getSelectionModel().clearSelection();
+            comboSemester.setPromptText("Select Semester");
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     
     private void loadParticulars() {
         ObservableList<ParticularItem> particulars = FXCollections.observableArrayList();
@@ -268,7 +298,12 @@ public class StudentPaymentController implements Initializable {
                     rs.getString("fund_name")
                 ));
             }
+            funds.add(0, new FundItem(0, ""));
+//            comboMfoPap.setItems(funds);
+//            comboMfoPap.getSelectionModel().selectFirst(); 
             comboMfoPap.setItems(funds);
+            comboMfoPap.getSelectionModel().clearSelection();  
+            comboMfoPap.setPromptText("Select Fund");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -293,9 +328,11 @@ public class StudentPaymentController implements Initializable {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
+        
+        accounts.add(0, new AccountItem(0, ""));
         comboAccount.setItems(accounts);
         comboAccount.getSelectionModel().clearSelection();
+        comboAccount.getSelectionModel().selectFirst();
     }
 
 
@@ -305,121 +342,154 @@ public class StudentPaymentController implements Initializable {
             txtAmount.setText(String.valueOf(selected.getAmount()));
         }
     }
-
+    
     private void savePayment() {
-        try {
-            if (!validateRequiredFields() || !validateNames()) {
+    try {
+        if (!validateRequiredFields() || !validateNames()) {
+            return;
+        }
+
+        String studentId = txtStudentID.getText();
+        String fname = txtFirstName.getText();
+        String lname = txtLastName.getText();
+        String mname = txtMiddleName.getText();
+        String suffix = comboSuffix.getValue();
+
+        Integer studentPk = getStudentPkIfExists(studentId);
+        if (studentPk == null) {
+            showAlert("Student Not Found",
+                    "Student ID \"" + studentId + "\" does not exist in the system.");
+            return;
+        }
+
+        String orNumber = txtOrNumber.getText().trim();
+        ParticularItem selectedParticular = comboParticular.getValue();
+        FundItem selectedFund = comboMfoPap.getValue();
+        AccountItem selectedAccount = comboAccount.getValue();
+        
+        if (currentRecord != null) {
+            if (isOrNumberDuplicate(orNumber, currentRecord.getId())) {
+                showAlert("Duplicate OR Number",
+                          "OR Number \"" + orNumber + "\" is already in use.");
                 return;
             }
-
-            String studentId = txtStudentID.getText();
-            String fname = txtFirstName.getText();
-            String lname = txtLastName.getText();
-            String mname = txtMiddleName.getText();
-            String suffix = comboSuffix.getValue();
-
-            Integer studentPk = getStudentPkIfExists(studentId);
-            if (studentPk == null) {
-                showAlert("Student Not Found",
-                          "Student ID \"" + studentId + "\" does not exist in the system.");
+        } else {
+            if (isOrNumberDuplicate(orNumber, null)) {
+                showAlert("Duplicate OR Number",
+                          "OR Number \"" + orNumber + "\" is already in use.");
                 return;
             }
-            String orNumber  = txtOrNumber.getText().trim();
-            ParticularItem selectedParticular = comboParticular.getValue();
-            FundItem selectedFund = comboMfoPap.getValue();
-            double amount = Double.parseDouble(txtAmount.getText());
-            String smsStatus = comboSmsStatus.getValue();
-            LocalDate paidAt = datePaidAt.getValue();
-            
-            AccountItem selectedAccount = comboAccount.getValue();
-            if (selectedAccount == null) {
-                showAlert("Error", "Account must be selected.");
-                return;
-            }
-            int accountId = selectedAccount.getId();
-            
-            if (selectedParticular == null || selectedFund == null) {
-                showAlert("Error", "Please select Particular and Fund.");
-                return;
-            }
-            
-            int particularId = selectedParticular.getId();
-            int fundId = selectedFund.getId();
+        }
 
-            boolean success = false;
+        double amount = Double.parseDouble(txtAmount.getText());
+        String smsStatus = comboSmsStatus.getValue();
+        LocalDate paidAt = datePaidAt.getValue();
 
-            if (currentRecord != null) {
-                if (!currentRecord.getParticular().equals(selectedParticular.getName())) {
-                    String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular_id = ? AND id != ?";
-                    try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
-                        psCheck.setInt(1, studentPk);
-                        psCheck.setInt(2, particularId);
-                        psCheck.setString(3, currentRecord.getId());
-                        try (ResultSet rs = psCheck.executeQuery()) {
-                            if (rs.next() && rs.getInt(1) > 0) {
-                                showAlert("Duplicate Payment", "This student has already paid for the selected Particular.");
-                                return;
-                            }
-                        }
-                    }
-                }
+        if (selectedParticular == null) {
+            showAlert("Error", "Please select a Particular.");
+            return;
+        }
+        
+        int particularId = selectedParticular.getId();
 
-                success = model.updatePayment(
-                    currentRecord.getId(),
-                    studentPk,
-                    orNumber,
-                    particularId,
-                    fundId,
-                    accountId,
-                    amount,
-                    smsStatus,
-                    paidAt.toString()
-                );
-            } else {
-                String checkSql = "SELECT COUNT(*) FROM collection WHERE student_id = ? AND particular_id = ?";
+        Integer fundId = (selectedFund != null && selectedFund.getId() != 0)
+                ? selectedFund.getId()
+                : null;
+
+        Integer accountId = (selectedAccount != null && selectedAccount.getId() != 0)
+                ? selectedAccount.getId()
+                : null;
+        
+        SemesterItem selectedSemester = comboSemester.getValue();
+        Integer semesterId = (selectedSemester != null && selectedSemester.getId() != 0)
+                ? selectedSemester.getId()
+                : null;
+
+        
+        boolean success;
+
+        if (currentRecord != null) {
+            if (!currentRecord.getParticular().equals(selectedParticular.getName())) {
+                String checkSql = "SELECT COUNT(*) FROM collection " +
+                                  "WHERE student_id = ? AND particular_id = ? AND id != ?";
                 try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
                     psCheck.setInt(1, studentPk);
                     psCheck.setInt(2, particularId);
+                    psCheck.setString(3, currentRecord.getId());
                     try (ResultSet rs = psCheck.executeQuery()) {
                         if (rs.next() && rs.getInt(1) > 0) {
-                            showAlert("Duplicate Payment", "This student has already paid for the selected Particular.");
+                            showAlert("Duplicate Payment",
+                                    "This student has already paid for the selected Particular.");
                             return;
                         }
                     }
                 }
-
-                success = model.insertPayment(
-                    studentPk,
-                    orNumber,
-                    particularId,
-                    fundId,
-                    accountId,
-                    amount,
-                    smsStatus,
-                    paidAt.toString(),
-                    "Active"
-                );
             }
 
-            if (success) {
-                showAlert("Success", currentRecord != null ? "Payment updated successfully." : "Payment recorded successfully.");
-                if (parentController != null) parentController.loadPayments();
-                closeModal();
-                clearFields();
-                currentRecord = null;
-            } else {
-                showAlert("Error", "Failed to save payment.");
+            success = model.updatePayment(
+                currentRecord.getId(),
+                studentPk,
+                orNumber,
+                particularId,
+                fundId,
+                accountId,
+                amount,
+                smsStatus,
+                paidAt.toString(),
+                semesterId
+            );
+        } else {
+            String checkSql = "SELECT COUNT(*) FROM collection " +
+                              "WHERE student_id = ? AND particular_id = ?";
+            try (PreparedStatement psCheck = conn.prepareStatement(checkSql)) {
+                psCheck.setInt(1, studentPk);
+                psCheck.setInt(2, particularId);
+                try (ResultSet rs = psCheck.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        showAlert("Duplicate Payment",
+                                "This student has already paid for the selected Particular.");
+                        return;
+                    }
+                }
             }
-
-        } catch (NumberFormatException e) {
-            showAlert("Error", "Please enter a valid amount.");
-        } catch (NullPointerException e) {
-            showAlert("Error", "Please fill all required fields.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Error", "Database error occurred.");
+                
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            success = model.insertPayment(
+                studentPk,
+                orNumber,
+                particularId,
+                fundId,
+                accountId,
+                amount,
+                smsStatus,
+                LocalDateTime.now().format(dtf),
+                semesterId,
+                "Active"
+            );
         }
+
+        if (success) {
+            showAlert("Success", currentRecord != null ?
+                    "Payment updated successfully." :
+                    "Payment recorded successfully.");
+            if (parentController != null) parentController.loadPayments();
+            closeModal();
+            clearFields();
+            currentRecord = null;
+        } else {
+            showAlert("Error", "Failed to save payment.");
+        }
+
+    } catch (NumberFormatException e) {
+        showAlert("Error", "Please enter a valid amount.");
+    } catch (NullPointerException e) {
+        showAlert("Error", "Please fill all required fields.");
+    } catch (SQLException e) {
+        e.printStackTrace();
+        showAlert("Error", "Database error occurred.");
     }
+}
+
 
     private void closeModal() {
         Stage stage = (Stage) btnCancel.getScene().getWindow();
@@ -463,6 +533,14 @@ public class StudentPaymentController implements Initializable {
         }
         return false;
     }
+    
+    private void setStudentFieldsEditable(boolean editable) {
+        txtFirstName.setDisable(!editable);
+        txtLastName.setDisable(!editable);
+        txtMiddleName.setDisable(!editable);
+        comboSuffix.setDisable(!editable);
+    }
+
 
     private boolean validateNames() {
         String regex = ".*\\d.*";
@@ -513,20 +591,20 @@ public class StudentPaymentController implements Initializable {
         if (comboParticular.getValue() == null)
             errors.append("• Particular must be selected.\n");
 
-        if (comboMfoPap.getValue() == null)
-            errors.append("• Fund must be selected.\n");
-        
-        if (comboAccount.getValue() == null)
-            errors.append("• Account must be selected.\n");
+//        if (comboMfoPap.getValue() == null)
+//            errors.append("• Fund must be selected.\n");
+//        
+//        if (comboAccount.getValue() == null)
+//            errors.append("• Account must be selected.\n");
 
         if (txtAmount.getText() == null || txtAmount.getText().trim().isEmpty())
             errors.append("• Amount is required.\n");
 
         if (comboSmsStatus.getValue() == null)
             errors.append("• SMS Status must be selected.\n");
-
-        if (datePaidAt.getValue() == null)
-            errors.append("• Payment Date is required.\n");
+        
+        if (comboSemester.getValue() == null)
+            errors.append("• Semester / AY must be selected.\n");
 
         if (errors.length() > 0) {
             showAlert("Missing Required Fields", errors.toString());
@@ -624,5 +702,29 @@ private StudentData findStudentByStudentId(String studentNumber) throws SQLExcep
         txtLastName.clear();
         txtMiddleName.clear();
         comboSuffix.getSelectionModel().clearSelection();
-    }    
+    }
+    
+    private boolean isOrNumberDuplicate(String orNumber, String excludeId) {
+        String sql = "SELECT COUNT(*) FROM collection WHERE or_number = ?";
+
+        boolean hasExclude = (excludeId != null && !excludeId.isEmpty());
+        if (hasExclude) {
+            sql += " AND id <> ?";
+        }
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, orNumber);
+            if (hasExclude) {
+                ps.setString(2, excludeId);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

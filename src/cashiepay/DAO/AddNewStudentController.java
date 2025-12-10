@@ -29,9 +29,8 @@ public class AddNewStudentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // suffix choices
         suffixCombo.getItems().addAll(
-                "",      // no suffix
+                "",
                 "Jr.",
                 "Sr.",
                 "II",
@@ -39,15 +38,13 @@ public class AddNewStudentController implements Initializable {
                 "IV",
                 "V"
         );
-        suffixCombo.setValue("");  // default: none
+        suffixCombo.setValue("");
         
         UnaryOperator<Change> idFilter = change -> {
             String newText = change.getControlNewText();
-            // allow up to 4 digits, optional dash, then up to 4 digits
             if (newText.matches("\\d{0,4}(?:-\\d{0,4})?")) {
-                return change;   // accept
+                return change;
             }
-            // reject anything else (letters, extra dashes, wrong position, etc.)
             return null;
         };
         
