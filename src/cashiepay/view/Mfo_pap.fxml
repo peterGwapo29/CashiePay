@@ -24,7 +24,7 @@
     <children>
         <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
             <children>
-                <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
+                <Label styleClass="SystemName" text="CASHIPAY MANAGEMENT SYSTEM" textFill="WHITE" />
             </children>
         </HBox>
 
@@ -80,14 +80,14 @@
 
                 <VBox prefHeight="536.0" prefWidth="1284.0">
                     <children>
-                        <TableView fx:id="mfoPapTable" prefHeight="280.0" prefWidth="1263.0">
+                        <TableView fx:id="mfoPapTable" prefHeight="506.0" prefWidth="1242.0">
                             <columns>
                                 <TableColumn fx:id="colId" prefWidth="50" styleClass="center-column" text="ID" />
-                                <TableColumn fx:id="colName" prefWidth="350" text="Fund" />
-                                <TableColumn fx:id="colCreatedAt" prefWidth="220" text="Created At" />
-                                <TableColumn fx:id="colUpdatedAt" prefWidth="220" text="Updated At" />
-                                <TableColumn fx:id="colStatus" prefWidth="180" styleClass="status-column" text="Status" />
-                                <TableColumn fx:id="colAction" prefWidth="200" styleClass="center-column" text="Action" />
+                                <TableColumn fx:id="colName" prefWidth="350" text="FUND" />
+                                <TableColumn fx:id="colCreatedAt" prefWidth="220" text="CREATE AT" />
+                                <TableColumn fx:id="colUpdatedAt" prefWidth="220" text="UPDATED AT" />
+                                <TableColumn fx:id="colStatus" prefWidth="180" styleClass="status-column" text="STATUS" />
+                                <TableColumn fx:id="colAction" prefWidth="200" styleClass="center-column" text="ACTION" />
                             </columns>
                         </TableView>
                     </children>

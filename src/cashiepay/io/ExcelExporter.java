@@ -78,6 +78,7 @@ public class ExcelExporter {
                         rs.getString("account_name"),
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
+                        "",
                         rs.getString("sms_status"),
                         ""
                 ));
@@ -115,12 +116,14 @@ public class ExcelExporter {
         "       c.amount, " +
         "       c.paid_at, " +
         "       c.sms_status, " +
-        "       c.status " +
+        "       c.status, " +
+        "       c.semester_id " +
         "FROM collection c " +
         "JOIN student    s ON c.student_id  = s.id " +
         "JOIN particular p ON c.particular_id = p.id " +
         "LEFT JOIN fund       f ON c.mfo_pap_id  = f.id " +
         "LEFT JOIN account a ON c.account_id = a.id " +
+        "LEFT JOIN semester sem ON c.semester_id = sem.semester_id " +
         "WHERE 1=1 "
     );
 
@@ -164,11 +167,12 @@ public class ExcelExporter {
                 rs.getDouble("amount"),
                 rs.getString("paid_at"),
                 rs.getString("sms_status"),
-                rs.getString("status")
+                rs.getString("status"),
+                rs.getString("semester_id")
             ));
         }
 
-        // 🔥 Build nice title like:
+        // Build title:
         // SUMMARY OF COLLECTION AS OF NOVEMBER 1-28, 2025 WITH OR # 2306397-2306476 (eSMS Account)
         String computedTitle = buildSummaryTitle(startDate, endDate, smsFilter, records);
 
@@ -184,18 +188,18 @@ public class ExcelExporter {
                                         String smsFilter,
                                         List<PaymentRecord> records) {
 
-    // ----- DATE PART -----
+    // DATE PART 
     String datePart;
     if (startDate != null && endDate != null) {
         if (startDate.getYear() == endDate.getYear()
                 && startDate.getMonth() == endDate.getMonth()) {
-            // e.g. NOVEMBER 1-28, 2025
+            // NOVEMBER 1-28, 2025
             String month = startDate.getMonth().toString(); // already UPPERCASE
             datePart = month + " " + startDate.getDayOfMonth() +
                        "-" + endDate.getDayOfMonth() +
                        ", " + startDate.getYear();
         } else {
-            // e.g. NOVEMBER 28, 2025 - DECEMBER 5, 2025
+            // NOVEMBER 28, 2025 - DECEMBER 5, 2025
             datePart = formatFullDate(startDate) + " - " + formatFullDate(endDate);
         }
     } else if (startDate != null) {
@@ -206,7 +210,7 @@ public class ExcelExporter {
         datePart = "ALL DATES";
     }
 
-    // ----- OR RANGE PART -----
+    //  OR RANGE PART 
     int minOr = Integer.MAX_VALUE;
     int maxOr = Integer.MIN_VALUE;
 
@@ -218,7 +222,6 @@ public class ExcelExporter {
             if (n < minOr) minOr = n;
             if (n > maxOr) maxOr = n;
         } catch (NumberFormatException ignored) {
-            // non-numeric OR#, just skip for range
         }
     }
 

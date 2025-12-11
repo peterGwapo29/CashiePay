@@ -26,7 +26,7 @@
         <!-- HEADER -->
         <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
             <children>
-                <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
+                <Label styleClass="SystemName" text="CASHIPAY MANAGEMENT SYSTEM" textFill="WHITE" />
             </children>
         </HBox>
 
@@ -151,15 +151,15 @@
                         <TableView fx:id="studentTable" prefHeight="536.0" prefWidth="1263.0">
                             <columns>
                                 <TableColumn fx:id="colId" prefWidth="91.9999965429306" styleClass="center-column" text="ID" />
-                                <TableColumn fx:id="colStudentId" prefWidth="126.40000915527344" text="Student ID" />
-                                <TableColumn fx:id="colFirstName" prefWidth="157.60003662109375" text="First Name" />
-                                <TableColumn fx:id="colLastName" prefWidth="144.7999267578125" text="Last Name" />
-                                <TableColumn fx:id="colMiddleName" prefWidth="113.5999755859375" text="Middle Name" />
-                                <TableColumn fx:id="colSuffix" prefWidth="64.79998779296875" text="Suffix" />
-                                <TableColumn fx:id="colStatus" prefWidth="113.5999755859375" styleClass="status-column" text="Status" />
-                                <TableColumn fx:id="colCreatedAt" prefWidth="154.39996337890625" text="Created At" />
-                                <TableColumn fx:id="colUpdatedAt" minWidth="0.0" prefWidth="127.199951171875" text="Updated At" />
-                                <TableColumn fx:id="colAction" prefWidth="148.0" styleClass="center-column" text="Action" />
+                                <TableColumn fx:id="colStudentId" prefWidth="126.40000915527344" text="STUDENT ID" />
+                                <TableColumn fx:id="colFirstName" prefWidth="157.60003662109375" text="FIRST NAME" />
+                                <TableColumn fx:id="colLastName" prefWidth="144.7999267578125" text="LAST NAME" />
+                                <TableColumn fx:id="colMiddleName" prefWidth="113.5999755859375" text="MIDDLE NAME" />
+                                <TableColumn fx:id="colSuffix" prefWidth="87.20001220703125" text="SUFFIX" />
+                                <TableColumn fx:id="colStatus" prefWidth="105.5999755859375" styleClass="status-column" text="STATUS" />
+                                <TableColumn fx:id="colCreatedAt" prefWidth="140.800048828125" text="CREATED AT" />
+                                <TableColumn fx:id="colUpdatedAt" minWidth="0.0" prefWidth="127.199951171875" text="UPDATED AT" />
+                                <TableColumn fx:id="colAction" prefWidth="148.0" styleClass="center-column" text="ACTION" />
                             </columns>
                         </TableView>
                     </children>

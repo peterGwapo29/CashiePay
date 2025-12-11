@@ -231,6 +231,24 @@ public class StudentPaymentController implements Initializable {
             comboAccount.getItems().clear();
             comboAccount.getSelectionModel().clearSelection();
         }
+        
+            String semIdStr = record.getSemesterId();
+
+            if (semIdStr != null && !semIdStr.isEmpty()) {
+                try {
+                    int semId = Integer.parseInt(semIdStr);
+
+                    comboSemester.getItems().stream()
+                        .filter(s -> s.getId() == semId)
+                        .findFirst()
+                        .ifPresent(comboSemester::setValue);
+
+                } catch (NumberFormatException ex) {
+                    // Optional: log or ignore if semesterId is not a valid number
+                    ex.printStackTrace();
+                }
+            }
+
         setStudentFieldsEditable(true);
         datePaidAt.setVisible(true);
         datePaidAt.setManaged(true);

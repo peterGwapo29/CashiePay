@@ -15,30 +15,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0"
-            styleClass="mainFxmlClass"
-            xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="cashiepay.controller.AccountController">
+<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.AccountController">
 
     <stylesheets>
-        <URL value="@/cashiepay/style/account.css"/>
+        <URL value="@/cashiepay/style/account.css" />
     </stylesheets>
 
     <children>
         <!-- HEADER -->
         <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
             <children>
-                <Label styleClass="SystemName"
-                       text="CASHIEPAY MANAGEMENT SYSTEM"
-                       textFill="WHITE"/>
+                <Label styleClass="SystemName" text="CASHIPAY MANAGEMENT SYSTEM" textFill="WHITE" />
             </children>
         </HBox>
 
         <!-- CARD -->
-        <VBox layoutX="10.0" layoutY="70.0"
-              prefHeight="660.0" prefWidth="1284.0"
-              styleClass="account-card">
+        <VBox layoutX="10.0" layoutY="70.0" prefHeight="660.0" prefWidth="1284.0" styleClass="account-card">
 
             <children>
                 <!-- TITLE -->
@@ -46,12 +38,12 @@
                     <children>
                         <Label text="Account">
                             <font>
-                                <Font size="24.0"/>
+                                <Font size="24.0" />
                             </font>
                         </Label>
                     </children>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                 </HBox>
 
@@ -60,92 +52,60 @@
                     <children>
                         <Label styleClass="showFilterText" text="Show">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                         </Label>
 
-                        <ComboBox fx:id="filterStatus"
-                                  onAction="#filterStatusChanged"
-                                  prefHeight="40.0"
-                                  promptText="All"
-                                  styleClass="filter-btn">
+                        <ComboBox fx:id="filterStatus" onAction="#filterStatusChanged" prefHeight="40.0" promptText="All" styleClass="filter-btn">
                             <cursor>
-                                <Cursor fx:constant="HAND"/>
+                                <Cursor fx:constant="HAND" />
                             </cursor>
                         </ComboBox>
 
-                        <Button fx:id="newAccountBtn"
-                                graphicTextGap="0.0"
-                                mnemonicParsing="false"
-                                onAction="#newAccountBtnAction"
-                                prefHeight="40.0"
-                                styleClass="btn-primary"
-                                text="Add Account"
-                                textFill="WHITE">
+                        <Button fx:id="newAccountBtn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#newAccountBtnAction" prefHeight="40.0" styleClass="btn-primary" text="Add Account" textFill="WHITE">
                             <graphic>
-                                <ImageView fitHeight="24.0" fitWidth="24.0"
-                                           pickOnBounds="true" preserveRatio="true"
-                                           translateX="-2.0">
+                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" translateX="-2.0">
                                     <image>
-                                        <Image url="@../../icons/mdi--plus-circle%20(2).png"/>
+                                        <Image url="@../../icons/mdi--plus-circle%20(2).png" />
                                     </image>
                                 </ImageView>
                             </graphic>
                             <font>
-                                <Font name="Arial" size="14.0"/>
+                                <Font name="Arial" size="14.0" />
                             </font>
                             <cursor>
-                                <Cursor fx:constant="HAND"/>
+                                <Cursor fx:constant="HAND" />
                             </cursor>
                         </Button>
                     </children>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                 </HBox>
 
                 <!-- TABLE -->
                 <VBox prefHeight="536.0" prefWidth="1263.0">
                     <children>
-                        <TableView fx:id="accountTable"
-                                   prefHeight="280.0"
-                                   prefWidth="1263.0">
+                        <TableView fx:id="accountTable" prefHeight="517.0" prefWidth="1242.0">
                             <columns>
-                                <TableColumn fx:id="colId"
-                                             prefWidth="50"
-                                             styleClass="center-column"
-                                             text="ID"/>
-                                <TableColumn fx:id="colFund"
-                                             prefWidth="220"
-                                             text="Fund"/>
-                                <TableColumn fx:id="colAccountName"
-                                             prefWidth="280"
-                                             text="Account Name"/>
-                                <TableColumn fx:id="colCreatedAt"
-                                             prefWidth="195"
-                                             text="Created At"/>
-                                <TableColumn fx:id="colUpdatedAt"
-                                             prefWidth="173"
-                                             text="Updated At"/>
-                                <TableColumn fx:id="colStatus"
-                                             prefWidth="160"
-                                             styleClass="status-column"
-                                             text="Status"/>
-                                <TableColumn fx:id="colAction"
-                                             prefWidth="200"
-                                             styleClass="center-column"
-                                             text="Action"/>
+                                <TableColumn fx:id="colId" prefWidth="50" styleClass="center-column" text="ID" />
+                                <TableColumn fx:id="colFund" prefWidth="220" text="FUND" />
+                                <TableColumn fx:id="colAccountName" prefWidth="280" text="ACCOUNT NAME" />
+                                <TableColumn fx:id="colCreatedAt" prefWidth="195" text="CREATE AT" />
+                                <TableColumn fx:id="colUpdatedAt" prefWidth="173" text="UPDATED AT" />
+                                <TableColumn fx:id="colStatus" prefWidth="160" styleClass="status-column" text="STATUS" />
+                                <TableColumn fx:id="colAction" prefWidth="200" styleClass="center-column" text="ACTION" />
                             </columns>
                         </TableView>
                     </children>
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                 </VBox>
             </children>
 
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </VBox>
     </children>

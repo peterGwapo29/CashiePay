@@ -17,7 +17,6 @@
     -fx-background-color: linear-gradient(to bottom, #f7f8ff, #eef1ff) !important;
 }
 
-
 .header-bar {
     -fx-background-color: linear-gradient(to right, #01319d, #3155d9) !important;
     -fx-padding: 0 24 0 24 !important;
@@ -72,6 +71,10 @@
 
 .metric-card-secondary {
     -fx-background-color: linear-gradient(to bottom, #1fb3c8, #0f8ea4) !important;
+}
+
+.metric-card-last {
+    -fx-background-color: linear-gradient(to bottom, #6A5ACD, #4C3ACD) !important;
 }
 
 .metric-card:hover {

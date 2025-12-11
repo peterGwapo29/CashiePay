@@ -120,7 +120,6 @@ public class ProfileController implements Initializable {
                     showAlert("Password Updated",
                         "Your password has been successfully updated.\nYou will be logged out for security.");
                     logoutAndReturnToLogin();
-
                 } else {
                     showAlert("Profile Updated",
                         "Your profile information has been successfully updated.");

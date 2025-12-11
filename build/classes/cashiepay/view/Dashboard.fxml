@@ -18,7 +18,7 @@
    <children>
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
          <children>
-            <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
+            <Label styleClass="SystemName" text="CASHIPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children></HBox>
       <AnchorPane layoutX="4.0" layoutY="60.0" prefHeight="666.0" prefWidth="1280.0" style="-fx-background-color: #f4f4ff;">
          <children>
@@ -111,6 +111,25 @@
                                   </Label>
                               </children>
                           </VBox>
+                        <VBox alignment="CENTER" prefHeight="112.0" prefWidth="222.0" spacing="8.0">
+                           <styleClass>
+                              <String fx:value="card" />
+                              <String fx:value="metric-card" />
+                              <String fx:value="metric-card-last" />
+                           </styleClass>
+                           <children>
+                              <Label text="Total Particular" textFill="WHITE">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="totalParticular" text="00" textFill="#fafafa">
+                                 <font>
+                                    <Font size="34.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
 
                      </children>
                      <padding>
@@ -131,12 +150,12 @@
                               </Label>
                               <TableView fx:id="recentTransactionsTable" prefHeight="337.0" prefWidth="917.0">
                                     <columns>
-                                        <TableColumn fx:id="colDate" prefWidth="166.93336027860641" text="Date" />
-                                        <TableColumn fx:id="colOrNumber" prefWidth="137.6000213623047" text="OR Number" />
-                                        <TableColumn fx:id="colPayor" prefWidth="327.9999694824219" text="Name of Payor" />
-                                        <TableColumn fx:id="colParticular" prefWidth="144.2666015625" text="Particulars" />
-                                        <TableColumn fx:id="colMfoPap" prefWidth="132.00006103515625" text="MFO/PAP" />
-                                        <TableColumn fx:id="colAmount" prefWidth="117.60003662109375" text="Amount" />
+                                        <TableColumn fx:id="colDate" prefWidth="166.93336027860641" text="DATE" />
+                                        <TableColumn fx:id="colOrNumber" prefWidth="137.6000213623047" text="OR NUMBER" />
+                                        <TableColumn fx:id="colPayor" prefWidth="327.9999694824219" text="NAEM OF PAYOR" />
+                                        <TableColumn fx:id="colParticular" prefWidth="144.2666015625" text="PARTICULAR" />
+                                        <TableColumn fx:id="colMfoPap" prefWidth="132.00006103515625" text="FUND" />
+                                        <TableColumn fx:id="colAmount" prefWidth="117.60003662109375" text="AMOUNT" />
                                     </columns>
                                 </TableView>
                            </children>

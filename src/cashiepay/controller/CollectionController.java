@@ -326,15 +326,16 @@ public class CollectionController implements Initializable {
                 "c.amount, " +
                 "c.paid_at, " +
                 "c.sms_status, " +
-                "c.status " +
+                "c.status, " +
+                "c.semester_id " +
             "FROM collection c " +
             "JOIN student s ON c.student_id = s.id " +
             "JOIN particular p ON c.particular_id = p.id " +
             "LEFT JOIN fund f ON c.mfo_pap_id = f.id " +
             "LEFT JOIN account a ON c.account_id = a.id " +
+            "LEFT JOIN semester sem ON c.semester_id = sem.semester_id " +
             "WHERE 1=1 "
         );
-
 
         if (startDate != null && endDate != null) {
             sql.append(" AND DATE(c.paid_at) BETWEEN '").append(startDate).append("' AND '").append(endDate).append("' ");
@@ -386,7 +387,8 @@ public class CollectionController implements Initializable {
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         rs.getString("sms_status"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getString("semester_id")
                 );
                 
                 if (!"All".equalsIgnoreCase(statusFilter) &&

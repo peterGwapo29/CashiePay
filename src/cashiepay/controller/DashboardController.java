@@ -45,6 +45,8 @@ public class DashboardController implements Initializable {
     private Connection conn;
     @FXML
     private Label dateToday;
+    @FXML
+    private Label totalParticular;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -54,6 +56,7 @@ public class DashboardController implements Initializable {
         setupTableView();
         loadRecentTransactions();
         loadDashboardCards();
+        setTotalParticular();
 
         colDate.setCellValueFactory(cell -> cell.getValue().datePaidProperty());
         colOrNumber.setCellValueFactory(cell -> cell.getValue().orNumberProperty());
@@ -93,6 +96,17 @@ public class DashboardController implements Initializable {
         setTotalStudents();
     }
      
+     
+     private void setTotalParticular(){
+        String sql = "SELECT COUNT(*) AS total FROM particular WHERE status = 'Active'";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                totalParticular.setText(String.valueOf(rs.getInt("total")));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+     }
+//     totalParticular
      private void setTotalTransactions() {
         String sql = "SELECT COUNT(*) AS total FROM collection WHERE DATE(paid_at) = CURDATE()";
         try (PreparedStatement ps = conn.prepareStatement(sql);
@@ -102,6 +116,16 @@ public class DashboardController implements Initializable {
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
+     
+//    private void setTotalOutstandingStudent(){
+//         String sql = "";
+//         try (PreparedStatement ps = conn.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//            if (rs.next()) {
+//                totalOutstanding.setText(String.valueOf(rs.getInt("total")));
+//            }
+//        } catch (Exception e) { e.printStackTrace(); }
+//    }
      
      private void setTodaysRevenue() {
         String sql = "SELECT SUM(amount) AS revenue FROM collection WHERE DATE(paid_at) = CURDATE()";
@@ -147,12 +171,14 @@ public class DashboardController implements Initializable {
             "    c.amount, " +
             "    c.paid_at, " +
             "    c.sms_status, " +
-            "    c.status " +
+            "    c.status, " +
+            "    c.semester_id " +
             "FROM collection c " +
             "JOIN student s      ON c.student_id   = s.id " +
             "LEFT JOIN particular p ON c.particular_id = p.id " +
             "LEFT JOIN fund f       ON c.mfo_pap_id    = f.id " +
             "LEFT JOIN account a ON c.account_id = a.id " +
+            "LEFT JOIN semester sem ON c.semester_id = sem.semester_id " +
             "ORDER BY c.paid_at DESC " +
             "LIMIT 10";
 
@@ -174,7 +200,8 @@ public class DashboardController implements Initializable {
                         rs.getDouble("amount"),
                         rs.getString("paid_at"),
                         rs.getString("sms_status"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getString("semester_id")
                 ));
             }
 
@@ -184,7 +211,6 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
-
     
     private void displayCurrentDate() {
         java.time.LocalDate today = java.time.LocalDate.now();

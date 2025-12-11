@@ -30,7 +30,7 @@ public class SBfxmlController {
     public void initController() {
         setActiveNav(dashboardBtn);
         loadContent("/cashiepay/view/Dashboard.fxml");
-    
+        
         dashboardBtn.setOnAction(e -> {
             setActiveNav(dashboardBtn);
             loadContent("/cashiepay/view/Dashboard.fxml");
@@ -104,18 +104,15 @@ public class SBfxmlController {
         alert.setHeaderText("Logout from CASHIEPAY?");
         alert.setContentText("Your current session will be closed.");
 
-        // Correct ButtonType creation
         ButtonType logoutBtnType = new ButtonType("Logout", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelBtnType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(cancelBtnType, logoutBtnType);
 
-        // Apply CSS
         alert.getDialogPane().getStylesheets().add(
             getClass().getResource("/cashiepay/sidebar/sbfxml.css").toExternalForm()
         );
         alert.getDialogPane().getStyleClass().add("logout-dialog");
 
-        // Style the buttons when dialog shows
         alert.setOnShown(e -> {
             Button logoutButton =
                 (Button) alert.getDialogPane().lookupButton(logoutBtnType);
@@ -126,7 +123,6 @@ public class SBfxmlController {
             if (cancelButton != null) cancelButton.getStyleClass().add("outline-button");
         });
 
-        // Handle result
         alert.showAndWait().ifPresent(result -> {
             if (result == logoutBtnType) {
                 try {

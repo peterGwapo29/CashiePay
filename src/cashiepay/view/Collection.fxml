@@ -27,7 +27,7 @@
     <children>
       <HBox alignment="CENTER" prefHeight="60.0" prefWidth="1284.0" styleClass="header-bar">
          <children>
-            <Label styleClass="SystemName" text="CASHIEPAY MANAGEMENT SYSTEM" textFill="WHITE" />
+            <Label styleClass="SystemName" text="CASHIPAY MANAGEMENT SYSTEM" textFill="WHITE" />
          </children>
       </HBox>
       <VBox layoutX="10.0" layoutY="70.0" prefHeight="722.0" prefWidth="1262.0" styleClass="transaction-card">
@@ -168,26 +168,26 @@
                   <TableView id="removeScroll" fx:id="tableView" prefHeight="308.0" prefWidth="1220.0">
                     <columns>
                       <TableColumn fx:id="id" prefWidth="41.06664502620697" text="ID" />
-                      <TableColumn fx:id="colStudentId" prefWidth="99.19999694824219" text="Student ID" />
-                        <TableColumn fx:id="colFirstName" prefWidth="92.00003051757812" text="First Name" />
-                        <TableColumn fx:id="colLastName" prefWidth="90.93331909179688" text="Last Name" />
-                        <TableColumn fx:id="colMiddleName" prefWidth="108.79995727539062" text="Middle Name" />
-                        <TableColumn fx:id="colSuffix" prefWidth="68.0" text="Suffix" />
-                        <TableColumn fx:id="colOrNumber" prefWidth="95.7332763671875" text="OR Number" />
-                        <TableColumn fx:id="colParticular" prefWidth="91.199951171875" text="Particular" />
-                        <TableColumn fx:id="colMfoPap" prefWidth="68.0" text="Fund" />
-                        <TableColumn fx:id="colAccount" prefWidth="58.0" text="Account" />
-                        <TableColumn fx:id="colAmount" prefWidth="87.20001220703125" text="Amount" />
-                        <TableColumn fx:id="colDatePaid" prefWidth="119.19989013671875" text="Date Paid " />
-                        <TableColumn fx:id="colSms" minWidth="0.0" prefWidth="63.199951171875" text="SMS" />
-                        <TableColumn fx:id="action" prefWidth="140.0" text="Action" />
+                      <TableColumn fx:id="colStudentId" prefWidth="99.19999694824219" text="STUDENT ID" />
+                        <TableColumn fx:id="colFirstName" prefWidth="92.00003051757812" text="FIRST NAME" />
+                        <TableColumn fx:id="colLastName" prefWidth="90.93331909179688" text="LAST NAME" />
+                        <TableColumn fx:id="colMiddleName" prefWidth="108.79995727539062" text="MIDDLE NAME" />
+                        <TableColumn fx:id="colSuffix" prefWidth="68.0" text="SUFFIX" />
+                        <TableColumn fx:id="colOrNumber" prefWidth="95.7332763671875" text="OR NUMBER" />
+                        <TableColumn fx:id="colParticular" prefWidth="91.199951171875" text="PARTICULAR" />
+                        <TableColumn fx:id="colMfoPap" prefWidth="68.0" text="FUND" />
+                        <TableColumn fx:id="colAccount" prefWidth="73.5999755859375" text="ACCOUNT" />
+                        <TableColumn fx:id="colAmount" prefWidth="84.800048828125" text="AMOUNT" />
+                        <TableColumn fx:id="colDatePaid" prefWidth="106.4000244140625" text="DATE PAID" />
+                        <TableColumn fx:id="colSms" minWidth="0.0" prefWidth="78.4000244140625" text="SMS" />
+                        <TableColumn fx:id="action" prefWidth="128.7999267578125" text="ACTION" />
                     </columns>
                   </TableView>
                   
                    <TableView fx:id="summaryTable" prefHeight="193.0" prefWidth="1221.0">
                     <columns>
-                        <TableColumn fx:id="colSummaryParticular" prefWidth="200.0" text="Particular" />
-                        <TableColumn fx:id="colSummaryAmount" prefWidth="120.0" text="Amount" />
+                        <TableColumn fx:id="colSummaryParticular" prefWidth="200.0" text="PARTICULAR" />
+                        <TableColumn fx:id="colSummaryAmount" prefWidth="120.0" text="AMOUNT" />
                     </columns>
                 </TableView>
                </children>
