@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1284.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.DashboardController">
+<AnchorPane id="AnchorPane" prefHeight="790.0" prefWidth="1284.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cashiepay.controller.DashboardController">
     <stylesheets>
         <URL value="@/cashiepay/style/dashboard.css" />
     </stylesheets>
@@ -42,7 +42,7 @@
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
             </HBox>
-            <VBox layoutX="16.0" layoutY="114.0" prefHeight="554.0" prefWidth="1244.0" spacing="24.0">
+            <VBox layoutX="16.0" layoutY="114.0" prefHeight="615.0" prefWidth="1244.0" spacing="24.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="183.0" prefWidth="1223.0" spacing="24.0">
                      <children>

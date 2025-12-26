@@ -1,6 +1,7 @@
 package cashiepay.sidebar;
 
 import cashiepay.controller.MainController;
+import cashiepay.model.Auth.AdminSession;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,8 +27,11 @@ public class SBfxmlController {
     private Button accountBtn;
     @FXML
     private Button btnSemester;
+    @FXML
+    private Button registerAdminBtn;
     
     public void initController() {
+        applyRoleAccess();
         setActiveNav(dashboardBtn);
         loadContent("/cashiepay/view/Dashboard.fxml");
         
@@ -70,13 +74,17 @@ public class SBfxmlController {
             setActiveNav(btnSemester);
             loadContent("/cashiepay/view/Semester.fxml");
         });
+        
+        registerAdminBtn.setOnAction(e -> {
+            setActiveNav(registerAdminBtn);
+            loadContent("/cashiepay/view/Admin.fxml");
+        });
 
         logoutBtn.setOnAction(e -> {
             logout();
         });
     }
-
-
+    
     private void loadContent(String fxmlPath) {
         MainController mainController = getMainController();
         if (mainController != null) {
@@ -128,7 +136,8 @@ public class SBfxmlController {
                 try {
                     Stage stage = (Stage) sidebar.getScene().getWindow();
                     stage.close();
-
+                    AdminSession.clear();
+                    
                     FXMLLoader loader =
                         new FXMLLoader(getClass().getResource("/cashiepay/view/Login.fxml"));
                     AnchorPane loginRoot = loader.load();
@@ -147,7 +156,7 @@ public class SBfxmlController {
     }
      
      private void setActiveNav(Button activeBtn) {
-        Button[] buttons = { dashboardBtn, collectionBtn, particularBtn, mfopapBtn, profileBtn, studentBtn, accountBtn, btnSemester}; 
+        Button[] buttons = { dashboardBtn, collectionBtn, particularBtn, mfopapBtn, profileBtn, studentBtn, accountBtn, btnSemester, registerAdminBtn}; 
 
         for (Button btn : buttons) {
             btn.getStyleClass().remove("nav-item-active");
@@ -160,4 +169,23 @@ public class SBfxmlController {
             activeBtn.getStyleClass().add("nav-item-active");
         }
     }
+     
+     private void applyRoleAccess() {
+
+        // 🔥 RESET FIRST (CRITICAL)
+        registerAdminBtn.setVisible(false);
+        registerAdminBtn.setManaged(false);
+
+        profileBtn.setVisible(false);
+        profileBtn.setManaged(false);
+
+        if (AdminSession.isSuperAdmin()) {
+            registerAdminBtn.setVisible(true);
+            registerAdminBtn.setManaged(true);
+        } else {
+            profileBtn.setVisible(true);
+            profileBtn.setManaged(true);
+        }
+    }
+
 }

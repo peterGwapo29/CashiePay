@@ -282,15 +282,24 @@ public class CollectionController implements Initializable {
                 list.add(new SemesterFilterItem(id, label));
             }
 
+//            filterSemester.setItems(list);
+//            filterSemester.getSelectionModel().selectFirst();
+//            filterSemester.setVisibleRowCount(3);
+
             filterSemester.setItems(list);
-            filterSemester.getSelectionModel().selectFirst();
+            SemesterFilterItem current = getCurrentSemesterItem(list);
+            if (current != null) {
+                filterSemester.getSelectionModel().select(current);
+            } else {
+                filterSemester.getSelectionModel().selectFirst();
+            }
             filterSemester.setVisibleRowCount(3);
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // When user changes semester filter -> re-apply filters
         filterSemester.setOnAction(e -> applyFilters());
     }
 
@@ -643,5 +652,45 @@ public class CollectionController implements Initializable {
         if(event.getSource() == clearBtn){
             txtSearchStudent.setText("");
         }
-    } 
+    }
+    
+    private SemesterFilterItem getCurrentSemesterItem(ObservableList<SemesterFilterItem> items) {
+        LocalDate now = LocalDate.now();
+        int month = now.getMonthValue();
+
+        String targetSemKey;
+        if (month >= 8 && month <= 12) {
+            targetSemKey = "1";
+        } else if (month >= 1 && month <= 5) {
+            targetSemKey = "2";
+        } else {
+            targetSemKey = "summer";
+        }
+
+        int startYear = (month >= 8) ? now.getYear() : now.getYear() - 1;
+        String targetAY = startYear + "-" + (startYear + 1);
+
+        for (SemesterFilterItem item : items) {
+            if (item.getId() == 0) continue;
+
+            String label = item.getLabel() != null ? item.getLabel().toLowerCase() : "";
+            boolean ayMatch = label.contains(targetAY.toLowerCase());
+
+            boolean semMatch;
+            if ("summer".equals(targetSemKey)) {
+                semMatch = label.contains("summer") || label.contains("mid") || label.contains("midyear");
+            } else if ("1".equals(targetSemKey)) {
+                semMatch = label.contains("1st") || label.contains("first") || label.matches(".*\\b1\\b.*");
+            } else {
+                semMatch = label.contains("2nd") || label.contains("second") || label.matches(".*\\b2\\b.*");
+            }
+
+            if (ayMatch && semMatch) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+   
 }

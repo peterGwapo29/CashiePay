@@ -6,21 +6,22 @@ import java.io.IOException;
 
 public class SidebarLoader {
 
-    private static AnchorPane loadedSidebar;
-
     public static AnchorPane getSidebar() {
-        if (loadedSidebar == null) {
-            try {
-                FXMLLoader loader = new FXMLLoader(SidebarLoader.class.getResource("/cashiepay/sidebar/SBfxml.fxml"));
-                loadedSidebar = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                SidebarLoader.class.getResource("/cashiepay/sidebar/SBfxml.fxml")
+            );
 
-                SBfxmlController controller = loader.getController();
-                controller.initController();
+            AnchorPane sidebar = loader.load();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            SBfxmlController controller = loader.getController();
+            controller.initController(); // role applied HERE
+
+            return sidebar;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        return loadedSidebar;
     }
 }

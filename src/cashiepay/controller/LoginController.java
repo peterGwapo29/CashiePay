@@ -54,7 +54,7 @@ public class LoginController implements Initializable {
                     conn = DBConnection.getConnection();
                 }
 
-                String sql = "SELECT * FROM admin WHERE username = ?";
+                String sql = "SELECT * FROM admin WHERE username = ? AND status = 'Active'";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, email);
                 ResultSet rs = ps.executeQuery();
@@ -81,9 +81,10 @@ public class LoginController implements Initializable {
                         rs.getInt("id"),
                         rs.getString("admin_name"),
                         rs.getString("email_address"),
-                        rs.getString("username")
+                        rs.getString("username"),
+                        rs.getString("role")
                     );
-
+                    
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/cashiepay/view/Main.fxml"));
                     AnchorPane root = loader.load();
 

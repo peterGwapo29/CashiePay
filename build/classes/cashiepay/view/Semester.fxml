@@ -89,8 +89,8 @@
                         <TableView fx:id="semesterTable" prefHeight="523.0" prefWidth="1242.0">
                             <columns>
                                 <TableColumn fx:id="colId" prefWidth="50" styleClass="center-column" text="ID" />
-                                <TableColumn fx:id="colSemester" prefWidth="200" text="SEMESTER" />
-                                <TableColumn fx:id="colSchoolYear" prefWidth="200" text="ACADEMIC YEAR" />
+                                <TableColumn fx:id="colSemester" prefWidth="200" text="School Year" />
+                                <TableColumn fx:id="colSchoolYear" prefWidth="200" text="Semester" />
                                 <TableColumn fx:id="colCreatedAt" prefWidth="180" text="CREATED AT" />
                                 <TableColumn fx:id="colUpdatedAt" prefWidth="180" text="UPDATED AT" />
                                 <TableColumn fx:id="colStatus" prefWidth="160" styleClass="status-column" text="STATUS" />

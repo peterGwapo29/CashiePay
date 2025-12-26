@@ -113,7 +113,8 @@ public class ProfileController implements Initializable {
                         adminId,
                         adminName,
                         email,
-                        username
+                        username,
+                        AdminSession.getRole()
                 );
 
                 if (passwordChanged) {
